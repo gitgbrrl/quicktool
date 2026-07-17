@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>MathTools — Plataforma de Ferramentas Matemáticas</title>
-<meta name="description" content="Plataforma completa com dezenas de calculadoras e ferramentas matemáticas online." />
+<title>Matemática — QuickTool</title>
+<meta name="description" content="Ferramentas matemáticas online — calculadoras, álgebra, geometria, estatística e muito mais." />
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -148,8 +148,8 @@ tailwind.config = {
     <a onclick="go('home')" class="flex items-center gap-2.5 cursor-pointer flex-shrink-0">
       <div class="logo-mark">M</div>
       <div class="hidden sm:block">
-        <div class="font-bold text-lg leading-none">MathTools</div>
-        <div class="text-[11px] text-slate-500 leading-none mt-0.5">Plataforma Matemática</div>
+        <div class="font-bold text-lg leading-none">Matemática</div>
+        <div class="text-[11px] text-slate-500 leading-none mt-0.5">QuickTool</div>
       </div>
     </a>
     <div class="flex-1 max-w-xl mx-auto relative">
@@ -162,9 +162,9 @@ tailwind.config = {
       <div id="search-dropdown" class="absolute top-full mt-2 w-full bg-white rounded-xl shadow-xl border border-slate-100 max-h-96 overflow-y-auto hidden z-50"></div>
     </div>
     <div class="flex items-center gap-1">
-      <a href="index.html" class="btn-ghost" title="Toolbox Hub">
+      <a href="/" class="btn-ghost" title="QuickTool">
         <i data-lucide="layout-grid" class="w-4 h-4"></i>
-        <span class="hidden lg:inline">Toolbox Hub</span>
+        <span class="hidden lg:inline">QuickTool</span>
       </a>
       <button onclick="go('favorites')" class="btn-ghost" title="Favoritos">
         <i data-lucide="star" class="w-4 h-4"></i>
@@ -195,7 +195,7 @@ tailwind.config = {
 
 <script>
 /* ============================================================
-   MathTools — Plataforma de Ferramentas Matemáticas
+   Matemática — QuickTool
    Arquitetura modular em arquivo único
    ============================================================ */
 
@@ -2757,11 +2757,11 @@ function renderHistory() {
 function renderAbout() {
   $('app').innerHTML = `
     <div class="animate-fade max-w-2xl">
-      <h1 class="text-2xl md:text-3xl font-bold mb-4">Sobre o MathTools</h1>
+      <h1 class="text-2xl md:text-3xl font-bold mb-4">Sobre a Matemática</h1>
       <div class="card p-6 space-y-4 text-slate-600">
-        <p>Plataforma de ferramentas matemáticas com ${catalog.length} utilitários em categorias como álgebra, geometria, estatística e probabilidade.</p>
+        <p>Ferramentas matemáticas com ${catalog.length} utilitários em categorias como álgebra, geometria, estatística e probabilidade.</p>
         <p>Tudo roda localmente no seu navegador — sem login, sem servidor, com favoritos e histórico salvos no dispositivo.</p>
-        <a href="index.html" class="btn-primary inline-flex">${icon('layout-grid', 16)} Voltar ao Toolbox Hub</a>
+        <a href="/" class="btn-primary inline-flex">${icon('layout-grid', 16)} Voltar ao QuickTool</a>
       </div>
     </div>`;
   refreshIcons();

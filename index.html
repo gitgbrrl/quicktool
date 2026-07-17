@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Toolbox Hub — Suas ferramentas essenciais</title>
-<meta name="description" content="Portal para MathTools e TextTools — ferramentas online gratuitas de matemática e texto.">
+<title>QuickTool — Ferramentas online</title>
+<meta name="description" content="QuickTool — ferramentas gratuitas de matemática e texto, direto no navegador.">
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -174,18 +174,18 @@
 
 <header class="header-glass sticky top-0 z-50 border-b border-[var(--border)]">
   <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between">
-    <a href="index.html" class="flex items-center gap-2.5">
+    <a href="/" class="flex items-center gap-2.5">
       <div class="relative w-9 h-9 rounded-xl bg-gradient-to-br from-[var(--accent)] via-[var(--accent-3)] to-[var(--accent-2)] flex items-center justify-center overflow-hidden">
         <i data-lucide="layout-grid" class="w-[18px] h-[18px] text-black stroke-[2.5]"></i>
       </div>
       <div class="hidden sm:block">
-        <div class="font-bold text-base leading-none tracking-tight">Toolbox</div>
-        <div class="text-[10px] text-[var(--muted)] mono leading-none mt-1 tracking-wider">HUB</div>
+        <div class="font-bold text-base leading-none tracking-tight">QuickTool</div>
+        <div class="text-[10px] text-[var(--muted)] mono leading-none mt-1 tracking-wider">FERRAMENTAS</div>
       </div>
     </a>
     <div class="flex items-center gap-1.5 text-xs text-[var(--muted)]">
       <span class="pulse-dot"></span>
-      <span class="mono">2 suites · 200+ ferramentas</span>
+      <span class="mono">2 áreas · 200+ ferramentas</span>
     </div>
   </div>
 </header>
@@ -196,40 +196,40 @@
     Sem login · 100% no navegador · dados locais
   </div>
   <h1 class="text-4xl sm:text-6xl font-bold tracking-tight mb-5 leading-[1.05]">
-    Escolha sua <span class="gradient-text">suite de ferramentas.</span>
+    Ferramentas <span class="gradient-text">rápidas e práticas.</span>
   </h1>
   <p class="text-base sm:text-lg text-[var(--muted)] max-w-xl mx-auto leading-relaxed">
-    O Toolbox Hub reúne duas plataformas completas — matemática e texto — cada uma com dezenas de utilitários prontos para usar.
+    O QuickTool reúne duas áreas completas — matemática e texto — cada uma com dezenas de utilitários prontos para usar.
   </p>
 </section>
 
 <section class="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
   <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-    <a href="math.html" class="module-card" id="card-math">
+    <a href="/matematica/" class="module-card" id="card-math">
       <div class="module-icon" style="color: var(--accent); border: 1px solid rgba(255, 94, 58, 0.3); background: rgba(255, 94, 58, 0.1);">
         <i data-lucide="sigma" class="w-8 h-8"></i>
       </div>
-      <span class="badge mb-3">Matemática</span>
-      <h2 class="font-bold text-2xl mb-2">MathTools</h2>
+      <span class="badge mb-3">100+ ferramentas</span>
+      <h2 class="font-bold text-2xl mb-2">Matemática</h2>
       <p class="text-sm text-[var(--muted)] leading-relaxed flex-1">
         Calculadoras, álgebra, geometria, trigonometria, estatística, probabilidade, matrizes e conversores — com fórmulas, gráficos e passo a passo.
       </p>
       <span class="arrow mt-6">
-        Abrir MathTools
+        Abrir matemática
         <i data-lucide="arrow-right" class="w-4 h-4"></i>
       </span>
     </a>
-    <a href="text.html" class="module-card" id="card-text">
+    <a href="/texto/" class="module-card" id="card-text">
       <div class="module-icon" style="color: var(--accent-2); border: 1px solid rgba(0, 217, 163, 0.3); background: rgba(0, 217, 163, 0.1);">
         <i data-lucide="type" class="w-8 h-8"></i>
       </div>
-      <span class="badge mb-3">Texto</span>
-      <h2 class="font-bold text-2xl mb-2">TextTools</h2>
+      <span class="badge mb-3">100+ ferramentas</span>
+      <h2 class="font-bold text-2xl mb-2">Texto</h2>
       <p class="text-sm text-[var(--muted)] leading-relaxed flex-1">
-        Formatação, conversão, criptografia, geração, JSON, Markdown, comparadores e utilitários para devs e escritores.
+        Formatação, conversão, criptografia, geração, JSON, Markdown, comparadores e utilitários para desenvolvedores e escritores.
       </p>
       <span class="arrow mt-6">
-        Abrir TextTools
+        Abrir texto
         <i data-lucide="arrow-right" class="w-4 h-4"></i>
       </span>
     </a>
@@ -251,7 +251,7 @@
     <div class="feature">
       <i data-lucide="star" class="w-5 h-5 text-[var(--accent)] mb-2"></i>
       <div class="font-semibold text-sm mb-1">Favoritos</div>
-      <div class="text-xs text-[var(--muted)] leading-relaxed">Cada suite salva favoritos e histórico localmente.</div>
+      <div class="text-xs text-[var(--muted)] leading-relaxed">Cada área salva favoritos e histórico localmente.</div>
     </div>
   </div>
 </section>
@@ -262,9 +262,9 @@
       <div class="w-5 h-5 rounded-md bg-gradient-to-br from-[var(--accent)] to-[var(--accent-2)] flex items-center justify-center">
         <i data-lucide="layout-grid" class="w-3 h-3 text-black"></i>
       </div>
-      <span>Toolbox Hub</span>
+      <span>QuickTool</span>
     </div>
-    <span class="mono">MathTools · TextTools</span>
+    <span class="mono">Matemática · Texto</span>
   </div>
 </footer>
 
