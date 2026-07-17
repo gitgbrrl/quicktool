@@ -1,0 +1,1151 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TextTools — Kit completo de ferramentas de texto</title>
+<meta name="description" content="Mais de 100 ferramentas de texto online e gratuitas: formatação, conversão, criptografia, geração e muito mais.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #2563EB; --primary-dark: #1D4ED8; --primary-light: #DBEAFE; --primary-lighter: #EFF6FF;
+  --secondary: #3B82F6; --accent: #60A5FA; --bg: #F8FAFC; --bg-alt: #F1F5F9; --card: #FFFFFF;
+  --text: #0F172A; --text-secondary: #334155; --text-muted: #64748B; --text-light: #94A3B8;
+  --border: #E2E8F0; --border-light: #F1F5F9; --success: #10B981; --success-light: #D1FAE5; --success-dark: #059669;
+  --error: #EF4444; --error-light: #FEE2E2; --error-dark: #DC2626; --warning: #F59E0B; --warning-light: #FEF3C7;
+  --purple: #8B5CF6; --purple-light: #EDE9FE; --pink: #EC4899; --pink-light: #FCE7F3;
+  --teal: #14B8A6; --teal-light: #CCFBF1; --orange: #F97316; --orange-light: #FFEDD5;
+  --shadow-xs: 0 1px 2px rgba(0,0,0,0.04); --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -1px rgba(0,0,0,0.04);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -2px rgba(0,0,0,0.03);
+  --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.03);
+  --shadow-2xl: 0 25px 50px -12px rgba(0,0,0,0.15);
+  --radius-xs: 6px; --radius-sm: 8px; --radius-md: 12px; --radius-lg: 16px; --radius-xl: 20px; --radius-2xl: 24px; --radius-full: 9999px;
+  --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1); --transition-slow: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --header-h: 64px; --font: 'Inter', -apple-system, sans-serif; --font-mono: 'JetBrains Mono', monospace;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; }
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; cursor: pointer; border: none; background: none; }
+input, textarea, select { font-family: inherit; font-size: inherit; }
+ul, ol { list-style: none; }
+::selection { background: var(--primary-light); color: var(--primary-dark); }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 10px; border: 2px solid var(--bg); }
+::-webkit-scrollbar-thumb:hover { background: #94A3B8; }
+
+.app-header { position: sticky; top: 0; z-index: 100; height: var(--header-h); background: rgba(255,255,255,0.8); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 24px; gap: 24px; }
+.header-logo { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 20px; color: var(--text); flex-shrink: 0; cursor: pointer; }
+.header-logo .logo-icon { width: 36px; height: 36px; background: linear-gradient(135deg, var(--primary), var(--accent)); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; color: white; box-shadow: 0 4px 12px rgba(37,99,235,0.3); }
+.header-logo .logo-text { background: linear-gradient(135deg, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.header-search { flex: 1; max-width: 480px; position: relative; }
+.header-search input { width: 100%; height: 40px; padding: 0 16px 0 42px; background: var(--bg-alt); border: 1px solid transparent; border-radius: var(--radius-full); font-size: 14px; color: var(--text); outline: none; transition: var(--transition); }
+.header-search input:focus { background: var(--card); border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-light); }
+.header-search .search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
+.header-nav { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.header-nav a, .header-nav button { display: flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: var(--radius-sm); font-size: 14px; font-weight: 500; color: var(--text-secondary); transition: var(--transition); }
+.header-nav a:hover, .header-nav button:hover { background: var(--bg-alt); color: var(--text); }
+.menu-toggle { display: none; }
+
+.search-dropdown { position: absolute; top: calc(100% + 8px); left: 0; right: 0; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-md); box-shadow: var(--shadow-xl); max-height: 400px; overflow-y: auto; z-index: 200; display: none; }
+.search-dropdown.active { display: block; animation: fadeIn 0.15s ease; }
+.dropdown-item { display: flex; align-items: center; gap: 12px; padding: 10px 16px; cursor: pointer; transition: var(--transition); }
+.dropdown-item:hover { background: var(--bg-alt); }
+.dropdown-item .item-icon { width: 32px; height: 32px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.dropdown-item .item-info { flex: 1; min-width: 0; }
+.dropdown-item .item-name { font-size: 14px; font-weight: 500; color: var(--text); }
+.dropdown-item .item-desc { font-size: 12px; color: var(--text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dropdown-empty { padding: 32px 16px; text-align: center; color: var(--text-muted); font-size: 14px; }
+
+.container { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
+.hero { padding: 64px 24px 48px; text-align: center; position: relative; overflow: hidden; }
+.hero::before { content: ''; position: absolute; top: -50%; left: 50%; transform: translateX(-50%); width: 800px; height: 800px; background: radial-gradient(circle, rgba(37,99,235,0.06) 0%, transparent 70%); pointer-events: none; }
+.hero-badge { display: inline-flex; align-items: center; gap: 8px; padding: 6px 16px; background: var(--primary-lighter); border: 1px solid var(--primary-light); border-radius: var(--radius-full); font-size: 13px; font-weight: 500; color: var(--primary-dark); margin-bottom: 24px; position: relative; }
+.hero-badge .dot { width: 8px; height: 8px; background: var(--success); border-radius: 50%; animation: pulse 2s infinite; }
+.hero h1 { font-size: clamp(36px, 5vw, 56px); font-weight: 800; line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 16px; position: relative; }
+.hero h1 .gradient { background: linear-gradient(135deg, var(--primary), var(--accent), var(--purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.hero p { font-size: clamp(16px, 2vw, 20px); color: var(--text-muted); max-width: 600px; margin: 0 auto 32px; position: relative; }
+.hero-search { max-width: 560px; margin: 0 auto; position: relative; }
+.hero-search input { width: 100%; height: 56px; padding: 0 20px 0 52px; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-full); font-size: 16px; box-shadow: var(--shadow-lg); outline: none; transition: var(--transition); }
+.hero-search input:focus { border-color: var(--primary); box-shadow: 0 0 0 4px var(--primary-light), var(--shadow-lg); }
+.hero-search .search-icon { position: absolute; left: 20px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
+.hero-stats { display: flex; justify-content: center; gap: 48px; margin-top: 40px; flex-wrap: wrap; position: relative; }
+.hero-stat .number { font-size: 32px; font-weight: 800; color: var(--primary); }
+.hero-stat .label { font-size: 14px; color: var(--text-muted); }
+
+.section { padding: 32px 0; }
+.section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; flex-wrap: wrap; gap: 12px; }
+.section-title { font-size: 24px; font-weight: 700; letter-spacing: -0.01em; display: flex; align-items: center; gap: 10px; }
+.section-link { font-size: 14px; font-weight: 500; color: var(--primary); display: flex; align-items: center; gap: 4px; transition: var(--transition); cursor: pointer; }
+.section-link:hover { gap: 8px; }
+
+.category-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; }
+.category-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; cursor: pointer; transition: var(--transition-slow); position: relative; overflow: hidden; }
+.category-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--cat-color, var(--primary)); transform: scaleX(0); transform-origin: left; transition: var(--transition-slow); }
+.category-card:hover { border-color: var(--cat-color, var(--primary)); box-shadow: var(--shadow-lg); transform: translateY(-2px); }
+.category-card:hover::before { transform: scaleX(1); }
+.cat-icon { width: 48px; height: 48px; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; margin-bottom: 16px; background: var(--cat-bg, var(--primary-light)); color: var(--cat-color, var(--primary)); }
+.cat-name { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+.cat-desc { font-size: 13px; color: var(--text-muted); margin-bottom: 12px; line-height: 1.5; }
+.cat-count { font-size: 12px; font-weight: 600; color: var(--cat-color, var(--primary)); display: flex; align-items: center; gap: 4px; }
+
+.tool-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+.tool-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 16px; cursor: pointer; transition: var(--transition); display: flex; align-items: flex-start; gap: 12px; position: relative; }
+.tool-card:hover { border-color: var(--primary); box-shadow: var(--shadow-md); transform: translateY(-1px); }
+.tool-card .tool-icon { width: 36px; height: 36px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: var(--cat-bg, var(--primary-light)); color: var(--cat-color, var(--primary)); }
+.tool-card .tool-info { flex: 1; min-width: 0; }
+.tool-card .tool-name { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+.tool-card .tool-desc { font-size: 12px; color: var(--text-muted); line-height: 1.4; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tool-card .fav-star { position: absolute; top: 8px; right: 8px; color: var(--text-light); opacity: 0; transition: var(--transition); cursor: pointer; }
+.tool-card:hover .fav-star { opacity: 1; }
+.tool-card .fav-star.active { opacity: 1; color: var(--warning); }
+
+.tool-page { padding: 24px 0 48px; }
+.tool-page-header { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
+.tool-page-header .tool-icon-lg { width: 56px; height: 56px; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: var(--cat-bg, var(--primary-light)); color: var(--cat-color, var(--primary)); }
+.tool-page-header .tool-title-wrap { flex: 1; min-width: 200px; }
+.tool-page-header h1 { font-size: 28px; font-weight: 800; letter-spacing: -0.01em; margin-bottom: 4px; }
+.tool-page-header p { font-size: 15px; color: var(--text-muted); }
+.tool-page-header .tool-actions { display: flex; gap: 8px; flex-shrink: 0; }
+.tool-action-btn { width: 40px; height: 40px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--card); display: flex; align-items: center; justify-content: center; color: var(--text-muted); transition: var(--transition); cursor: pointer; }
+.tool-action-btn:hover { background: var(--bg-alt); color: var(--text); border-color: var(--text-muted); }
+.tool-action-btn.active { background: var(--warning-light); color: var(--warning); border-color: var(--warning); }
+
+.tool-layout { display: grid; grid-template-columns: 1fr 280px; gap: 20px; }
+.tool-main { display: flex; flex-direction: column; gap: 20px; }
+.tool-panel { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
+.tool-panel-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid var(--border-light); background: var(--bg-alt); }
+.panel-title { font-size: 13px; font-weight: 600; color: var(--text-secondary); display: flex; align-items: center; gap: 8px; }
+.panel-actions { display: flex; gap: 4px; }
+.panel-action-btn { width: 30px; height: 30px; border-radius: var(--radius-xs); display: flex; align-items: center; justify-content: center; color: var(--text-muted); transition: var(--transition); cursor: pointer; background: transparent; border: none; }
+.panel-action-btn:hover { background: var(--border-light); color: var(--text); }
+.tool-panel-body { padding: 0; }
+.tool-textarea { width: 100%; min-height: 200px; padding: 16px; border: none; outline: none; resize: vertical; font-family: var(--font-mono); font-size: 14px; line-height: 1.6; color: var(--text); background: transparent; }
+.tool-textarea::placeholder { color: var(--text-light); }
+
+.tool-options { padding: 16px; display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.opt-group { display: flex; flex-direction: column; gap: 4px; }
+.opt-group label { font-size: 12px; font-weight: 500; color: var(--text-muted); }
+.tool-options input[type="text"], .tool-options input[type="number"], .tool-options select { padding: 8px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 14px; color: var(--text); background: var(--card); outline: none; transition: var(--transition); }
+.tool-options input:focus, .tool-options select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-light); }
+.checkbox-group { display: flex; align-items: center; gap: 6px; font-size: 14px; color: var(--text-secondary); cursor: pointer; }
+.checkbox-group input { width: 16px; height: 16px; accent-color: var(--primary); }
+
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 20px; border-radius: var(--radius-sm); font-size: 14px; font-weight: 600; transition: var(--transition); white-space: nowrap; position: relative; overflow: hidden; }
+.btn-primary { background: var(--primary); color: white; box-shadow: 0 2px 8px rgba(37,99,235,0.3); }
+.btn-primary:hover { background: var(--primary-dark); box-shadow: 0 4px 12px rgba(37,99,235,0.4); transform: translateY(-1px); }
+.btn-secondary { background: var(--card); color: var(--text-secondary); border: 1px solid var(--border); }
+.btn-secondary:hover { background: var(--bg-alt); border-color: var(--text-muted); color: var(--text); }
+
+.stats-sidebar { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; position: sticky; top: calc(var(--header-h) + 24px); align-self: start; max-height: calc(100vh - var(--header-h) - 48px); overflow-y: auto; }
+.stats-sidebar h3 { font-size: 14px; font-weight: 700; color: var(--text-secondary); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+.stat-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border-light); }
+.stat-item:last-child { border-bottom: none; }
+.stat-item .stat-label { font-size: 13px; color: var(--text-muted); }
+.stat-item .stat-value { font-size: 16px; font-weight: 700; color: var(--text); font-variant-numeric: tabular-nums; }
+
+.output-content { padding: 16px; font-family: var(--font-mono); font-size: 14px; line-height: 1.6; color: var(--text); white-space: pre-wrap; word-break: break-word; min-height: 100px; max-height: 500px; overflow-y: auto; }
+.output-content.empty { color: var(--text-light); font-style: italic; display: flex; align-items: center; justify-content: center; min-height: 120px; text-align: center; flex-direction: column; gap: 8px; }
+.output-content .highlight-match { background: var(--warning-light); padding: 2px 4px; border-radius: 3px; font-weight: 600; }
+.output-content .diff-add { background: var(--success-light); color: var(--success-dark); }
+.output-content .diff-del { background: var(--error-light); color: var(--error-dark); }
+.output-content .diff-same { color: var(--text-muted); }
+
+.tool-footer-actions { display: flex; gap: 8px; flex-wrap: wrap; padding: 12px 16px; border-top: 1px solid var(--border-light); background: var(--bg-alt); }
+.empty-state { text-align: center; padding: 48px 24px; }
+.empty-state .empty-icon { width: 64px; height: 64px; margin: 0 auto 16px; border-radius: var(--radius-lg); background: var(--bg-alt); display: flex; align-items: center; justify-content: center; color: var(--text-light); }
+.empty-state h3 { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
+.empty-state p { font-size: 14px; color: var(--text-muted); max-width: 400px; margin: 0 auto; }
+
+.toast-container { position: fixed; top: calc(var(--header-h) + 16px); right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 8px; pointer-events: none; }
+.toast { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 12px 16px; box-shadow: var(--shadow-xl); display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--text); min-width: 280px; max-width: 400px; pointer-events: auto; animation: slideInRight 0.3s cubic-bezier(0.4, 0, 0.2, 1); border-left: 4px solid var(--primary); }
+.toast.success { border-left-color: var(--success); } .toast.success .toast-icon { color: var(--success); }
+.toast.error { border-left-color: var(--error); } .toast.error .toast-icon { color: var(--error); }
+.toast.warning { border-left-color: var(--warning); } .toast.warning .toast-icon { color: var(--warning); }
+.toast.info { border-left-color: var(--primary); } .toast.info .toast-icon { color: var(--primary); }
+.toast .toast-msg { flex: 1; }
+.toast.fade-out { animation: slideOutRight 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); z-index: 5000; display: flex; align-items: center; justify-content: center; padding: 24px; animation: fadeIn 0.2s ease; }
+.modal { background: var(--card); border-radius: var(--radius-xl); box-shadow: var(--shadow-2xl); max-width: 560px; width: 100%; max-height: 80vh; overflow-y: auto; animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+.modal-header { display: flex; align-items: center; justify-content: space-between; padding: 20px 24px; border-bottom: 1px solid var(--border-light); }
+.modal-header h3 { font-size: 18px; font-weight: 700; }
+.modal-body { padding: 24px; }
+.modal-body p { color: var(--text-muted); margin-bottom: 16px; }
+.shortcut-item { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; background: var(--bg-alt); border-radius: var(--radius-sm); font-size: 14px; margin-bottom: 8px; }
+.shortcut-item kbd { background: var(--card); border: 1px solid var(--border); padding: 2px 8px; border-radius: var(--radius-xs); font-family: var(--font-mono); font-size: 12px; color: var(--text-secondary); }
+
+.fab { position: fixed; bottom: 24px; right: 24px; width: 56px; height: 56px; border-radius: var(--radius-full); background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-xl); z-index: 90; transition: var(--transition); cursor: pointer; border: none; }
+.fab:hover { transform: scale(1.1) rotate(15deg); }
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes slideInRight { from { opacity: 0; transform: translateX(100%); } to { opacity: 1; transform: translateX(0); } }
+@keyframes slideOutRight { to { opacity: 0; transform: translateX(100%); } }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+.fade-in { animation: fadeIn 0.3s ease; } .slide-up { animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+.stagger > * { opacity: 0; animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+.stagger > *:nth-child(1) { animation-delay: 0.05s; } .stagger > *:nth-child(2) { animation-delay: 0.1s; } .stagger > *:nth-child(3) { animation-delay: 0.15s; } .stagger > *:nth-child(4) { animation-delay: 0.2s; } .stagger > *:nth-child(5) { animation-delay: 0.25s; } .stagger > *:nth-child(6) { animation-delay: 0.3s; } .stagger > *:nth-child(7) { animation-delay: 0.35s; } .stagger > *:nth-child(8) { animation-delay: 0.4s; } .stagger > *:nth-child(9) { animation-delay: 0.45s; } .stagger > *:nth-child(10) { animation-delay: 0.5s; }
+
+@media (max-width: 1024px) {
+  .tool-layout { grid-template-columns: 1fr; }
+  .stats-sidebar { position: static; max-height: none; }
+}
+@media (max-width: 768px) {
+  .app-header { padding: 0 16px; gap: 12px; }
+  .header-logo .logo-text { display: none; }
+  .header-search { max-width: none; flex: 1; }
+  .header-nav { display: none; }
+  .menu-toggle { display: flex; }
+  .hero { padding: 40px 16px 32px; }
+  .container { padding: 0 16px; }
+  .tool-page-header h1 { font-size: 22px; }
+  .tool-options { flex-direction: column; align-items: stretch; }
+}
+.hidden { display: none !important; }
+.text-center { text-align: center; }
+</style>
+</head>
+<body>
+
+<header class="app-header">
+  <div class="header-logo" onclick="Router.go('/')">
+    <div class="logo-icon">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7V4h16v3"/><path d="M9 20h6"/><path d="M12 4v16"/></svg>
+    </div>
+    <span class="logo-text">TextTools</span>
+  </div>
+  <div class="header-search">
+    <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+    <input type="text" id="header-search-input" placeholder="Buscar ferramentas..." autocomplete="off">
+    <div class="search-dropdown" id="search-dropdown"></div>
+  </div>
+  <nav class="header-nav">
+    <a href="index.html"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg> Toolbox Hub</a>
+    <a href="#/"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg> Início</a>
+    <a href="#/favoritos"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> Favoritos</a>
+    <a href="#/historico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Histórico</a>
+  </nav>
+</header>
+
+<main class="app-main container" id="app-main"></main>
+
+<div class="toast-container" id="toast-container"></div>
+<div id="modal-root"></div>
+
+<button class="fab" onclick="Router.go('/')" title="Voltar ao início" aria-label="Voltar ao início">
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7V4h16v3"/><path d="M9 20h6"/><path d="M12 4v16"/></svg>
+</button>
+
+<script>
+/* =====================================================
+   TextTools — Aplicação Principal
+   ===================================================== */
+
+const Icons = {
+  chart: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>',
+  text: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>',
+  list: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>',
+  search: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>',
+  exchange: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>',
+  sparkles: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3z"/></svg>',
+  code: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>',
+  lock: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>',
+  pencil: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>',
+  wrench: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>',
+  star: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>',
+  starFill: '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>',
+  clock: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
+  copy: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>',
+  download: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>',
+  upload: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>',
+  trash: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>',
+  swap: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>',
+  share: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>',
+  check: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>',
+  alert: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>',
+  info: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>',
+  x: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>',
+  arrowRight: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>',
+  fileText: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>',
+  eye: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>',
+  folder: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2a2 2 0 0 0-1.66-.9H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2z"/></svg>',
+};
+
+const Categories = {
+  estatisticas: { name: 'Estatísticas', icon: 'chart', desc: 'Analise seu texto', color: '#2563EB', bg: '#DBEAFE' },
+  formatacao: { name: 'Formatação', icon: 'text', desc: 'Transforme o texto', color: '#3B82F6', bg: '#DBEAFE' },
+  organizacao: { name: 'Organização', icon: 'list', desc: 'Organize linhas e dados', color: '#60A5FA', bg: '#DBEAFE' },
+  pesquisa: { name: 'Pesquisa', icon: 'search', desc: 'Encontre e substitua', color: '#8B5CF6', bg: '#EDE9FE' },
+  conversao: { name: 'Conversão', icon: 'exchange', desc: 'Converta formatos', color: '#EC4899', bg: '#FCE7F3' },
+  geracao: { name: 'Geração', icon: 'sparkles', desc: 'Gere conteúdo', color: '#F59E0B', bg: '#FEF3C7' },
+  programacao: { name: 'Programação', icon: 'code', desc: 'Ferramentas para devs', color: '#10B981', bg: '#D1FAE5' },
+  criptografia: { name: 'Criptografia', icon: 'lock', desc: 'Hashes e cifras', color: '#EF4444', bg: '#FEE2E2' },
+  escrita: { name: 'Escrita', icon: 'pencil', desc: 'Ferramentas para escritores', color: '#6366F1', bg: '#E0E7FF' },
+  utilidades: { name: 'Utilidades', icon: 'wrench', desc: 'Ferramentas úteis', color: '#14B8A6', bg: '#CCFBF1' },
+};
+
+const State = {
+  favorites: JSON.parse(localStorage.getItem('tt_favorites') || '[]'),
+  history: JSON.parse(localStorage.getItem('tt_history') || '[]'),
+  notes: localStorage.getItem('tt_notes') || '',
+  save() {
+    localStorage.setItem('tt_favorites', JSON.stringify(this.favorites));
+    localStorage.setItem('tt_history', JSON.stringify(this.history));
+    localStorage.setItem('tt_notes', this.notes);
+  },
+  toggleFav(id) {
+    const idx = this.favorites.indexOf(id);
+    if (idx >= 0) { this.favorites.splice(idx, 1); Toast.show('Removido dos favoritos', 'info'); }
+    else { this.favorites.push(id); Toast.show('Adicionado aos favoritos', 'success'); }
+    this.save();
+  },
+  isFav(id) { return this.favorites.includes(id); },
+  addHistory(id) {
+    this.history = [id, ...this.history.filter(h => h !== id)].slice(0, 12);
+    this.save();
+  },
+};
+
+const Toast = {
+  show(msg, type = 'info', duration = 3000) {
+    const container = document.getElementById('toast-container');
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    const icons = { success: Icons.check, error: Icons.alert, warning: Icons.alert, info: Icons.info };
+    toast.innerHTML = `<span class="toast-icon">${icons[type] || Icons.info}</span><span class="toast-msg">${Utils.escapeHtml(msg)}</span>`;
+    container.appendChild(toast);
+    setTimeout(() => {
+      toast.classList.add('fade-out');
+      setTimeout(() => toast.remove(), 300);
+    }, duration);
+  }
+};
+
+const Utils = {
+  escapeHtml(str) { const div = document.createElement('div'); div.textContent = str; return div.innerHTML; },
+  copyToClipboard(text) {
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(text).then(() => Toast.show('Copiado para a área de transferência!', 'success')).catch(() => this.fallbackCopy(text));
+    } else { this.fallbackCopy(text); }
+  },
+  fallbackCopy(text) {
+    const ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); Toast.show('Copiado!', 'success'); } catch { Toast.show('Falha ao copiar', 'error'); }
+    document.body.removeChild(ta);
+  },
+  downloadText(text, filename = 'texto.txt') {
+    const blob = new Blob([text], { type: 'text/plain;charset=utf-8' }); const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url); Toast.show('Arquivo baixado!', 'success');
+  },
+  debounce(fn, delay = 300) { let t; return function(...args) { clearTimeout(t); t = setTimeout(() => fn.apply(this, args), delay); }; },
+  analyzeText(text) {
+    const trimmed = text.trim();
+    const words = trimmed ? trimmed.split(/\s+/) : [];
+    const sentences = trimmed ? (trimmed.match(/[^.!?]+[.!?]+/g) || (trimmed ? [trimmed] : [])).length : 0;
+    const paragraphs = trimmed ? trimmed.split(/\n\s*\n/).filter(p => p.trim()).length : 0;
+    return {
+      chars: text.length, charsNoSpaces: text.replace(/\s/g, '').length, words: words.length, sentences, paragraphs,
+      lines: text ? text.split('\n').length : 0, numbers: (text.match(/\d/g) || []).length,
+      uppercase: (text.match(/[A-Z]/g) || []).length, lowercase: (text.match(/[a-z]/g) || []).length,
+      readingTime: Math.max(1, Math.ceil(words.length / 200)), speakingTime: Math.max(1, Math.ceil(words.length / 130)),
+    };
+  }
+};
+
+const tools = [];
+function reg(tool) { tools.push(tool); return tool; }
+
+/* --- Registro Rápido de Ferramentas Simples (Transform) --- */
+function t(id, name, cat, desc, keywords, fn, auto = true) {
+  reg({ id, name, cat, desc, icon: Categories[cat].icon, keywords, type: 'transform', fn, auto });
+}
+
+// Estatísticas
+t('contador-caracteres', 'Contador de Caracteres', 'estatisticas', 'Conte caracteres', ['caracteres','count'], null);
+t('contador-palavras', 'Contador de Palavras', 'estatisticas', 'Conte palavras', ['palavras','count'], null);
+t('contador-frases', 'Contador de Frases', 'estatisticas', 'Conte frases', ['frases','count'], null);
+t('contador-paragrafos', 'Contador de Parágrafos', 'estatisticas', 'Conte parágrafos', ['paragrafos','count'], null);
+t('tempo-leitura', 'Tempo de Leitura', 'estatisticas', 'Estime tempo de leitura', ['leitura','tempo'], null);
+t('tempo-fala', 'Tempo de Fala', 'estatisticas', 'Estime tempo de fala', ['fala','tempo'], null);
+
+// Formatação
+t('maiusculas', 'Para Maiúsculas', 'formatacao', 'Converter para MAIÚSCULAS', ['maiusculas','uppercase'], t => t.toUpperCase());
+t('minusculas', 'Para Minúsculas', 'formatacao', 'Converter para minúsculas', ['minusculas','lowercase'], t => t.toLowerCase());
+t('capitalizar', 'Capitalizar Palavras', 'formatacao', 'Primeira letra maiúscula de cada palavra', ['capitalizar','title'], t => t.replace(/\b\w/g, c => c.toUpperCase()));
+t('primeira-maiuscula', 'Primeira Letra Maiúscula', 'formatacao', 'Capitalizar início da frase', ['primeira','sentence'], t => t.charAt(0).toUpperCase() + t.slice(1));
+t('inverter-texto', 'Inverter Texto', 'formatacao', 'Espelhar caracteres', ['inverter','reverse'], t => [...t].reverse().join(''));
+t('remover-acentos', 'Remover Acentos', 'formatacao', 'Remover acentuação', ['acentos','sem'], t => t.normalize('NFD').replace(/[\u0300-\u036f]/g, ''));
+t('remover-espacos', 'Remover Espaços Extras', 'formatacao', 'Remover espaços duplos', ['espacos','extras'], t => t.replace(/[^\S\n]+/g, ' ').replace(/ *\n */g, '\n').trim());
+t('remover-linhas-vazias', 'Remover Linhas Vazias', 'formatacao', 'Apagar linhas em branco', ['linhas','vazias'], t => t.split('\n').filter(l => l.trim()).join('\n'));
+
+// Organização
+t('ordenar-az', 'Ordenar A-Z', 'organizacao', 'Ordem alfabética', ['ordenar','az'], t => t.split('\n').sort((a,b) => a.localeCompare(b, 'pt-BR', {sensitivity:'base'})).join('\n'));
+t('ordenar-za', 'Ordenar Z-A', 'organizacao', 'Ordem reversa', ['ordenar','za'], t => t.split('\n').sort((a,b) => b.localeCompare(a, 'pt-BR', {sensitivity:'base'})).join('\n'));
+t('embaralhar-linhas', 'Embaralhar Linhas', 'organizacao', 'Ordem aleatória', ['embaralhar','shuffle'], t => { const l = t.split('\n'); for(let i=l.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[l[i],l[j]]=[l[j],l[i]];} return l.join('\n'); }, false);
+t('inverter-linhas', 'Inverter Linhas', 'organizacao', 'Inverter ordem das linhas', ['inverter','linhas'], t => t.split('\n').reverse().join('\n'));
+t('remover-duplicadas', 'Remover Duplicadas', 'organizacao', 'Manter apenas únicas', ['duplicadas','unique'], t => [...new Set(t.split('\n'))].join('\n'));
+
+// Conversão
+t('texto-base64', 'Texto → Base64', 'conversao', 'Codificar em Base64', ['base64','encode'], t => { try { return btoa(unescape(encodeURIComponent(t))); } catch { return 'Erro'; } });
+t('base64-texto', 'Base64 → Texto', 'conversao', 'Decodificar Base64', ['base64','decode'], t => { try { return decodeURIComponent(escape(atob(t.trim()))); } catch { return 'Erro: Base64 inválido'; } });
+t('texto-binario', 'Texto → Binário', 'conversao', 'Converter para binário', ['binario'], t => [...t].map(c => c.charCodeAt(0).toString(2).padStart(8, '0')).join(' '));
+t('binario-texto', 'Binário → Texto', 'conversao', 'Converter de binário', ['binario'], t => { try { return t.trim().split(/\s+/).map(b => String.fromCharCode(parseInt(b, 2))).join(''); } catch { return 'Erro'; } });
+t('texto-hex', 'Texto → Hexadecimal', 'conversao', 'Converter para hex', ['hex'], t => [...t].map(c => c.charCodeAt(0).toString(16).padStart(2, '0')).join(' '));
+t('hex-texto', 'Hexadecimal → Texto', 'conversao', 'Converter de hex', ['hex'], t => { try { return t.trim().split(/\s+/).map(h => String.fromCharCode(parseInt(h, 16))).join(''); } catch { return 'Erro'; } });
+t('url-encode', 'URL Encode', 'conversao', 'Codificar URL', ['url','encode'], t => encodeURIComponent(t));
+t('url-decode', 'URL Decode', 'conversao', 'Decodificar URL', ['url','decode'], t => { try { return decodeURIComponent(t); } catch { return 'Erro'; } });
+
+// Escrita
+t('remover-pontuacao', 'Remover Pontuação', 'escrita', 'Apagar sinais de pontuação', ['pontuacao'], t => t.replace(/[^\w\sÀ-ÿ]/g, ''));
+t('inverter-palavras', 'Inverter Palavras', 'escrita', 'Inverter ordem das palavras', ['inverter','palavras'], t => t.split(/(\s+)/).reverse().join(''));
+
+// Programação (Minificadores)
+t('json-minifier', 'JSON Minifier', 'programacao', 'Compactar JSON', ['json','minify'], t => { try { return JSON.stringify(JSON.parse(t)); } catch(e) { return 'Erro: ' + e.message; } }, false);
+t('xml-minifier', 'XML Minifier', 'programacao', 'Compactar XML', ['xml','minify'], t => t.replace(/>\s+</g, '><').replace(/\s{2,}/g, ' ').trim(), false);
+t('html-minifier', 'HTML Minifier', 'programacao', 'Compactar HTML', ['html','minify'], t => t.replace(/<!--[\s\S]*?-->/g, '').replace(/>\s+</g, '><').replace(/\s{2,}/g, ' ').trim(), false);
+t('css-minifier', 'CSS Minifier', 'programacao', 'Compactar CSS', ['css','minify'], t => t.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\s+/g, ' ').replace(/\s*([{}:;,])\s*/g, '$1').replace(/;}/g, '}').trim(), false);
+
+/* --- Registro de Ferramentas Customizadas --- */
+function c(id, name, cat, desc, keywords, render, init) {
+  reg({ id, name, cat, desc, icon: Categories[cat].icon, keywords, type: 'custom', render, init });
+}
+
+c('localizar-emails', 'Localizar E-mails', 'pesquisa', 'Extrair e-mails', ['emails','extrair'], renderExtractTool, (tool, root) => initExtract(root, /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g, 'e-mails'));
+c('localizar-links', 'Localizar Links', 'pesquisa', 'Extrair URLs', ['links','urls'], renderExtractTool, (tool, root) => initExtract(root, /https?:\/\/[^\s<>"']+/g, 'links'));
+c('localizar-numeros', 'Localizar Números', 'pesquisa', 'Extrair números', ['numeros'], renderExtractTool, (tool, root) => initExtract(root, /-?\d+(?:[.,]\d+)?/g, 'números'));
+
+c('lorem-ipsum', 'Lorem Ipsum', 'geracao', 'Gerar texto aleatório', ['lorem','placeholder'], renderLoremIpsum, initLoremIpsum);
+c('gerador-senhas', 'Gerador de Senhas', 'geracao', 'Criar senhas seguras', ['senha','password'], renderPassword, initPassword);
+c('gerador-uuid', 'Gerador de UUID', 'geracao', 'Criar UUIDs v4', ['uuid','guid'], renderUuid, initUuid);
+c('gerador-slug', 'Gerador de Slug', 'geracao', 'Criar slug para URL', ['slug','url'], renderToolShell, (tool, root) => {
+  const input = root.querySelector('#tool-input'); const output = root.querySelector('#tool-output');
+  function apply() { output.value = input.value.toLowerCase().trim().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9\s-]/g,'').replace(/\s+/g,'-').replace(/-+/g,'-'); }
+  input.addEventListener('input', Utils.debounce(apply, 300)); apply();
+});
+
+// Programação Formatadores
+c('json-formatter', 'JSON Formatter', 'programacao', 'Formatar JSON', ['json','beautify'], renderJsonFormatter, initJsonFormatter);
+c('html-formatter', 'HTML Formatter', 'programacao', 'Formatar HTML', ['html','beautify'], renderToolShell, (tool, root) => {
+  const input = root.querySelector('#tool-input'); const output = root.querySelector('#tool-output');
+  function apply() {
+    try {
+      let html = input.value.replace(/>\s*</g, '><').trim();
+      let formatted = '', indent = '';
+      html.split(/>\s*</).forEach(function(node) {
+        if (node.match(/^\/\w/)) indent = indent.substring(2);
+        formatted += indent + '<' + node + '>\n';
+        if (node.match(/^<?\w[^>]*[^/]$/) && !node.startsWith('?') && !node.startsWith('!') && !node.startsWith('meta') && !node.startsWith('br') && !node.startsWith('hr') && !node.startsWith('img') && !node.startsWith('input') && !node.startsWith('link')) indent += '  ';
+      });
+      output.value = formatted.substring(1, formatted.length - 3);
+    } catch(e) { output.value = 'Erro: ' + e.message; }
+  }
+  input.addEventListener('input', Utils.debounce(apply, 500)); apply();
+});
+
+// Criptografia
+c('sha256', 'SHA-256', 'criptografia', 'Gerar hash SHA-256', ['sha256','hash'], renderToolShell, async (tool, root) => {
+  const input = root.querySelector('#tool-input'); const output = root.querySelector('#tool-output');
+  async function apply() {
+    if(!input.value) { output.value=''; return; }
+    const msgBuffer = new TextEncoder().encode(input.value);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+    output.value = Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+  input.addEventListener('input', Utils.debounce(apply, 300)); apply();
+});
+c('rot13', 'ROT13', 'criptografia', 'Aplicar cifra ROT13', ['rot13','cifra'], renderToolShell, (tool, root) => {
+  const input = root.querySelector('#tool-input'); const output = root.querySelector('#tool-output');
+  function apply() { output.value = input.value.replace(/[a-zA-Z]/g, c => { const b = c <= 'Z' ? 65 : 97; return String.fromCharCode((c.charCodeAt(0) - b + 13) % 26 + b); }); }
+  input.addEventListener('input', Utils.debounce(apply, 300)); apply();
+});
+c('cifra-cesar', 'Cifra de César', 'criptografia', 'Deslocamento personalizado', ['cesar','caesar'], renderCesar, initCesar);
+c('codigo-morse', 'Código Morse', 'criptografia', 'Converter para Morse', ['morse'], renderMorse, initMorse);
+
+// Utilidades
+c('comparador-textos', 'Comparador de Textos', 'utilidades', 'Comparar lado a lado', ['comparar','diff'], renderComparador, initComparador);
+c('bloco-notas', 'Bloco de Notas Local', 'utilidades', 'Notas salvas no navegador', ['notas','notes'], renderNotas, initNotas);
+c('markdown-preview', 'Markdown Preview', 'utilidades', 'Pré-visualizar Markdown', ['markdown','md'], renderMarkdown, initMarkdown);
+c('diff-textos', 'Diff de Textos', 'utilidades', 'Ver diferenças linha a linha', ['diff'], renderDiff, initDiff);
+
+/* --- Renderizadores de Ferramentas --- */
+function renderToolShell(tool) {
+  return `<div class="tool-layout">
+    <div class="tool-main">
+      <div class="tool-panel">
+        <div class="tool-panel-header">
+          <span class="panel-title">${Icons.fileText} Entrada</span>
+          <div class="panel-actions">
+            <button class="panel-action-btn" id="btn-paste" title="Colar">${Icons.upload}</button>
+            <button class="panel-action-btn" id="btn-clear-in" title="Limpar">${Icons.trash}</button>
+          </div>
+        </div>
+        <div class="tool-panel-body">
+          <textarea class="tool-textarea" id="tool-input" placeholder="Digite ou cole o texto aqui..."></textarea>
+        </div>
+      </div>
+      <div class="tool-options" id="tool-options-container"></div>
+      <div class="tool-panel">
+        <div class="tool-panel-header">
+          <span class="panel-title">${Icons.check} Resultado</span>
+          <div class="panel-actions">
+            <button class="panel-action-btn" id="btn-copy-out" title="Copiar">${Icons.copy}</button>
+            <button class="panel-action-btn" id="btn-download-out" title="Baixar">${Icons.download}</button>
+          </div>
+        </div>
+        <div class="tool-panel-body">
+          <textarea class="tool-textarea" id="tool-output" placeholder="O resultado aparecerá aqui..." readonly style="background:var(--bg-alt);"></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="stats-sidebar" id="stats-sidebar-container"></div>
+  </div>`;
+}
+
+function renderExtractTool(tool) {
+  return `<div class="tool-layout">
+    <div class="tool-main">
+      <div class="tool-panel">
+        <div class="tool-panel-header"><span class="panel-title">${Icons.fileText} Texto para analisar</span></div>
+        <div class="tool-panel-body"><textarea class="tool-textarea" id="tool-input" placeholder="Cole o texto contendo ${tool.desc}..."></textarea></div>
+      </div>
+      <div class="tool-panel">
+        <div class="tool-panel-header">
+          <span class="panel-title">${Icons.check} Resultado</span>
+          <div class="panel-actions"><button class="panel-action-btn" id="btn-copy-out" title="Copiar">${Icons.copy}</button></div>
+        </div>
+        <div class="output-content empty" id="tool-output-content">Nenhum resultado ainda</div>
+      </div>
+    </div>
+    <div class="stats-sidebar" id="stats-sidebar-container"></div>
+  </div>`;
+}
+
+function renderLoremIpsum(tool) {
+  return `<div class="tool-layout">
+    <div class="tool-main">
+      <div class="tool-options">
+        <div class="opt-group"><label>Quantidade</label><input type="number" id="li-count" value="3" min="1" max="20" style="width:80px;"></div>
+        <div class="opt-group"><label>Tipo</label><select id="li-type"><option value="paragraphs">Parágrafos</option><option value="sentences">Frases</option><option value="words">Palavras</option></select></div>
+        <button class="btn btn-primary" id="tool-apply">Gerar</button>
+      </div>
+      <div class="tool-panel">
+        <div class="tool-panel-header"><span class="panel-title">${Icons.check} Resultado</span>
+          <div class="panel-actions"><button class="panel-action-btn" id="btn-copy-out" title="Copiar">${Icons.copy}</button><button class="panel-action-btn" id="btn-download-out" title="Baixar">${Icons.download}</button></div>
+        </div>
+        <div class="tool-panel-body"><textarea class="tool-textarea" id="tool-output" placeholder="O texto gerado aparecerá aqui..." readonly style="background:var(--bg-alt);min-height:300px;"></textarea></div>
+      </div>
+    </div>
+    <div class="stats-sidebar" id="stats-sidebar-container"></div>
+  </div>`;
+}
+
+function renderPassword(tool) {
+  return `<div class="tool-layout">
+    <div class="tool-main">
+      <div class="tool-options">
+        <div class="opt-group"><label>Tamanho</label><input type="number" id="pw-len" value="16" min="4" max="64" style="width:80px;"></div>
+        <div class="checkbox-group"><input type="checkbox" id="pw-upper" checked><label for="pw-upper">A-Z</label></div>
+        <div class="checkbox-group"><input type="checkbox" id="pw-lower" checked><label for="pw-lower">a-z</label></div>
+        <div class="checkbox-group"><input type="checkbox" id="pw-num" checked><label for="pw-num">0-9</label></div>
+        <div class="checkbox-group"><input type="checkbox" id="pw-sym" checked><label for="pw-sym">!@#$</label></div>
+        <button class="btn btn-primary" id="tool-apply">Gerar Senha</button>
+      </div>
+      <div class="tool-panel">
+        <div class="tool-panel-header"><span class="panel-title">${Icons.lock} Senha Gerada</span>
+          <div class="panel-actions"><button class="panel-action-btn" id="btn-copy-out" title="Copiar">${Icons.copy}</button></div>
+        </div>
+        <div class="tool-panel-body"><textarea class="tool-textarea" id="tool-output" placeholder="Sua senha aparecerá aqui..." readonly style="background:var(--bg-alt);font-size:18px;font-weight:600;text-align:center;"></textarea></div>
+      </div>
+    </div>
+    <div class="stats-sidebar" id="stats-sidebar-container"></div>
+  </div>`;
+}
+
+function renderUuid(tool) {
+  return `<div class="tool-layout">
+    <div class="tool-main">
+      <div class="tool-options">
+        <div class="opt-group"><label>Quantidade</label><input type="number" id="uuid-count" value="5" min="1" max="50" style="width:80px;"></div>
+        <button class="btn btn-primary" id="tool-apply">Gerar UUIDs</button>
+      </div>
+      <div class="tool-panel">
+        <div class="tool-panel-header"><span class="panel-title">${Icons.sparkles} UUIDs Gerados</span>
+          <div class="panel-actions"><button class="panel-action-btn" id="btn-copy-out" title="Copiar">${Icons.copy}</button></div>
+        </div>
+        <div class="tool-panel-body"><textarea class="tool-textarea" id="tool-output" placeholder="UUIDs aparecerão aqui..." readonly style="background:var(--bg-alt);min-height:200px;"></textarea></div>
+      </div>
+    </div>
+    <div class="stats-sidebar" id="stats-sidebar-container"></div>
+  </div>`;
+}
+
+function renderJsonFormatter(tool) {
+  return `<div class="tool-layout">
+    <div class="tool-main">
+      <div class="tool-panel">
+        <div class="tool-panel-header"><span class="panel-title">${Icons.code} JSON de Entrada</span>
+          <div class="panel-actions"><button class="panel-action-btn" id="btn-clear-in" title="Limpar">${Icons.trash}</button></div>
+        </div>
+        <div class="tool-panel-body"><textarea class="tool-textarea" id="tool-input" placeholder='{"exemplo": "valor", "numero": 123}' style="min-height:250px;"></textarea></div>
+      </div>
+      <div class="tool-options">
+        <div class="opt-group"><label>Indentação</label><select id="json-indent"><option value="2">2 espaços</option><option value="4">4 espaços</option><option value="\t">Tab</option></select></div>
+        <button class="btn btn-primary" id="tool-apply">Formatar</button>
+      </div>
+      <div class="tool-panel">
+        <div class="tool-panel-header"><span class="panel-title">${Icons.check} JSON Formatado</span>
+          <div class="panel-actions"><button class="panel-action-btn" id="btn-copy-out" title="Copiar">${Icons.copy}</button><button class="panel-action-btn" id="btn-download-out" title="Baixar">${Icons.download}</button></div>
+        </div>
+        <div class="tool-panel-body"><textarea class="tool-textarea" id="tool-output" placeholder="JSON formatado aparecerá aqui..." readonly style="background:var(--bg-alt);min-height:250px;"></textarea></div>
+      </div>
+    </div>
+    <div class="stats-sidebar" id="stats-sidebar-container"></div>
+  </div>`;
+}
+
+function renderCesar(tool) {
+  return `<div class="tool-layout">
+    <div class="tool-main">
+      <div class="tool-panel">
+        <div class="tool-panel-header"><span class="panel-title">${Icons.fileText} Texto</span></div>
+        <div class="tool-panel-body"><textarea class="tool-textarea" id="tool-input" placeholder="Digite o texto..."></textarea></div>
+      </div>
+      <div class="tool-options">
+        <div class="opt-group"><label>Deslocamento</label><input type="number" id="cesar-shift" value="3" min="1" max="25" style="width:80px;"></div>
+        <button class="btn btn-primary" id="cesar-enc">Criptografar</button>
+        <button class="btn btn-secondary" id="cesar-dec">Descriptografar</button>
+      </div>
+      <div class="tool-panel">
+        <div class="tool-panel-header"><span class="panel-title">${Icons.check} Resultado</span>
+          <div class="panel-actions"><button class="panel-action-btn" id="btn-copy-out" title="Copiar">${Icons.copy}</button></div>
+        </div>
+        <div class="tool-panel-body"><textarea class="tool-textarea" id="tool-output" placeholder="Resultado..." readonly style="background:var(--bg-alt);"></textarea></div>
+      </div>
+    </div>
+    <div class="stats-sidebar" id="stats-sidebar-container"></div>
+  </div>`;
+}
+
+function renderMorse(tool) {
+  return `<div class="tool-layout">
+    <div class="tool-main">
+      <div class="tool-panel">
+        <div class="tool-panel-header"><span class="panel-title">${Icons.fileText} Entrada</span></div>
+        <div class="tool-panel-body"><textarea class="tool-textarea" id="tool-input" placeholder="Digite texto ou código Morse..."></textarea></div>
+      </div>
+      <div class="tool-options">
+        <button class="btn btn-primary" id="mor-enc">Texto → Morse</button>
+        <button class="btn btn-secondary" id="mor-dec">Morse → Texto</button>
+      </div>
+      <div class="tool-panel">
+        <div class="tool-panel-header"><span class="panel-title">${Icons.check} Resultado</span>
+          <div class="panel-actions"><button class="panel-action-btn" id="btn-copy-out" title="Copiar">${Icons.copy}</button></div>
+        </div>
+        <div class="tool-panel-body"><textarea class="tool-textarea" id="tool-output" placeholder="Resultado..." readonly style="background:var(--bg-alt);"></textarea></div>
+      </div>
+    </div>
+    <div class="stats-sidebar" id="stats-sidebar-container"></div>
+  </div>`;
+}
+
+function renderComparador(tool) {
+  return `<div class="tool-layout">
+    <div class="tool-main">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <div class="tool-panel"><div class="tool-panel-header"><span class="panel-title">${Icons.fileText} Texto 1</span></div><div class="tool-panel-body"><textarea class="tool-textarea" id="text1" placeholder="Primeiro texto..." style="min-height:250px;"></textarea></div></div>
+        <div class="tool-panel"><div class="tool-panel-header"><span class="panel-title">${Icons.fileText} Texto 2</span></div><div class="tool-panel-body"><textarea class="tool-textarea" id="text2" placeholder="Segundo texto..." style="min-height:250px;"></textarea></div></div>
+      </div>
+      <div class="tool-panel">
+        <div class="tool-panel-header"><span class="panel-title">${Icons.check} Comparação</span>
+          <div class="panel-actions"><button class="panel-action-btn" id="btn-copy-out" title="Copiar">${Icons.copy}</button></div>
+        </div>
+        <div class="output-content empty" id="tool-output-content">Digite os dois textos para comparar</div>
+      </div>
+    </div>
+    <div class="stats-sidebar"></div>
+  </div>`;
+}
+
+function renderNotas(tool) {
+  return `<div class="tool-layout">
+    <div class="tool-main">
+      <div class="tool-panel">
+        <div class="tool-panel-header">
+          <span class="panel-title">${Icons.pencil} Bloco de Notas Local</span>
+          <div class="panel-actions">
+            <span style="font-size:12px;color:var(--text-muted);padding:0 8px;" id="save-status">Salvo</span>
+            <button class="panel-action-btn" id="btn-download-out" title="Baixar">${Icons.download}</button>
+            <button class="panel-action-btn" id="btn-clear-in" title="Limpar">${Icons.trash}</button>
+          </div>
+        </div>
+        <div class="tool-panel-body"><textarea class="tool-textarea" id="notes-area" placeholder="Escreva suas notas aqui... Salvamento automático ativo." style="min-height:400px;">${Utils.escapeHtml(State.notes)}</textarea></div>
+      </div>
+    </div>
+    <div class="stats-sidebar" id="stats-sidebar-container"></div>
+  </div>`;
+}
+
+function renderMarkdown(tool) {
+  return `<div class="tool-layout">
+    <div class="tool-main">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <div class="tool-panel"><div class="tool-panel-header"><span class="panel-title">${Icons.code} Markdown</span></div><div class="tool-panel-body"><textarea class="tool-textarea" id="md-input" placeholder="# Título&#10;&#10;Digite **Markdown**..." style="min-height:350px;"># Bem-vindo&#10;&#10;Este é um editor de **Markdown**.</textarea></div></div>
+        <div class="tool-panel"><div class="tool-panel-header"><span class="panel-title">${Icons.eye} Preview</span></div><div class="tool-panel-body" style="padding:20px;min-height:350px;overflow-y:auto;" id="md-preview"></div></div>
+      </div>
+    </div>
+    <div class="stats-sidebar" id="stats-sidebar-container"></div>
+  </div>`;
+}
+
+function renderDiff(tool) {
+  return `<div class="tool-layout">
+    <div class="tool-main">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <div class="tool-panel"><div class="tool-panel-header"><span class="panel-title">${Icons.fileText} Texto Original</span></div><div class="tool-panel-body"><textarea class="tool-textarea" id="text1" placeholder="Texto original..." style="min-height:200px;"></textarea></div></div>
+        <div class="tool-panel"><div class="tool-panel-header"><span class="panel-title">${Icons.fileText} Texto Modificado</span></div><div class="tool-panel-body"><textarea class="tool-textarea" id="text2" placeholder="Texto modificado..." style="min-height:200px;"></textarea></div></div>
+      </div>
+      <div class="tool-panel">
+        <div class="tool-panel-header"><span class="panel-title">${Icons.check} Diferenças</span>
+          <div class="panel-actions"><button class="panel-action-btn" id="btn-copy-out" title="Copiar">${Icons.copy}</button></div>
+        </div>
+        <div class="output-content empty" id="tool-output-content">Digite os textos para ver as diferenças</div>
+      </div>
+    </div>
+    <div class="stats-sidebar"></div>
+  </div>`;
+}
+
+/* --- Inicializadores de Ferramentas --- */
+function initExtract(root, regex, label) {
+  const input = root.querySelector('#tool-input'); const out = root.querySelector('#tool-output-content');
+  let matches = [];
+  function update() {
+    matches = input.value.match(regex) || [];
+    if (!matches.length) { out.className = 'output-content empty'; out.innerHTML = `Nenhum ${label} encontrado`; return; }
+    out.className = 'output-content';
+    out.innerHTML = `<div style="margin-bottom:12px;color:var(--text-muted);font-size:14px;">${matches.length} ${label} encontrados:</div>${matches.map(m => `<div style="padding:6px 0;border-bottom:1px solid var(--border-light);">${Utils.escapeHtml(m)}</div>`).join('')}`;
+  }
+  input.addEventListener('input', Utils.debounce(update, 300));
+  root.querySelector('#btn-copy-out').addEventListener('click', () => Utils.copyToClipboard(matches.join('\n')));
+  update();
+}
+
+function initLoremIpsum(tool, root) {
+  const words = 'lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua enim ad minim veniam quis nostrud exercitation ullamco laboris nisi aliquip ex ea commodo consequat duis aute irure in reprehenderit voluptate velit esse cillum eu fugiat nulla pariatur excepteur sint occaecat cupidatat non proident sunt culpa qui officia deserunt mollit anim id est laborum'.split(' ');
+  const output = root.querySelector('#tool-output');
+  function randWord() { return words[Math.floor(Math.random() * words.length)]; }
+  function randSentence() { const n = 8 + Math.floor(Math.random() * 12); const w = Array.from({length:n}, randWord); w[0] = w[0].charAt(0).toUpperCase() + w[0].slice(1); return w.join(' ') + '.'; }
+  function apply() {
+    const type = root.querySelector('#li-type').value; const count = parseInt(root.querySelector('#li-count').value) || 3;
+    let result = '';
+    if (type === 'words') { const w = Array.from({length:count}, randWord); w[0]='Lorem',w[1]='ipsum'; result = w.join(' '); }
+    else if (type === 'sentences') { const s = Array.from({length:count}, randSentence); s[0]='Lorem ipsum dolor sit amet, consectetur adipiscing elit.'; result = s.join(' '); }
+    else { const p = Array.from({length:count}, () => Array.from({length:3+Math.floor(Math.random()*4)}, randSentence).join(' ')); p[0]='Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'; result = p.join('\n\n'); }
+    output.value = result;
+  }
+  root.querySelector('#tool-apply').addEventListener('click', apply); apply();
+}
+
+function initPassword(tool, root) {
+  const output = root.querySelector('#tool-output');
+  function apply() {
+    const len = parseInt(root.querySelector('#pw-len').value) || 16;
+    let chars = '';
+    if (root.querySelector('#pw-upper').checked) chars += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    if (root.querySelector('#pw-lower').checked) chars += 'abcdefghijklmnopqrstuvwxyz';
+    if (root.querySelector('#pw-num').checked) chars += '0123456789';
+    if (root.querySelector('#pw-sym').checked) chars += '!@#$%^&*()_+-=[]{}|;:,.<>?';
+    if (!chars) { output.value = 'Selecione uma opção'; return; }
+    const arr = new Uint32Array(len); crypto.getRandomValues(arr);
+    output.value = Array.from(arr, n => chars[n % chars.length]).join('');
+  }
+  root.querySelector('#tool-apply').addEventListener('click', apply); apply();
+}
+
+function initUuid(tool, root) {
+  const output = root.querySelector('#tool-output');
+  function uuidv4() { return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c => (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c/4).toString(16)); }
+  function apply() {
+    const count = parseInt(root.querySelector('#uuid-count').value) || 5;
+    const list = []; for (let i = 0; i < count; i++) list.push(uuidv4());
+    output.value = list.join('\n');
+  }
+  root.querySelector('#tool-apply').addEventListener('click', apply); apply();
+}
+
+function initJsonFormatter(tool, root) {
+  const input = root.querySelector('#tool-input'); const output = root.querySelector('#tool-output');
+  function apply() {
+    try { const indent = root.querySelector('#json-indent').value; const i = indent === '\t' ? '\t' : parseInt(indent); output.value = JSON.stringify(JSON.parse(input.value), null, i); }
+    catch(e) { output.value = 'Erro: ' + e.message; }
+  }
+  root.querySelector('#tool-apply').addEventListener('click', apply); input.addEventListener('input', Utils.debounce(apply, 500)); apply();
+}
+
+function initCesar(tool, root) {
+  const input = root.querySelector('#tool-input'); const output = root.querySelector('#tool-output'); const shift = root.querySelector('#cesar-shift');
+  function cipher(text, n) { return text.replace(/[a-zA-Z]/g, c => { const b = c <= 'Z' ? 65 : 97; return String.fromCharCode((c.charCodeAt(0) - b + n + 26 * 10) % 26 + b); }); }
+  root.querySelector('#cesar-enc').addEventListener('click', () => output.value = cipher(input.value, parseInt(shift.value)));
+  root.querySelector('#cesar-dec').addEventListener('click', () => output.value = cipher(input.value, -parseInt(shift.value)));
+}
+
+function initMorse(tool, root) {
+  const input = root.querySelector('#tool-input'); const output = root.querySelector('#tool-output');
+  const morseMap = { 'A':'.-','B':'-...','C':'-.-.','D':'-..','E':'.','F':'..-.','G':'--.','H':'....','I':'..','J':'.---','K':'-.-','L':'.-..','M':'--','N':'-.','O':'---','P':'.--.','Q':'--.-','R':'.-.','S':'...','T':'-','U':'..-','V':'...-','W':'.--','X':'-..-','Y':'-.--','Z':'--..','0':'-----','1':'.----','2':'..---','3':'...--','4':'....-','5':'.....','6':'-....','7':'--...','8':'---..','9':'----.' };
+  const morseReverse = Object.fromEntries(Object.entries(morseMap).map(([k,v]) => [v,k]));
+  root.querySelector('#mor-enc').addEventListener('click', () => {
+    output.value = input.value.toUpperCase().split('').map(c => c === ' ' ? '/' : morseMap[c] || '').filter(Boolean).join(' ');
+  });
+  root.querySelector('#mor-dec').addEventListener('click', () => {
+    try { output.value = input.value.trim().split(/\s{2,}|\//).map(word => word.trim().split(' ').map(m => morseReverse[m] || '').join('')).join(' '); } catch { output.value = 'Erro'; }
+  });
+}
+
+function initComparador(tool, root) {
+  const t1 = root.querySelector('#text1'); const t2 = root.querySelector('#text2'); const out = root.querySelector('#tool-output-content');
+  function update() {
+    const v1 = t1.value, v2 = t2.value;
+    if (!v1 && !v2) { out.className = 'output-content empty'; out.innerHTML = 'Digite os dois textos para comparar'; return; }
+    const same = v1 === v2;
+    const stats1 = Utils.analyzeText(v1); const stats2 = Utils.analyzeText(v2);
+    let html = `<div style="padding:24px;"><div style="text-align:center;margin-bottom:20px;"><div style="display:inline-flex;align-items:center;gap:8px;padding:8px 20px;border-radius:var(--radius-full);background:${same ? 'var(--success-light)' : 'var(--error-light)'};color:${same ? 'var(--success-dark)' : 'var(--error-dark)'};font-weight:600;">${same ? Icons.check : Icons.alert} ${same ? 'Textos idênticos' : 'Textos diferentes'}</div></div>`;
+    html += '<table style="width:100%;border-collapse:collapse;"><thead><tr><th style="text-align:left;padding:8px;border-bottom:2px solid var(--border);">Métrica</th><th style="text-align:right;padding:8px;border-bottom:2px solid var(--border);">Texto 1</th><th style="text-align:right;padding:8px;border-bottom:2px solid var(--border);">Texto 2</th><th style="text-align:right;padding:8px;border-bottom:2px solid var(--border);">Diferença</th></tr></thead><tbody>';
+    [['Caracteres','chars'],['Palavras','words'],['Frases','sentences'],['Parágrafos','paragraphs'],['Linhas','lines']].forEach(([label, key]) => {
+      const v1v = stats1[key], v2v = stats2[key], diff = v2v - v1v;
+      const diffStr = diff === 0 ? '—' : (diff > 0 ? '+' : '') + diff;
+      const diffColor = diff === 0 ? 'var(--text-muted)' : diff > 0 ? 'var(--success)' : 'var(--error)';
+      html += `<tr><td style="padding:8px;border-bottom:1px solid var(--border-light);">${label}</td><td style="padding:8px;border-bottom:1px solid var(--border-light);text-align:right;font-weight:600;">${v1v}</td><td style="padding:8px;border-bottom:1px solid var(--border-light);text-align:right;font-weight:600;">${v2v}</td><td style="padding:8px;border-bottom:1px solid var(--border-light);text-align:right;color:${diffColor};font-weight:600;">${diffStr}</td></tr>`;
+    });
+    html += '</tbody></table></div>';
+    out.className = 'output-content'; out.innerHTML = html;
+  }
+  [t1, t2].forEach(el => el.addEventListener('input', Utils.debounce(update, 300)));
+  root.querySelector('#btn-copy-out').addEventListener('click', () => Utils.copyToClipboard(out.textContent));
+  update();
+}
+
+function initNotas(tool, root) {
+  const area = root.querySelector('#notes-area'); const status = root.querySelector('#save-status');
+  const save = Utils.debounce(() => { State.notes = area.value; State.save(); status.textContent = 'Salvo ✓'; status.style.color = 'var(--success)'; }, 500);
+  area.addEventListener('input', () => { status.textContent = 'Digitando...'; status.style.color = 'var(--warning)'; save(); updateStats(root, area.value); });
+  root.querySelector('#btn-download-out').addEventListener('click', () => Utils.downloadText(area.value, 'notas.txt'));
+  root.querySelector('#btn-clear-in').addEventListener('click', () => { if (confirm('Limpar todas as notas?')) { area.value = ''; State.notes = ''; State.save(); updateStats(root, ''); } });
+  updateStats(root, area.value);
+}
+
+function initMarkdown(tool, root) {
+  const input = root.querySelector('#md-input'); const preview = root.querySelector('#md-preview');
+  function parse(md) {
+    let html = md.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    html = html.replace(/^### (.*$)/gim, '<h3>$1</h3>').replace(/^## (.*$)/gim, '<h2>$1</h2>').replace(/^# (.*$)/gim, '<h1>$1</h1>');
+    html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\*(.*?)\*/g, '<em>$1</em>').replace(/`(.*?)`/g, '<code>$1</code>');
+    html = html.replace(/^\* (.*$)/gim, '<li>$1</li>').replace(/^\d+\. (.*$)/gim, '<li>$1</li>');
+    html = html.replace(/(<li>.*?<\/li>\n?)+/g, m => '<ul>' + m + '</ul>');
+    html = html.split(/\n\n+/).map(p => p.match(/^<(h\d|ul|ol|pre|blockquote|hr)/) ? p : (p.trim() === '' ? '' : '<p>' + p.replace(/\n/g, '<br>') + '</p>')).join('\n');
+    return html;
+  }
+  function update() { preview.innerHTML = parse(input.value); updateStats(root, input.value); }
+  input.addEventListener('input', Utils.debounce(update, 200)); update();
+}
+
+function initDiff(tool, root) {
+  const t1 = root.querySelector('#text1'); const t2 = root.querySelector('#text2'); const out = root.querySelector('#tool-output-content');
+  function update() {
+    if (!t1.value && !t2.value) { out.className = 'output-content empty'; out.innerHTML = 'Digite os textos para ver as diferenças'; return; }
+    const lines1 = t1.value.split('\n'); const lines2 = t2.value.split('\n');
+    const result = []; const max = Math.max(lines1.length, lines2.length);
+    for (let i = 0; i < max; i++) {
+      const l1 = lines1[i] ?? null; const l2 = lines2[i] ?? null;
+      if (l1 === l2) { result.push({ type: 'same', text: l1 }); }
+      else if (l1 === null) { result.push({ type: 'add', text: l2 }); }
+      else if (l2 === null) { result.push({ type: 'del', text: l1 }); }
+      else { if (l1 !== undefined) result.push({ type: 'del', text: l1 }); if (l2 !== undefined) result.push({ type: 'add', text: l2 }); }
+    }
+    let html = '<div style="padding:8px;font-family:var(--font-mono);font-size:13px;">';
+    result.forEach(d => {
+      const prefix = d.type === 'same' ? '  ' : d.type === 'add' ? '+ ' : '- ';
+      const cls = d.type === 'same' ? 'diff-same' : d.type === 'add' ? 'diff-add' : 'diff-del';
+      html += `<div class="${cls}" style="padding:2px 8px;">${prefix}${Utils.escapeHtml(d.text || '')}</div>`;
+    });
+    html += '</div>'; out.className = 'output-content'; out.innerHTML = html;
+  }
+  [t1, t2].forEach(el => el.addEventListener('input', Utils.debounce(update, 300)));
+  root.querySelector('#btn-copy-out').addEventListener('click', () => Utils.copyToClipboard(out.textContent));
+  update();
+}
+
+/* --- Funções Compartilhadas --- */
+function updateStats(root, text) {
+  const container = root.querySelector('#stats-sidebar-container');
+  if (!container) return;
+  const stats = Utils.analyzeText(text);
+  container.innerHTML = `<h3>${Icons.chart} Estatísticas</h3>
+    <div class="stat-item"><span class="stat-label">Caracteres</span><span class="stat-value">${stats.chars}</span></div>
+    <div class="stat-item"><span class="stat-label">Palavras</span><span class="stat-value">${stats.words}</span></div>
+    <div class="stat-item"><span class="stat-label">Frases</span><span class="stat-value">${stats.sentences}</span></div>
+    <div class="stat-item"><span class="stat-label">Parágrafos</span><span class="stat-value">${stats.paragraphs}</span></div>
+    <div class="stat-item"><span class="stat-label">Linhas</span><span class="stat-value">${stats.lines}</span></div>
+    <div class="stat-item"><span class="stat-label">Leitura</span><span class="stat-value">${stats.readingTime} min</span></div>`;
+}
+
+function bindCommonActions(root, getInput, getOutput) {
+  const input = typeof getInput === 'function' ? getInput() : root.querySelector('#tool-input');
+  const output = typeof getOutput === 'function' ? getOutput() : root.querySelector('#tool-output');
+  
+  if (input && root.querySelector('#btn-paste')) {
+    root.querySelector('#btn-paste').addEventListener('click', async () => {
+      try { input.value = await navigator.clipboard.readText(); input.dispatchEvent(new Event('input')); Toast.show('Texto colado!', 'success'); }
+      catch { Toast.show('Não foi possível colar automaticamente', 'error'); }
+    });
+  }
+  if (input && root.querySelector('#btn-clear-in')) {
+    root.querySelector('#btn-clear-in').addEventListener('click', () => { input.value = ''; input.dispatchEvent(new Event('input')); });
+  }
+  if (output && root.querySelector('#btn-copy-out')) {
+    root.querySelector('#btn-copy-out').addEventListener('click', () => { if(output.value || output.textContent) Utils.copyToClipboard(output.value || output.textContent); });
+  }
+  if (output && root.querySelector('#btn-download-out')) {
+    root.querySelector('#btn-download-out').addEventListener('click', () => { if(output.value) Utils.downloadText(output.value); });
+  }
+}
+
+/* --- Roteador --- */
+const Router = {
+  init() {
+    window.addEventListener('hashchange', () => this.render());
+    document.getElementById('header-search-input').addEventListener('input', (e) => this.handleSearch(e.target.value));
+    document.getElementById('header-search-input').addEventListener('focus', (e) => this.handleSearch(e.target.value));
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.header-search')) {
+        document.getElementById('search-dropdown').classList.remove('active');
+      }
+    });
+    this.render();
+  },
+  go(path) {
+    window.location.hash = path;
+    window.scrollTo(0, 0);
+  },
+  handleSearch(query) {
+    const dropdown = document.getElementById('search-dropdown');
+    if (!query.trim()) { dropdown.classList.remove('active'); return; }
+    const q = query.toLowerCase();
+    const results = tools.filter(t => t.name.toLowerCase().includes(q) || t.desc.toLowerCase().includes(q) || t.keywords.some(k => k.includes(q))).slice(0, 8);
+    if (!results.length) { dropdown.innerHTML = `<div class="dropdown-empty">Nenhuma ferramenta encontrada</div>`; }
+    else {
+      dropdown.innerHTML = results.map(t => {
+        const c = Categories[t.cat];
+        return `<div class="dropdown-item" onclick="Router.go('/ferramenta/${t.id}')">
+          <div class="item-icon" style="background:${c.bg};color:${c.color};">${Icons[c.icon]}</div>
+          <div class="item-info"><div class="item-name">${t.name}</div><div class="item-desc">${t.desc}</div></div>
+        </div>`;
+      }).join('');
+    }
+    dropdown.classList.add('active');
+  },
+  render() {
+    const main = document.getElementById('app-main');
+    const hash = window.location.hash.slice(1) || '/';
+    const parts = hash.split('/').filter(Boolean);
+
+    if (parts.length === 0) return this.renderHome(main);
+    if (parts[0] === 'favoritos') return this.renderFavorites(main);
+    if (parts[0] === 'historico') return this.renderHistory(main);
+    if (parts[0] === 'categoria' && parts[1]) return this.renderCategory(main, parts[1]);
+    if (parts[0] === 'ferramenta' && parts[1]) return this.renderTool(main, parts[1]);
+    
+    this.renderHome(main);
+  },
+  renderHome(main) {
+    main.innerHTML = `
+      <div class="hero">
+        <div class="hero-badge"><span class="dot"></span> Mais de 100 ferramentas disponíveis</div>
+        <h1>Seu kit completo de <span class="gradient">ferramentas de texto</span></h1>
+        <p>Formatação, conversão, criptografia, geração de dados e muito mais. Rápido, gratuito e direto no seu navegador.</p>
+      </div>
+      <div class="section">
+        <div class="section-header"><h2 class="section-title">${Icons.folder} Categorias</h2></div>
+        <div class="category-grid stagger" id="cat-grid"></div>
+      </div>
+      <div class="section">
+        <div class="section-header">
+          <h2 class="section-title">${Icons.sparkles} Ferramentas Populares</h2>
+          <a class="section-link" onclick="Router.go('/favoritos')">Ver favoritos ${Icons.arrowRight}</a>
+        </div>
+        <div class="tool-grid stagger" id="popular-grid"></div>
+      </div>
+    `;
+    const catGrid = document.getElementById('cat-grid');
+    Object.entries(Categories).forEach(([id, c]) => {
+      const count = tools.filter(t => t.cat === id).length;
+      catGrid.innerHTML += `<div class="category-card" style="--cat-color:${c.color};--cat-bg:${c.bg};" onclick="Router.go('/categoria/${id}')">
+        <div class="cat-icon">${Icons[c.icon]}</div>
+        <div class="cat-name">${c.name}</div>
+        <div class="cat-desc">${c.desc}</div>
+        <div class="cat-count">${count} ferramentas ${Icons.arrowRight}</div>
+      </div>`;
+    });
+    // Popular
+    const popGrid = document.getElementById('popular-grid');
+    const popularIds = ['contador-palavras', 'gerador-senhas', 'lorem-ipsum', 'json-formatter', 'maiusculas', 'remover-acentos'];
+    popularIds.forEach(id => {
+      const t = tools.find(x => x.id === id); if (!t) return;
+      const c = Categories[t.cat];
+      popGrid.innerHTML += `<div class="tool-card" style="--cat-color:${c.color};--cat-bg:${c.bg};" onclick="Router.go('/ferramenta/${t.id}')">
+        <div class="tool-icon">${Icons[c.icon]}</div>
+        <div class="tool-info"><div class="tool-name">${t.name}</div><div class="tool-desc">${t.desc}</div></div>
+      </div>`;
+    });
+  },
+  renderCategory(main, catId) {
+    const c = Categories[catId]; if (!c) return this.renderHome(main);
+    const list = tools.filter(t => t.cat === catId);
+    main.innerHTML = `<div class="tool-page">
+      <div class="breadcrumb" style="margin-bottom:16px;"><a onclick="Router.go('/')">Início</a> <span class="separator">/</span> <span class="current">${c.name}</span></div>
+      <div class="tool-page-header">
+        <div class="tool-icon-lg" style="background:${c.bg};color:${c.color};">${Icons[c.icon]}</div>
+        <div class="tool-title-wrap"><h1>${c.name}</h1><p>${c.desc}</p></div>
+      </div>
+      <div class="tool-grid stagger">${list.map(t => `<div class="tool-card" style="--cat-color:${c.color};--cat-bg:${c.bg};" onclick="Router.go('/ferramenta/${t.id}')"><div class="tool-icon">${Icons[c.icon]}</div><div class="tool-info"><div class="tool-name">${t.name}</div><div class="tool-desc">${t.desc}</div></div></div>`).join('')}</div>
+    </div>`;
+  },
+  renderTool(main, toolId) {
+    const tool = tools.find(t => t.id === toolId);
+    if (!tool) { main.innerHTML = `<div class="empty-state"><div class="empty-icon">${Icons.alert}</div><h3>Ferramenta não encontrada</h3><p>A ferramenta que você procura não existe ou foi movida.</p><button class="btn btn-primary" style="margin-top:16px;" onclick="Router.go('/')">Voltar ao início</button></div>`; return; }
+    State.addHistory(tool.id);
+    const c = Categories[tool.cat];
+    
+    main.innerHTML = `<div class="tool-page fade-in">
+      <div class="breadcrumb" style="margin-bottom:16px;"><a onclick="Router.go('/')">Início</a> <span class="separator">/</span> <a onclick="Router.go('/categoria/${tool.cat}')">${c.name}</a> <span class="separator">/</span> <span class="current">${tool.name}</span></div>
+      <div class="tool-page-header">
+        <div class="tool-icon-lg" style="background:${c.bg};color:${c.color};">${Icons[c.icon]}</div>
+        <div class="tool-title-wrap"><h1>${tool.name}</h1><p>${tool.desc}</p></div>
+        <div class="tool-actions">
+          <button class="tool-action-btn ${State.isFav(tool.id) ? 'active' : ''}" id="btn-fav" title="Favoritar">${Icons.star}</button>
+          <button class="tool-action-btn" id="btn-share" title="Compartilhar">${Icons.share}</button>
+        </div>
+      </div>
+      <div id="tool-content"></div>
+    </div>`;
+    
+    const content = document.getElementById('tool-content');
+    
+    if (tool.type === 'stats') {
+      content.innerHTML = `<div class="tool-layout">
+        <div class="tool-main">
+          <div class="tool-panel">
+            <div class="tool-panel-header"><span class="panel-title">${Icons.fileText} Texto para analisar</span>
+              <div class="panel-actions"><button class="panel-action-btn" id="btn-clear-in" title="Limpar">${Icons.trash}</button></div>
+            </div>
+            <div class="tool-panel-body"><textarea class="tool-textarea" id="tool-input" placeholder="Digite ou cole seu texto aqui..."></textarea></div>
+          </div>
+        </div>
+        <div class="stats-sidebar" id="stats-sidebar-container"></div>
+      </div>`;
+      const input = content.querySelector('#tool-input');
+      input.addEventListener('input', () => this.updateStatsTool(content, input.value, tool));
+      content.querySelector('#btn-clear-in').addEventListener('click', () => { input.value = ''; this.updateStatsTool(content, '', tool); });
+      this.updateStatsTool(content, '', tool);
+    }
+    else if (tool.type === 'transform') {
+      content.innerHTML = renderToolShell(tool);
+      const input = content.querySelector('#tool-input'); const output = content.querySelector('#tool-output');
+      const apply = () => { if (tool.fn) output.value = tool.fn(input.value); updateStats(content, input.value); };
+      if (tool.auto) { input.addEventListener('input', Utils.debounce(apply, 300)); }
+      else {
+        const optsContainer = content.querySelector('#tool-options-container');
+        if (optsContainer && !optsContainer.querySelector('#tool-apply')) {
+          optsContainer.innerHTML = `<button class="btn btn-primary" id="tool-apply">Aplicar</button>`;
+        }
+      }
+      if (tool.id.startsWith('contador-') || tool.id.startsWith('tempo-')) {
+        // already handled as stats if registered as transform? No, they are transform with null fn
+        // Let's handle null fn case
+        if (!tool.fn) {
+           content.innerHTML = `<div class="tool-layout">
+            <div class="tool-main"><div class="tool-panel"><div class="tool-panel-header"><span class="panel-title">${Icons.fileText} Texto</span></div><div class="tool-panel-body"><textarea class="tool-textarea" id="tool-input" placeholder="Digite..."></textarea></div></div></div>
+            <div class="stats-sidebar" id="stats-sidebar-container"></div></div>`;
+           const inp = content.querySelector('#tool-input');
+           inp.addEventListener('input', () => updateStats(content, inp.value));
+           updateStats(content, '');
+           return;
+        }
+      }
+      content.querySelector('#tool-apply')?.addEventListener('click', apply);
+      bindCommonActions(content, () => input, () => output);
+      apply();
+    }
+    else if (tool.type === 'custom') {
+      content.innerHTML = tool.render(tool);
+      tool.init(tool, content);
+      const input = content.querySelector('#tool-input') || content.querySelector('#md-input') || content.querySelector('#notes-area') || content.querySelector('#text1');
+      if (input) {
+        input.addEventListener('input', () => updateStats(content, input.value));
+        updateStats(content, input.value);
+      }
+      bindCommonActions(content);
+    }
+    
+    // Header Actions
+    main.querySelector('#btn-fav').addEventListener('click', (e) => {
+      State.toggleFav(tool.id);
+      e.currentTarget.classList.toggle('active');
+      e.currentTarget.innerHTML = State.isFav(tool.id) ? Icons.starFill : Icons.star;
+    });
+    main.querySelector('#btn-share').addEventListener('click', () => {
+      Utils.copyToClipboard(window.location.href);
+    });
+  },
+  updateStatsTool(root, text, tool) {
+    const container = root.querySelector('#stats-sidebar-container');
+    if (!container) return;
+    const stats = Utils.analyzeText(text);
+    let focusVal = '';
+    if (tool.id === 'contador-caracteres') focusVal = stats.chars;
+    else if (tool.id === 'contador-palavras') focusVal = stats.words;
+    else if (tool.id === 'contador-frases') focusVal = stats.sentences;
+    else if (tool.id === 'contador-paragrafos') focusVal = stats.paragraphs;
+    else if (tool.id === 'tempo-leitura') focusVal = stats.readingTime + ' min';
+    else if (tool.id === 'tempo-fala') focusVal = stats.speakingTime + ' min';
+    
+    container.innerHTML = `<h3>${Icons.chart} Estatísticas</h3>
+      ${focusVal ? `<div class="stat-item highlight" style="background:var(--primary-lighter);padding:12px;border-radius:var(--radius-sm);margin-bottom:12px;border:1px solid var(--primary-light);"><span class="stat-label" style="font-weight:600;color:var(--primary-dark);">Foco</span><span class="stat-value" style="font-size:20px;">${focusVal}</span></div>` : ''}
+      <div class="stat-item"><span class="stat-label">Caracteres</span><span class="stat-value">${stats.chars}</span></div>
+      <div class="stat-item"><span class="stat-label">Palavras</span><span class="stat-value">${stats.words}</span></div>
+      <div class="stat-item"><span class="stat-label">Frases</span><span class="stat-value">${stats.sentences}</span></div>
+      <div class="stat-item"><span class="stat-label">Parágrafos</span><span class="stat-value">${stats.paragraphs}</span></div>
+      <div class="stat-item"><span class="stat-label">Linhas</span><span class="stat-value">${stats.lines}</span></div>
+      <div class="stat-item"><span class="stat-label">Letras Maiúsculas</span><span class="stat-value">${stats.uppercase}</span></div>
+      <div class="stat-item"><span class="stat-label">Letras Minúsculas</span><span class="stat-value">${stats.lowercase}</span></div>
+      <div class="stat-item"><span class="stat-label">Números</span><span class="stat-value">${stats.numbers}</span></div>`;
+  },
+  renderFavorites(main) {
+    const favs = State.favorites.map(id => tools.find(t => t.id === id)).filter(Boolean);
+    main.innerHTML = `<div class="tool-page fade-in">
+      <div class="breadcrumb" style="margin-bottom:16px;"><a onclick="Router.go('/')">Início</a> <span class="separator">/</span> <span class="current">Favoritos</span></div>
+      <div class="tool-page-header"><div class="tool-icon-lg" style="background:var(--warning-light);color:var(--warning);">${Icons.starFill}</div><div class="tool-title-wrap"><h1>Ferramentas Favoritas</h1><p>Suas ferramentas marcadas como favoritas</p></div></div>
+      ${favs.length === 0 ? `<div class="empty-state"><div class="empty-icon">${Icons.star}</div><h3>Nenhum favorito ainda</h3><p>Clique no ícone de estrela em qualquer ferramenta para adicioná-la aqui.</p></div>` : `<div class="tool-grid stagger">${favs.map(t => { const c = Categories[t.cat]; return `<div class="tool-card" style="--cat-color:${c.color};--cat-bg:${c.bg};" onclick="Router.go('/ferramenta/${t.id}')"><div class="tool-icon">${Icons[c.icon]}</div><div class="tool-info"><div class="tool-name">${t.name}</div><div class="tool-desc">${t.desc}</div></div></div>`; }).join('')}</div>`}
+    </div>`;
+  },
+  renderHistory(main) {
+    const hist = State.history.map(id => tools.find(t => t.id === id)).filter(Boolean);
+    main.innerHTML = `<div class="tool-page fade-in">
+      <div class="breadcrumb" style="margin-bottom:16px;"><a onclick="Router.go('/')">Início</a> <span class="separator">/</span> <span class="current">Histórico</span></div>
+      <div class="tool-page-header"><div class="tool-icon-lg" style="background:var(--bg-alt);color:var(--text-secondary);">${Icons.clock}</div><div class="tool-title-wrap"><h1>Histórico Recente</h1><p>Ferramentas usadas recentemente</p></div></div>
+      ${hist.length === 0 ? `<div class="empty-state"><div class="empty-icon">${Icons.clock}</div><h3>Nenhum histórico ainda</h3><p>Use algumas ferramentas e elas aparecerão aqui.</p></div>` : `<div class="tool-grid stagger">${hist.map(t => { const c = Categories[t.cat]; return `<div class="tool-card" style="--cat-color:${c.color};--cat-bg:${c.bg};" onclick="Router.go('/ferramenta/${t.id}')"><div class="tool-icon">${Icons[c.icon]}</div><div class="tool-info"><div class="tool-name">${t.name}</div><div class="tool-desc">${t.desc}</div></div></div>`; }).join('')}</div>`}
+    </div>`;
+  }
+};
+
+// Init Router
+Router.init();
+</script>
+</body>
+</html>

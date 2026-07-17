@@ -1,0 +1,2837 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>MathTools — Plataforma de Ferramentas Matemáticas</title>
+<meta name="description" content="Plataforma completa com dezenas de calculadoras e ferramentas matemáticas online." />
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.11.0/math.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: { primary: '#2563EB', secondary: '#3B82F6', accent: '#60A5FA', bg: '#F8FAFC' },
+      fontFamily: { sans: ['Inter', 'sans-serif'] }
+    }
+  }
+};
+</script>
+<style>
+  :root {
+    --primary: #2563EB; --secondary: #3B82F6; --accent: #60A5FA;
+    --bg: #F8FAFC; --success: #10B981; --warning: #F59E0B; --error: #EF4444;
+  }
+  * { box-sizing: border-box; }
+  html, body { font-family: 'Inter', sans-serif; }
+  body { background: var(--bg); color: #1e293b; }
+  
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes slideIn { from { opacity: 0; transform: translateX(-12px); } to { opacity: 1; transform: translateX(0); } }
+  @keyframes scaleIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+  @keyframes shimmer { 0% { background-position: -1000px 0; } 100% { background-position: 1000px 0; } }
+  @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+  @keyframes pulse-ring { 0% { box-shadow: 0 0 0 0 rgba(37,99,235,0.4); } 70% { box-shadow: 0 0 0 10px rgba(37,99,235,0); } 100% { box-shadow: 0 0 0 0 rgba(37,99,235,0); } }
+  
+  .animate-fade { animation: fadeIn 0.4s ease-out; }
+  .animate-slide { animation: slideIn 0.3s ease-out; }
+  .animate-scale { animation: scaleIn 0.3s ease-out; }
+  .animate-float { animation: float 3s ease-in-out infinite; }
+  
+  .card { background: white; border-radius: 16px; box-shadow: 0 1px 3px rgba(15,23,42,0.06), 0 1px 2px rgba(15,23,42,0.04); transition: all 0.3s cubic-bezier(0.4,0,0.2,1); border: 1px solid #f1f5f9; }
+  .card-hover:hover { box-shadow: 0 12px 24px rgba(37,99,235,0.12), 0 4px 8px rgba(15,23,42,0.06); transform: translateY(-3px); border-color: #dbeafe; }
+  
+  .glass { background: rgba(255,255,255,0.85); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid rgba(226,232,240,0.6); }
+  
+  .input { width: 100%; padding: 12px 16px; border: 1.5px solid #e2e8f0; border-radius: 10px; font-size: 15px; background: white; transition: all 0.2s; color: #1e293b; }
+  .input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 4px rgba(37,99,235,0.12); }
+  
+  .btn-primary { background: var(--primary); color: white; padding: 12px 24px; border-radius: 10px; font-weight: 600; transition: all 0.2s; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; justify-content: center; }
+  .btn-primary:hover { background: #1d4ed8; transform: translateY(-1px); box-shadow: 0 6px 16px rgba(37,99,235,0.32); }
+  .btn-primary:active { transform: translateY(0); }
+  
+  .btn-ghost { background: transparent; color: #64748b; padding: 8px 14px; border-radius: 8px; font-weight: 500; transition: all 0.2s; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-size: 14px; }
+  .btn-ghost:hover { background: #f1f5f9; color: var(--primary); }
+  
+  .btn-soft { background: #eff6ff; color: var(--primary); padding: 8px 14px; border-radius: 8px; font-weight: 500; border: none; cursor: pointer; transition: all 0.2s; font-size: 14px; display: inline-flex; align-items: center; gap: 6px; }
+  .btn-soft:hover { background: #dbeafe; }
+  
+  .result-box { background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border: 1px solid #bfdbfe; border-radius: 12px; padding: 20px; }
+  .formula-box { background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-left: 4px solid var(--primary); padding: 16px 20px; border-radius: 0 12px 12px 0; margin-bottom: 20px; overflow-x: auto; }
+  .steps-box { background: #f8fafc; border-radius: 12px; padding: 16px; margin-top: 16px; }
+  .step-item { padding: 10px 0; border-bottom: 1px dashed #e2e8f0; display: flex; gap: 12px; align-items: start; }
+  .step-item:last-child { border-bottom: none; }
+  .step-num { background: var(--primary); color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0; }
+  
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+  
+  .hero-bg { background: radial-gradient(ellipse 80% 80% at 50% -20%, rgba(37,99,235,0.18), transparent), radial-gradient(ellipse 60% 60% at 80% 50%, rgba(96,165,250,0.12), transparent), radial-gradient(ellipse 60% 60% at 20% 80%, rgba(59,130,246,0.10), transparent); }
+  
+  .logo-mark { background: linear-gradient(135deg, var(--primary), var(--accent)); color: white; width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 20px; box-shadow: 0 4px 12px rgba(37,99,235,0.3); }
+  
+  .cat-calculadoras { background: #eff6ff; color: #2563EB; }
+  .cat-algebra { background: #f0fdf4; color: #16a34a; }
+  .cat-sequencias { background: #fef3c7; color: #d97706; }
+  .cat-geometria { background: #fce7f3; color: #db2777; }
+  .cat-trigonometria { background: #ede9fe; color: #7c3aed; }
+  .cat-estatistica { background: #ccfbf1; color: #0d9488; }
+  .cat-conversores { background: #e0e7ff; color: #4f46e5; }
+  .cat-probabilidade { background: #ffedd5; color: #ea580c; }
+  .cat-funcoes { background: #f1f5f9; color: #475569; }
+  .cat-matrizes { background: #fae8ff; color: #a21caf; }
+  .cat-outros { background: #ffe4e6; color: #e11d48; }
+  
+  .tool-icon { width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  
+  .toast { background: white; border-radius: 10px; padding: 12px 18px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 10px; border-left: 4px solid var(--primary); animation: slideIn 0.3s; min-width: 280px; }
+  .toast.success { border-color: var(--success); }
+  .toast.error { border-color: var(--error); }
+  .toast.warning { border-color: var(--warning); }
+  
+  .sidebar-link { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 10px; color: #475569; font-weight: 500; transition: all 0.2s; cursor: pointer; font-size: 14px; }
+  .sidebar-link:hover { background: #f1f5f9; color: var(--primary); }
+  .sidebar-link.active { background: var(--primary); color: white; }
+  .sidebar-link.active .cat-icon-bg { background: rgba(255,255,255,0.2) !important; color: white !important; }
+  
+  .skeleton { background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%); background-size: 1000px 100%; animation: shimmer 2s infinite; }
+  .big-result { font-size: 28px; font-weight: 800; color: var(--primary); line-height: 1.2; word-break: break-all; }
+  
+  @media print { header, .sidebar, .no-print, #search-input { display: none !important; } main { padding: 0 !important; } }
+  
+  @media (max-width: 768px) {
+    .sidebar { transform: translateX(-100%); transition: transform 0.3s; }
+    .sidebar.open { transform: translateX(0); }
+  }
+  
+  .katex { font-size: 1.1em; }
+  .katex-display { margin: 0; }
+  .plot-container, .plotly { width: 100% !important; }
+  
+  .matrix-input { width: 54px; padding: 6px 8px; border: 1px solid #e2e8f0; border-radius: 6px; text-align: center; font-size: 14px; }
+  .matrix-input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
+  
+  .tab-btn { padding: 10px 16px; border-radius: 8px; font-weight: 500; color: #64748b; cursor: pointer; transition: all 0.2s; border: none; background: transparent; font-size: 14px; }
+  .tab-btn.active { background: var(--primary); color: white; }
+  
+  button:focus-visible, a:focus-visible, input:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+  
+  .calc-btn { padding: 14px; border: none; background: white; border-radius: 10px; font-size: 18px; font-weight: 600; cursor: pointer; transition: all 0.15s; box-shadow: 0 1px 2px rgba(0,0,0,0.04); color: #334155; }
+  .calc-btn:hover { background: #f1f5f9; transform: translateY(-1px); }
+  .calc-btn:active { transform: translateY(0); }
+  .calc-btn.op { background: #eff6ff; color: var(--primary); }
+  .calc-btn.op:hover { background: #dbeafe; }
+  .calc-btn.eq { background: var(--primary); color: white; }
+  .calc-btn.eq:hover { background: #1d4ed8; }
+  .calc-btn.fn { background: #f8fafc; color: #64748b; font-size: 14px; }
+  .calc-btn.fn:hover { background: #f1f5f9; }
+  
+  .hero-grid { background-image: linear-gradient(rgba(37,99,235,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(37,99,235,0.05) 1px, transparent 1px); background-size: 40px 40px; }
+</style>
+</head>
+<body>
+
+<header class="glass sticky top-0 z-50">
+  <div class="max-w-[1400px] mx-auto px-4 lg:px-6 py-3 flex items-center gap-4">
+    <button onclick="toggleSidebar()" class="md:hidden p-2 hover:bg-slate-100 rounded-lg" aria-label="Menu">
+      <i data-lucide="menu" class="w-5 h-5"></i>
+    </button>
+    <a onclick="go('home')" class="flex items-center gap-2.5 cursor-pointer flex-shrink-0">
+      <div class="logo-mark">M</div>
+      <div class="hidden sm:block">
+        <div class="font-bold text-lg leading-none">MathTools</div>
+        <div class="text-[11px] text-slate-500 leading-none mt-0.5">Plataforma Matemática</div>
+      </div>
+    </a>
+    <div class="flex-1 max-w-xl mx-auto relative">
+      <div class="relative">
+        <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4"></i>
+        <input type="text" id="search-input" placeholder="Buscar ferramenta (ex: equação 2º grau, MMC, seno...)" 
+               class="input pl-10 pr-4 py-2.5 text-sm" autocomplete="off">
+        <kbd class="hidden sm:flex absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-slate-400 border rounded px-1.5 py-0.5 bg-slate-50">⌘K</kbd>
+      </div>
+      <div id="search-dropdown" class="absolute top-full mt-2 w-full bg-white rounded-xl shadow-xl border border-slate-100 max-h-96 overflow-y-auto hidden z-50"></div>
+    </div>
+    <div class="flex items-center gap-1">
+      <a href="index.html" class="btn-ghost" title="Toolbox Hub">
+        <i data-lucide="layout-grid" class="w-4 h-4"></i>
+        <span class="hidden lg:inline">Toolbox Hub</span>
+      </a>
+      <button onclick="go('favorites')" class="btn-ghost" title="Favoritos">
+        <i data-lucide="star" class="w-4 h-4"></i>
+        <span class="hidden lg:inline">Favoritos</span>
+      </button>
+      <button onclick="go('history')" class="btn-ghost" title="Histórico">
+        <i data-lucide="history" class="w-4 h-4"></i>
+        <span class="hidden lg:inline">Histórico</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="flex max-w-[1400px] mx-auto">
+  <aside id="sidebar" class="sidebar w-64 fixed md:sticky top-[68px] h-[calc(100vh-68px)] overflow-y-auto bg-white border-r border-slate-100 p-3 z-40">
+    <div class="space-y-1" id="sidebar-cats"></div>
+    <div class="border-t border-slate-100 mt-3 pt-3 space-y-1">
+      <a onclick="go('favorites')" class="sidebar-link"><i data-lucide="star" class="w-4 h-4"></i> Favoritos</a>
+      <a onclick="go('history')" class="sidebar-link"><i data-lucide="history" class="w-4 h-4"></i> Histórico</a>
+      <a onclick="go('about')" class="sidebar-link"><i data-lucide="info" class="w-4 h-4"></i> Sobre</a>
+    </div>
+  </aside>
+  <div id="sidebar-backdrop" class="fixed inset-0 bg-black/40 z-30 md:hidden hidden" onclick="toggleSidebar()"></div>
+  <main id="app" class="flex-1 p-4 md:p-8 min-h-[calc(100vh-68px)] min-w-0"></main>
+</div>
+
+<div id="toast-container" class="fixed bottom-6 right-6 z-[100] space-y-2"></div>
+
+<script>
+/* ============================================================
+   MathTools — Plataforma de Ferramentas Matemáticas
+   Arquitetura modular em arquivo único
+   ============================================================ */
+
+/* ========== ESTADO GLOBAL ========== */
+const State = {
+  view: 'home',
+  params: {},
+  favorites: JSON.parse(localStorage.getItem('mt_favorites') || '[]'),
+  history: JSON.parse(localStorage.getItem('mt_history') || '[]'),
+  recent: JSON.parse(localStorage.getItem('mt_recent') || '[]'),
+};
+
+function saveState() {
+  localStorage.setItem('mt_favorites', JSON.stringify(State.favorites));
+  localStorage.setItem('mt_history', JSON.stringify(State.history));
+  localStorage.setItem('mt_recent', JSON.stringify(State.recent));
+}
+
+/* ========== HELPERS ========== */
+const $ = id => document.getElementById(id);
+const fmt = (n, d=6) => {
+  if (typeof n !== 'number' || !isFinite(n)) return '—';
+  if (Number.isInteger(n)) return n.toLocaleString('pt-BR');
+  return parseFloat(n.toFixed(d)).toLocaleString('pt-BR', {maximumFractionDigits: d});
+};
+const icon = (name, size=20) => `<i data-lucide="${name}" style="width:${size}px;height:${size}px"></i>`;
+
+function toast(msg, type='info') {
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  const ic = {success:'check-circle', error:'x-circle', warning:'alert-triangle', info:'info'}[type];
+  el.innerHTML = `${icon(ic, 18)}<span>${msg}</span>`;
+  $('toast-container').appendChild(el);
+  setTimeout(() => { el.style.opacity='0'; el.style.transform='translateX(20px)'; setTimeout(()=>el.remove(), 300); }, 3000);
+}
+
+function refreshIcons() { if (window.lucide) lucide.createIcons(); }
+
+function katexRender(tex, target) {
+  if (!target) return;
+  try {
+    if (typeof katex !== 'undefined') katex.render(tex, target, { throwOnError: false, displayMode: true });
+    else target.textContent = tex;
+  } catch(e) { target.textContent = tex; }
+}
+
+function catName(id) { return (categories.find(c=>c.id===id)||{}).name || id; }
+function catIcon(id) { return (categories.find(c=>c.id===id)||{}).icon || 'circle'; }
+
+function addRecent(id) {
+  State.recent = [id, ...State.recent.filter(r=>r!==id)].slice(0,8);
+  saveState();
+}
+function addHistory(id, summary) {
+  State.history = [{ id, summary, ts: Date.now() }, ...State.history].slice(0,50);
+  saveState();
+}
+function toggleFav(id) {
+  if (State.favorites.includes(id)) {
+    State.favorites = State.favorites.filter(f=>f!==id);
+    toast('Removido dos favoritos', 'info');
+  } else {
+    State.favorites.push(id);
+    toast('Adicionado aos favoritos', 'success');
+  }
+  saveState();
+  renderSidebar();
+  if (State.view === 'tool' && State.params.id === id) render();
+  if (State.view === 'favorites') render();
+}
+
+/* ========== CATEGORIAS ========== */
+const categories = [
+  { id: 'calculadoras', name: 'Calculadoras', icon: 'calculator' },
+  { id: 'algebra', name: 'Álgebra', icon: 'sigma' },
+  { id: 'sequencias', name: 'Sequências', icon: 'list-ordered' },
+  { id: 'geometria', name: 'Geometria', icon: 'triangle' },
+  { id: 'trigonometria', name: 'Trigonometria', icon: 'waves' },
+  { id: 'estatistica', name: 'Estatística', icon: 'bar-chart-3' },
+  { id: 'conversores', name: 'Conversores', icon: 'repeat' },
+  { id: 'probabilidade', name: 'Probabilidade', icon: 'dices' },
+  { id: 'funcoes', name: 'Funções', icon: 'trending-up' },
+  { id: 'matrizes', name: 'Matrizes', icon: 'grid-3x3' },
+  { id: 'outros', name: 'Outros', icon: 'sparkles' },
+];
+
+/* ========== CATÁLOGO DE FERRAMENTAS ========== */
+const catalog = [
+  // CALCULADORAS
+  { id:'cientifica', name:'Calculadora Científica', cat:'calculadoras', icon:'calculator', desc:'Calculadora avançada com funções científicas.' },
+  { id:'basica', name:'Calculadora Básica', cat:'calculadoras', icon:'divide', desc:'Operações matemáticas básicas.' },
+  { id:'financeira', name:'Calculadora Financeira', cat:'calculadoras', icon:'dollar-sign', desc:'Cálculos financeiros essenciais.' },
+  { id:'porcentagem', name:'Porcentagem', cat:'calculadoras', icon:'percent', desc:'Calcular porcentagens de valores.' },
+  { id:'regra3', name:'Regra de Três', cat:'calculadoras', icon:'git-compare', desc:'Resolva proporções simples.' },
+  { id:'regra3composta', name:'Regra de Três Composta', cat:'calculadoras', icon:'git-merge', desc:'Proporções com múltiplas variáveis.' },
+  { id:'jurosSimples', name:'Juros Simples', cat:'calculadoras', icon:'trending-up', desc:'Cálculo de juros simples (J = C·i·t).' },
+  { id:'jurosCompostos', name:'Juros Compostos', cat:'calculadoras', icon:'trending-up', desc:'Cálculo de juros compostos (M = C(1+i)ᵗ).' },
+  { id:'desconto', name:'Desconto', cat:'calculadoras', icon:'tag', desc:'Calcular descontos comerciais.' },
+  { id:'aumentoPercentual', name:'Aumento Percentual', cat:'calculadoras', icon:'arrow-up-circle', desc:'Calcular aumentos percentuais.' },
+  // ÁLGEBRA
+  { id:'eq1grau', name:'Equação do 1º Grau', cat:'algebra', icon:'sigma', desc:'Resolver equações ax + b = 0.' },
+  { id:'eq2grau', name:'Equação do 2º Grau', cat:'algebra', icon:'function-square', desc:'Bhaskara e análise de raízes.' },
+  { id:'sistema2x2', name:'Sistema 2x2', cat:'algebra', icon:'grid-2x2', desc:'Resolver sistemas lineares 2×2.' },
+  { id:'sistema3x3', name:'Sistema 3x3', cat:'algebra', icon:'grid-3x3', desc:'Resolver sistemas lineares 3×3.' },
+  { id:'fatoracao', name:'Fatoração (Primos)', cat:'algebra', icon:'layers', desc:'Decompor número em fatores primos.' },
+  { id:'mmc', name:'MMC', cat:'algebra', icon:'plus-circle', desc:'Mínimo Múltiplo Comum.' },
+  { id:'mdc', name:'MDC', cat:'algebra', icon:'minus-circle', desc:'Máximo Divisor Comum.' },
+  { id:'divisores', name:'Divisores', cat:'algebra', icon:'list', desc:'Listar divisores de um número.' },
+  { id:'primo', name:'Verificar Número Primo', cat:'algebra', icon:'star', desc:'Verificar se um número é primo.' },
+  { id:'fatorial', name:'Fatorial', cat:'algebra', icon:'infinity', desc:'Calcular n! (fatorial).' },
+  // SEQUÊNCIAS
+  { id:'pa', name:'Progressão Aritmética', cat:'sequencias', icon:'trending-up', desc:'Termo geral de uma PA.' },
+  { id:'pg', name:'Progressão Geométrica', cat:'sequencias', icon:'trending-up', desc:'Termo geral de uma PG.' },
+  { id:'somaPA', name:'Soma da PA', cat:'sequencias', icon:'plus', desc:'Soma dos termos de uma PA.' },
+  { id:'somaPG', name:'Soma da PG', cat:'sequencias', icon:'plus', desc:'Soma dos termos de uma PG.' },
+  { id:'fibonacci', name:'Sequência de Fibonacci', cat:'sequencias', icon:'sprout', desc:'Gerar termos de Fibonacci.' },
+  { id:'triangular', name:'Número Triangular', cat:'sequencias', icon:'triangle', desc:'Calcular números triangulares.' },
+  { id:'perfeito', name:'Número Perfeito', cat:'sequencias', icon:'gem', desc:'Verificar números perfeitos.' },
+  { id:'catalan', name:'Número de Catalan', cat:'sequencias', icon:'git-branch', desc:'Calcular números de Catalan.' },
+  { id:'potencias', name:'Potências', cat:'sequencias', icon:'zap', desc:'Calcular potências de base e expoente.' },
+  { id:'radicais', name:'Simplificação de Radicais', cat:'sequencias', icon:'square-root', desc:'Simplificar expressões com radicais.' },
+  // GEOMETRIA
+  { id:'areaQuadrado', name:'Área do Quadrado', cat:'geometria', icon:'square', desc:'Calcular área do quadrado (A = l²).' },
+  { id:'areaRetangulo', name:'Área do Retângulo', cat:'geometria', icon:'rectangle-horizontal', desc:'Calcular área do retângulo (A = b·h).' },
+  { id:'areaCirculo', name:'Área do Círculo', cat:'geometria', icon:'circle', desc:'Calcular área do círculo (A = π·r²).' },
+  { id:'areaTriangulo', name:'Área do Triângulo', cat:'geometria', icon:'triangle', desc:'Calcular área do triângulo.' },
+  { id:'areaTrapezio', name:'Área do Trapézio', cat:'geometria', icon:'trapezoid', desc:'Calcular área do trapézio.' },
+  { id:'areaLosango', name:'Área do Losango', cat:'geometria', icon:'diamond', desc:'Calcular área do losango.' },
+  { id:'perimetro', name:'Perímetro', cat:'geometria', icon:'ruler', desc:'Calcular perímetros de figuras.' },
+  { id:'volumeCubo', name:'Volume do Cubo', cat:'geometria', icon:'box', desc:'Calcular volume do cubo (V = a³).' },
+  { id:'volumeEsfera', name:'Volume da Esfera', cat:'geometria', icon:'circle', desc:'Calcular volume da esfera.' },
+  { id:'volumeCilindro', name:'Volume do Cilindro', cat:'geometria', icon:'cylinder', desc:'Calcular volume do cilindro.' },
+  // TRIGONOMETRIA
+  { id:'seno', name:'Seno', cat:'trigonometria', icon:'waves', desc:'Calcular seno de ângulos.' },
+  { id:'cosseno', name:'Cosseno', cat:'trigonometria', icon:'waves', desc:'Calcular cosseno de ângulos.' },
+  { id:'tangente', name:'Tangente', cat:'trigonometria', icon:'waves', desc:'Calcular tangente de ângulos.' },
+  { id:'leiSenos', name:'Lei dos Senos', cat:'trigonometria', icon:'triangle', desc:'Resolver triângulos quaisquer.' },
+  { id:'leiCossenos', name:'Lei dos Cossenos', cat:'trigonometria', icon:'triangle', desc:'Resolver triângulos quaisquer.' },
+  { id:'grauRadiano', name:'Grau ↔ Radiano', cat:'trigonometria', icon:'repeat', desc:'Converter ângulos entre unidades.' },
+  { id:'trianguloRetangulo', name:'Triângulo Retângulo', cat:'trigonometria', icon:'triangle', desc:'Calcular hipotenusa e catetos.' },
+  { id:'cicloTrigonometrico', name:'Ciclo Trigonométrico', cat:'trigonometria', icon:'circle', desc:'Visualizar ciclo trigonométrico.' },
+  // ESTATÍSTICA
+  { id:'estatisticaDescritiva', name:'Estatística Descritiva', cat:'estatistica', icon:'bar-chart-3', desc:'Média, mediana, moda, variância, desvio.' },
+  { id:'quartis', name:'Quartis e Percentis', cat:'estatistica', icon:'bar-chart-2', desc:'Quartis, decis e percentis.' },
+  { id:'histograma', name:'Histograma', cat:'estatistica', icon:'bar-chart', desc:'Criar histogramas interativos.' },
+  { id:'boxplot', name:'Box Plot', cat:'estatistica', icon:'box', desc:'Diagrama de caixa (box plot).' },
+  // CONVERSORES
+  { id:'decBin', name:'Decimal → Binário', cat:'conversores', icon:'binary', desc:'Converter decimal em binário.' },
+  { id:'binDec', name:'Binário → Decimal', cat:'conversores', icon:'binary', desc:'Converter binário em decimal.' },
+  { id:'hexDec', name:'Hexadecimal → Decimal', cat:'conversores', icon:'hash', desc:'Converter hex em decimal.' },
+  { id:'decHex', name:'Decimal → Hexadecimal', cat:'conversores', icon:'hash', desc:'Converter decimal em hex.' },
+  { id:'romanoDec', name:'Romano → Decimal', cat:'conversores', icon:'scroll', desc:'Converter romanos em decimal.' },
+  { id:'decRomano', name:'Decimal → Romano', cat:'conversores', icon:'scroll', desc:'Converter decimal em romanos.' },
+  { id:'notacaoCientifica', name:'Notação Científica', cat:'conversores', icon:'superscript', desc:'Converter para notação científica.' },
+  { id:'fracaoDec', name:'Fração → Decimal', cat:'conversores', icon:'fraction', desc:'Converter frações em decimais.' },
+  { id:'decFracao', name:'Decimal → Fração', cat:'conversores', icon:'fraction', desc:'Converter decimais em frações.' },
+  { id:'porcentagemFracao', name:'Porcentagem ↔ Fração', cat:'conversores', icon:'percent', desc:'Converter entre porcentagem e fração.' },
+  // PROBABILIDADE
+  { id:'permutacao', name:'Permutação', cat:'probabilidade', icon:'shuffle', desc:'Calcular P(n) = n!' },
+  { id:'arranjo', name:'Arranjo', cat:'probabilidade', icon:'list-ordered', desc:'Calcular arranjos A(n,k).' },
+  { id:'combinacao', name:'Combinação', cat:'probabilidade', icon:'layers', desc:'Calcular combinações C(n,k).' },
+  { id:'binomial', name:'Distribuição Binomial', cat:'probabilidade', icon:'git-branch', desc:'Probabilidade binomial.' },
+  { id:'probSimples', name:'Probabilidade Simples', cat:'probabilidade', icon:'percent', desc:'Calcular probabilidades básicas.' },
+  { id:'probCondicional', name:'Probabilidade Condicional', cat:'probabilidade', icon:'git-merge', desc:'P(A|B) e teorema de Bayes.' },
+  { id:'simDados', name:'Simulador de Dados', cat:'probabilidade', icon:'dices', desc:'Simular lançamentos de dados.' },
+  { id:'simMoedas', name:'Simulador de Moedas', cat:'probabilidade', icon:'circle-dollar-sign', desc:'Simular lançamentos de moedas.' },
+  { id:'distNormal', name:'Distribuição Normal', cat:'probabilidade', icon:'bell', desc:'Calcular na curva normal.' },
+  { id:'distUniforme', name:'Distribuição Uniforme', cat:'probabilidade', icon:'minus', desc:'Distribuição uniforme discreta.' },
+  // FUNÇÕES
+  { id:'plotador', name:'Plotador de Funções', cat:'funcoes', icon:'line-chart', desc:'Plotar múltiplas funções 2D.' },
+  { id:'tabela', name:'Tabela de Valores', cat:'funcoes', icon:'table', desc:'Gerar tabela de valores de f(x).' },
+  { id:'intersecao', name:'Interseção entre Funções', cat:'funcoes', icon:'git-compare', desc:'Encontrar pontos de interseção.' },
+  { id:'analiseFuncao', name:'Análise de Função', cat:'funcoes', icon:'activity', desc:'Raízes, domínio, derivada e mais.' },
+  // MATRIZES
+  { id:'matSoma', name:'Soma de Matrizes', cat:'matrizes', icon:'plus', desc:'Somar duas matrizes.' },
+  { id:'matMult', name:'Multiplicação de Matrizes', cat:'matrizes', icon:'x', desc:'Multiplicar matrizes.' },
+  { id:'matDet', name:'Determinante', cat:'matrizes', icon:'square', desc:'Calcular determinante.' },
+  { id:'matInversa', name:'Matriz Inversa', cat:'matrizes', icon:'rotate-ccw', desc:'Calcular matriz inversa.' },
+  { id:'matTransposta', name:'Matriz Transposta', cat:'matrizes', icon:'flip-horizontal', desc:'Transpor uma matriz.' },
+  { id:'matEscalonamento', name:'Escalonamento (Gauss)', cat:'matrizes', icon:'align-vertical-justify-center', desc:'Escalonar matriz por Gauss.' },
+  { id:'matCofatores', name:'Matriz de Cofatores', cat:'matrizes', icon:'grid-3x3', desc:'Calcular matriz de cofatores.' },
+  { id:'matTraco', name:'Traço da Matriz', cat:'matrizes', icon:'minus', desc:'Soma da diagonal principal.' },
+  { id:'sisLinear', name:'Sistema Linear', cat:'matrizes', icon:'grid-3x3', desc:'Resolver sistemas via regra de Cramer.' },
+  // OUTROS
+  { id:'imc', name:'IMC', cat:'outros', icon:'scale', desc:'Índice de Massa Corporal.' },
+  { id:'tmb', name:'TMB', cat:'outros', icon:'flame', desc:'Taxa Metabólica Basal.' },
+  { id:'velocidadeMedia', name:'Velocidade Média', cat:'outros', icon:'gauge', desc:'Calcular velocidade média.' },
+  { id:'densidade', name:'Densidade', cat:'outros', icon:'box', desc:'Calcular densidade (d = m/V).' },
+  { id:'escalaMapas', name:'Escala de Mapas', cat:'outros', icon:'map', desc:'Trabalhar com escalas cartográficas.' },
+  { id:'calculadoraDatas', name:'Calculadora de Datas', cat:'outros', icon:'calendar', desc:'Diferença entre datas.' },
+  { id:'conversorUnidades', name:'Conversor de Unidades', cat:'outros', icon:'ruler', desc:'Converter comprimento, massa, tempo.' },
+  { id:'crescExponencial', name:'Crescimento Exponencial', cat:'outros', icon:'trending-up', desc:'Simular crescimento exponencial.' },
+  { id:'decaimentoExponencial', name:'Decaimento Exponencial', cat:'outros', icon:'trending-down', desc:'Simular decaimento exponencial.' },
+];
+
+/* ========== HELPERS DE UI (componentes reutilizáveis) ========== */
+function inputHTML(id, label, opts={}) {
+  const { type='number', placeholder='', value='', step='any', suffix='', help='' } = opts;
+  return `
+    <div>
+      <label class="block text-sm font-medium text-slate-700 mb-1.5">${label}</label>
+      <div class="relative">
+        <input id="in_${id}" type="${type}" placeholder="${placeholder}" value="${value}" step="${step}" class="input ${suffix?'pr-14':''}" ${opts.min!==undefined?`min="${opts.min}"`:''} ${opts.max!==undefined?`max="${opts.max}"`:''}>
+        ${suffix ? `<span class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">${suffix}</span>` : ''}
+      </div>
+      ${help ? `<p class="text-xs text-slate-400 mt-1">${help}</p>` : ''}
+    </div>
+  `;
+}
+
+function selectHTML(id, label, options, opts={}) {
+  const opts_html = options.map(o => `<option value="${o.v}" ${o.v===opts.value?'selected':''}>${o.l}</option>`).join('');
+  return `
+    <div>
+      <label class="block text-sm font-medium text-slate-700 mb-1.5">${label}</label>
+      <select id="in_${id}" class="input">${opts_html}</select>
+    </div>
+  `;
+}
+
+function showResult(value, label='Resultado', opts={}) {
+  const sub = opts.sub ? `<div class="text-sm text-slate-500 mt-1">${opts.sub}</div>` : '';
+  $('result-area').innerHTML = `
+    <div class="result-box animate-scale">
+      <div class="text-sm text-slate-500 mb-1">${label}</div>
+      <div class="big-result">${value}</div>
+      ${sub}
+    </div>
+  `;
+}
+
+function showResultTable(rows) {
+  $('result-area').innerHTML = `
+    <div class="result-box animate-scale">
+      ${rows.map(r => `
+        <div class="flex items-center justify-between py-2.5 border-b border-blue-200 last:border-0">
+          <span class="text-slate-600 text-sm">${r.label}</span>
+          <span class="font-bold text-primary ${r.big?'text-lg':''}">${r.value}</span>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+function showSteps(steps) {
+  $('steps-area').innerHTML = `
+    <div class="steps-box animate-fade">
+      <div class="flex items-center gap-2 mb-3 text-sm font-semibold text-slate-700">
+        ${icon('list-checks', 16)} Passo a passo
+      </div>
+      ${steps.map((s, i) => `
+        <div class="step-item">
+          <div class="step-num">${i+1}</div>
+          <div class="text-sm text-slate-600 flex-1 pt-0.5">${s}</div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+function showFormula(tex) {
+  const fd = $('formula-display');
+  if (fd) katexRender(tex, fd);
+}
+
+function copyResult() {
+  const txt = $('result-area')?.innerText || '';
+  navigator.clipboard.writeText(txt).then(()=>toast('Resultado copiado!','success'));
+}
+
+function resetTool() {
+  document.querySelectorAll('input').forEach(i => { if(i.type !== 'search') i.value = ''; });
+  $('result-area').innerHTML = '<div class="text-slate-400 text-sm">Preencha os valores e clique em Calcular.</div>';
+  $('steps-area').innerHTML = '';
+  toast('Campos limpos','info');
+}
+
+/* Template base para ferramentas */
+function toolTemplate(meta, formulaTex, inputsHTML, options={}) {
+  const isFav = State.favorites.includes(meta.id);
+  return `
+    <div class="animate-fade">
+      <nav class="flex items-center gap-2 text-sm text-slate-500 mb-4 flex-wrap no-print">
+        <a onclick="go('home')" class="hover:text-primary cursor-pointer">Início</a>
+        <i data-lucide="chevron-right" class="w-4 h-4"></i>
+        <a onclick="go('category', {id:'${meta.cat}'})" class="hover:text-primary cursor-pointer">${catName(meta.cat)}</a>
+        <i data-lucide="chevron-right" class="w-4 h-4"></i>
+        <span class="text-slate-800 font-medium">${meta.name}</span>
+      </nav>
+      <div class="flex items-start justify-between mb-6 gap-4 flex-wrap">
+        <div class="flex items-start gap-4">
+          <div class="tool-icon cat-${meta.cat}">${icon(meta.icon, 24)}</div>
+          <div>
+            <h1 class="text-2xl md:text-3xl font-bold text-slate-900">${meta.name}</h1>
+            <p class="text-slate-500 mt-1">${meta.desc}</p>
+          </div>
+        </div>
+        <div class="flex gap-2 no-print">
+          <button onclick="toggleFav('${meta.id}')" class="btn-ghost" title="Favoritar">
+            <i data-lucide="star" class="w-4 h-4 ${isFav?'fill-yellow-400 text-yellow-400':''}"></i>
+          </button>
+          <button onclick="window.print()" class="btn-ghost" title="Imprimir">
+            <i data-lucide="printer" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </div>
+      ${formulaTex ? `<div class="formula-box"><div id="formula-display"></div></div>` : ''}
+      ${options.custom ? inputsHTML : `
+        <div class="grid lg:grid-cols-2 gap-6">
+          <div class="card p-6">
+            <div class="flex items-center gap-2 mb-4">
+              <i data-lucide="edit-3" class="w-4 h-4 text-primary"></i>
+              <h3 class="font-semibold">Entrada de Dados</h3>
+            </div>
+            <div class="space-y-4" id="inputs-area">${inputsHTML}</div>
+            <button id="calc-btn" class="btn-primary w-full mt-5">${icon('zap', 18)} Calcular</button>
+          </div>
+          <div class="card p-6">
+            <div class="flex items-center justify-between mb-4">
+              <div class="flex items-center gap-2">
+                <i data-lucide="check-circle" class="w-4 h-4 text-primary"></i>
+                <h3 class="font-semibold">Resultado</h3>
+              </div>
+              <div class="flex gap-1 no-print">
+                <button onclick="copyResult()" class="btn-ghost text-xs">${icon('copy',14)} Copiar</button>
+                <button onclick="resetTool()" class="btn-ghost text-xs">${icon('rotate-ccw',14)} Limpar</button>
+              </div>
+            </div>
+            <div id="result-area" class="text-slate-400 text-sm">Preencha os valores e clique em Calcular.</div>
+            <div id="steps-area" class="mt-4"></div>
+          </div>
+        </div>
+      `}
+    </div>
+  `;
+}
+
+/* Gerador de ferramentas simples */
+function simpleToolDef(config) {
+  return function(root, meta) {
+    const inputsHTML = config.inputs.map(i => inputHTML(i.id, i.label, i.opts||{})).join('');
+    root.innerHTML = toolTemplate(meta, config.formula, inputsHTML);
+    if (config.formula) showFormula(config.formula);
+    const calcFn = () => {
+      const vals = {};
+      let valid = true;
+      config.inputs.forEach(i => {
+        const el = $(`in_${i.id}`);
+        if (!el) return;
+        const isText = (i.opts||{}).type === 'text';
+        const v = isText ? el.value : parseFloat(el.value);
+        if (!isText && (isNaN(v) || el.value === '')) {
+          valid = false; el.style.borderColor = '#ef4444';
+        } else {
+          el.style.borderColor = '';
+          vals[i.id] = v;
+        }
+      });
+      if (!valid) { toast('Preencha todos os campos corretamente.', 'warning'); return; }
+      try {
+        const out = config.calc(vals);
+        if (out.formula) showFormula(out.formula);
+        if (out.rows) showResultTable(out.rows);
+        else if (out.value !== undefined) showResult(out.value, out.label||'Resultado', {sub: out.sub});
+        if (out.steps) showSteps(out.steps);
+        addHistory(meta.id, out.value !== undefined ? out.value : (out.rows?.[0]?.value || ''));
+      } catch(e) {
+        toast('Erro no cálculo: '+e.message, 'error');
+      }
+    };
+    $('calc-btn').onclick = calcFn;
+    if (config.auto) {
+      config.inputs.forEach(i => {
+        const el = $(`in_${i.id}`);
+        if (el) el.addEventListener('input', calcFn);
+      });
+    }
+    refreshIcons();
+  };
+}
+
+/* ========== IMPLEMENTAÇÕES DAS FERRAMENTAS ========== */
+const tools = {};
+
+/* --- CALCULADORA CIENTÍFICA --- */
+tools.cientifica = function(root, meta) {
+  root.innerHTML = toolTemplate(meta, null, `
+    <div class="grid lg:grid-cols-2 gap-6">
+      <div class="card p-6">
+        <div class="mb-4">
+          <div class="bg-slate-900 text-white rounded-xl p-4 min-h-[100px] flex flex-col justify-end">
+            <div id="calc-expr" class="text-slate-400 text-sm text-right truncate h-5"></div>
+            <div id="calc-display" class="text-white text-3xl font-bold text-right truncate">0</div>
+          </div>
+        </div>
+        <div class="grid grid-cols-5 gap-2" id="calc-keys"></div>
+      </div>
+      <div class="card p-6">
+        <h3 class="font-semibold mb-3 flex items-center gap-2">${icon('info',16)} Como usar</h3>
+        <ul class="text-sm text-slate-600 space-y-2 list-disc pl-5">
+          <li>Digite a expressão usando os botões ou o teclado.</li>
+          <li>Funções: sin, cos, tan, log, ln, sqrt, ^, π, e.</li>
+          <li>Pressione = ou Enter para calcular.</li>
+          <li>Use C para limpar e ⌫ para apagar.</li>
+        </ul>
+        <div class="mt-4 formula-box">
+          <div class="text-sm text-slate-600">Exemplos válidos:</div>
+          <div class="mt-2 text-sm">sin(pi/2), 2^10, sqrt(144), log(1000), 5! + 3*7</div>
+        </div>
+        <div class="mt-4">
+          <div class="text-sm font-semibold mb-2">Histórico da sessão</div>
+          <div id="calc-history" class="space-y-1 max-h-48 overflow-y-auto text-sm"></div>
+        </div>
+      </div>
+    </div>
+  `, {custom:true});
+  const keys = [
+    ['C','fn','C'],['(','fn','('],[')','fn',')'],['⌫','fn','back'],['/','op','/'],
+    ['7','','7'],['8','','8'],['9','','9'],['×','op','*'],['x^y','op','^'],
+    ['4','','4'],['5','','5'],['6','','6'],['−','op','-'],['√','fn','sqrt('],
+    ['1','','1'],['2','','2'],['3','','3'],['+','op','+'],['π','fn','pi'],
+    ['0','','0'],['.','.','.'],['e','fn','e'],['n!','fn','!'],['=','eq','='],
+    ['sin','fn','sin('],['cos','fn','cos('],['tan','fn','tan('],['log','fn','log10('],['ln','fn','log(']
+  ];
+  const keysEl = $('calc-keys');
+  keysEl.innerHTML = keys.map(([label,cls,val])=>`<button class="calc-btn ${cls}" data-val="${val}">${label}</button>`).join('');
+  let expr = '';
+  let sessionHistory = [];
+  function updateDisplay() {
+    $('calc-expr').textContent = expr || '';
+    try {
+      if (expr) {
+        const r = math.evaluate(expr);
+        $('calc-display').textContent = fmt(r, 8);
+      } else $('calc-display').textContent = '0';
+    } catch(e) { $('calc-display').textContent = '0'; }
+  }
+  function press(val) {
+    if (val === 'C') { expr=''; updateDisplay(); return; }
+    if (val === 'back') { expr = expr.slice(0,-1); updateDisplay(); return; }
+    if (val === '=') {
+      try {
+        const r = math.evaluate(expr);
+        const rs = fmt(r, 10);
+        sessionHistory.unshift({expr, res: rs});
+        sessionHistory = sessionHistory.slice(0,20);
+        $('calc-history').innerHTML = sessionHistory.map(h=>`<div class="p-2 bg-slate-50 rounded"><div class="text-xs text-slate-400">${h.expr}</div><div class="font-semibold text-primary">= ${h.res}</div></div>`).join('');
+        expr = String(r);
+        updateDisplay();
+        addHistory('cientifica', rs);
+      } catch(e) { toast('Expressão inválida','error'); }
+      return;
+    }
+    expr += val;
+    updateDisplay();
+  }
+  keysEl.querySelectorAll('button').forEach(b => b.onclick = () => press(b.dataset.val));
+  refreshIcons();
+};
+
+/* --- CALCULADORA BÁSICA --- */
+tools.basica = function(root, meta) {
+  root.innerHTML = toolTemplate(meta, null, `
+    <div class="max-w-md mx-auto">
+      <div class="card p-6">
+        <div class="bg-slate-900 text-white rounded-xl p-4 mb-4">
+          <div id="calc-expr" class="text-slate-400 text-sm text-right truncate h-5"></div>
+          <div id="calc-display" class="text-white text-4xl font-bold text-right truncate">0</div>
+        </div>
+        <div class="grid grid-cols-4 gap-2" id="calc-keys"></div>
+      </div>
+    </div>
+  `, {custom:true});
+  const keys = [['C','fn'],['⌫','fn'],['%','op'],['/','op'],['7',''],['8',''],['9',''],['×','op'],['4',''],['5',''],['6',''],['−','op'],['1',''],['2',''],['3',''],['+','op'],['0',''],['.',''],['=','eq']];
+  $('calc-keys').innerHTML = keys.map(([l,c])=>`<button class="calc-btn ${c||''}" data-label="${l}">${l}</button>`).join('');
+  let expr='';
+  function upd() {
+    $('calc-expr').textContent = expr;
+    try { $('calc-display').textContent = expr ? fmt(math.evaluate(expr),8) : '0'; }
+    catch { $('calc-display').textContent = '0'; }
+  }
+  $('calc-keys').querySelectorAll('button').forEach(b=>b.onclick=()=>{
+    const l = b.dataset.label;
+    if (l==='C') expr='';
+    else if (l==='⌫') expr=expr.slice(0,-1);
+    else if (l==='=') { try { expr = String(math.evaluate(expr)); addHistory('basica', expr); } catch{toast('Erro','error');} }
+    else if (l==='×') expr+='*';
+    else if (l==='−') expr+='-';
+    else if (l==='%') expr+='/100';
+    else expr+=l;
+    upd();
+  });
+  refreshIcons();
+};
+
+/* --- PORCENTAGEM --- */
+tools.porcentagem = simpleToolDef({
+  inputs: [
+    {id:'p', label:'Porcentagem (%)', opts:{value:10}},
+    {id:'v', label:'Valor', opts:{value:200, suffix:'R$'}}
+  ],
+  formula: '\\text{resultado} = \\frac{p \\cdot v}{100}',
+  calc: v => {
+    const part = v.p * v.v / 100;
+    return { rows: [
+      {label: `${v.p}% de ${fmt(v.v)}`, value: fmt(part), big: true},
+      {label: 'Valor aumentado em %', value: fmt(v.v + part)},
+      {label: 'Valor descontado em %', value: fmt(v.v - part)},
+    ], steps: [`Convertendo ${v.p}% para decimal: ${v.p/100}`, `Multiplicando: ${v.p/100} × ${fmt(v.v)} = ${fmt(part)}`] };
+  },
+  auto: true
+});
+
+/* --- REGRA DE TRÊS --- */
+tools.regra3 = simpleToolDef({
+  inputs: [
+    {id:'a', label:'A', opts:{value:3}},
+    {id:'b', label:'B', opts:{value:9}},
+    {id:'c', label:'C', opts:{value:5}}
+  ],
+  formula: '\\frac{A}{B} = \\frac{C}{X} \\Rightarrow X = \\frac{B \\cdot C}{A}',
+  calc: v => {
+    const x = v.b * v.c / v.a;
+    return { value: fmt(x), label: 'X (valor procurado)',
+      steps: [`Montando a proporção: ${v.a}/${v.b} = ${v.c}/X`, `Multiplicando cruzado: ${v.a}·X = ${v.b}·${v.c}`, `X = ${v.b*v.c}/${v.a} = ${fmt(x)}`] };
+  }
+});
+
+/* --- REGRA DE TRÊS COMPOSTA --- */
+tools.regra3composta = simpleToolDef({
+  inputs: [
+    {id:'a1', label:'A₁', opts:{value:4}},
+    {id:'b1', label:'B₁', opts:{value:6}},
+    {id:'c1', label:'C₁', opts:{value:8}},
+    {id:'a2', label:'A₂', opts:{value:2}},
+    {id:'b2', label:'B₂', opts:{value:3}}
+  ],
+  formula: '\\frac{A_1}{A_2} \\cdot \\frac{B_1}{B_2} = \\frac{C_1}{X}',
+  calc: v => {
+    // A inversamente proporcional, B diretamente proporcional
+    const x = (v.a1 * v.b2 * v.c1) / (v.a2 * v.b1);
+    return { value: fmt(x), label: 'X',
+      steps: [`A inversamente proporcional: inverte A₂`, `B diretamente proporcional: mantém B₂`, `X = (A₁·B₂·C₁)/(A₂·B₁) = ${fmt(x)}`] };
+  }
+});
+
+/* --- JUROS SIMPLES --- */
+tools.jurosSimples = simpleToolDef({
+  inputs: [
+    {id:'c', label:'Capital (C)', opts:{value:1000, suffix:'R$'}},
+    {id:'i', label:'Taxa (i) mensal', opts:{value:2, suffix:'%'}},
+    {id:'t', label:'Tempo (t) em meses', opts:{value:6}}
+  ],
+  formula: 'J = C \\cdot i \\cdot t \\quad | \\quad M = C + J',
+  calc: v => {
+    const i = v.i/100;
+    const j = v.c * i * v.t;
+    const m = v.c + j;
+    return { rows: [
+      {label:'Juros (J)', value: 'R$ '+fmt(j), big:true},
+      {label:'Montante (M)', value: 'R$ '+fmt(m)},
+    ], steps: [`Converter taxa: ${v.i}% = ${i}`, `J = ${fmt(v.c)} × ${i} × ${v.t} = R$ ${fmt(j)}`, `M = ${fmt(v.c)} + ${fmt(j)} = R$ ${fmt(m)}`] };
+  }
+});
+
+/* --- JUROS COMPOSTOS --- */
+tools.jurosCompostos = simpleToolDef({
+  inputs: [
+    {id:'c', label:'Capital (C)', opts:{value:1000, suffix:'R$'}},
+    {id:'i', label:'Taxa (i) mensal', opts:{value:2, suffix:'%'}},
+    {id:'t', label:'Tempo (t) em meses', opts:{value:6}}
+  ],
+  formula: 'M = C \\cdot (1 + i)^t \\quad | \\quad J = M - C',
+  calc: v => {
+    const i = v.i/100;
+    const m = v.c * Math.pow(1+i, v.t);
+    const j = m - v.c;
+    return { rows: [
+      {label:'Montante (M)', value: 'R$ '+fmt(m), big:true},
+      {label:'Juros (J)', value: 'R$ '+fmt(j)},
+    ], steps: [`Converter taxa: ${v.i}% = ${i}`, `M = ${fmt(v.c)} × (1+${i})^${v.t}`, `M = ${fmt(v.c)} × ${fmt(Math.pow(1+i,v.t))} = R$ ${fmt(m)}`, `J = M - C = R$ ${fmt(j)}`] };
+  }
+});
+
+/* --- DESCONTO --- */
+tools.desconto = simpleToolDef({
+  inputs: [
+    {id:'v', label:'Valor original', opts:{value:200, suffix:'R$'}},
+    {id:'d', label:'Desconto', opts:{value:15, suffix:'%'}}
+  ],
+  formula: 'D = \\frac{V \\cdot d}{100} \\quad | \\quad V_f = V - D',
+  calc: v => {
+    const desc = v.v * v.d/100;
+    const fin = v.v - desc;
+    return { rows: [
+      {label:'Desconto (D)', value: 'R$ '+fmt(desc)},
+      {label:'Valor final', value: 'R$ '+fmt(fin), big:true},
+    ], steps: [`D = ${fmt(v.v)} × ${v.d}/100 = R$ ${fmt(desc)}`, `V_final = ${fmt(v.v)} - ${fmt(desc)} = R$ ${fmt(fin)}`] };
+  },
+  auto: true
+});
+
+/* --- AUMENTO PERCENTUAL --- */
+tools.aumentoPercentual = simpleToolDef({
+  inputs: [
+    {id:'v', label:'Valor original', opts:{value:200, suffix:'R$'}},
+    {id:'a', label:'Aumento', opts:{value:15, suffix:'%'}}
+  ],
+  formula: 'A = \\frac{V \\cdot a}{100} \\quad | \\quad V_f = V + A',
+  calc: v => {
+    const aum = v.v * v.a/100;
+    const fin = v.v + aum;
+    return { rows: [
+      {label:'Aumento (A)', value: 'R$ '+fmt(aum)},
+      {label:'Valor final', value: 'R$ '+fmt(fin), big:true},
+    ], steps: [`A = ${fmt(v.v)} × ${v.a}/100 = R$ ${fmt(aum)}`, `V_final = ${fmt(v.v)} + ${fmt(aum)} = R$ ${fmt(fin)}`] };
+  },
+  auto: true
+});
+
+/* --- FINANCEIRA --- */
+tools.financeira = function(root, meta) {
+  root.innerHTML = toolTemplate(meta, null, `
+    <div class="grid md:grid-cols-3 gap-4 mb-6">
+      <button class="card p-4 card-hover text-left" data-mode="emprestimo">
+        <div class="tool-icon cat-calculadoras mb-2">${icon('dollar-sign',20)}</div>
+        <div class="font-semibold">Empréstimo</div>
+        <div class="text-xs text-slate-500">Parcelas com juros compostos</div>
+      </button>
+      <button class="card p-4 card-hover text-left" data-mode="investimento">
+        <div class="tool-icon cat-calculadoras mb-2">${icon('trending-up',20)}</div>
+        <div class="font-semibold">Investimento</div>
+        <div class="text-xs text-slate-500">Aporte mensal com juros</div>
+      </button>
+      <button class="card p-4 card-hover text-left" data-mode="aporte">
+        <div class="tool-icon cat-calculadoras mb-2">${icon('piggy-bank',20)}</div>
+        <div class="font-semibold">Aporte Único</div>
+        <div class="text-xs text-slate-500">Capitalização composta</div>
+      </button>
+    </div>
+    <div class="grid lg:grid-cols-2 gap-6">
+      <div class="card p-6">
+        <h3 class="font-semibold mb-4">Entrada</h3>
+        <div id="fin-inputs" class="space-y-4"></div>
+        <button id="calc-btn" class="btn-primary w-full mt-5">${icon('zap',18)} Calcular</button>
+      </div>
+      <div class="card p-6">
+        <h3 class="font-semibold mb-4">Resultado</h3>
+        <div id="result-area" class="text-slate-400 text-sm">Preencha e calcule.</div>
+        <div id="steps-area"></div>
+      </div>
+    </div>
+  `, {custom:true});
+  let mode = 'emprestimo';
+  const modes = {
+    emprestimo: [
+      {id:'p', label:'Valor principal', opts:{value:10000, suffix:'R$'}},
+      {id:'i', label:'Taxa mensal', opts:{value:2, suffix:'%'}},
+      {id:'n', label:'Número de parcelas', opts:{value:12}}
+    ],
+    investimento: [
+      {id:'p', label:'Valor inicial', opts:{value:1000, suffix:'R$'}},
+      {id:'a', label:'Aporte mensal', opts:{value:200, suffix:'R$'}},
+      {id:'i', label:'Taxa mensal', opts:{value:1, suffix:'%'}},
+      {id:'n', label:'Período (meses)', opts:{value:24}}
+    ],
+    aporte: [
+      {id:'p', label:'Valor presente', opts:{value:1000, suffix:'R$'}},
+      {id:'i', label:'Taxa mensal', opts:{value:1, suffix:'%'}},
+      {id:'n', label:'Período (meses)', opts:{value:12}}
+    ]
+  };
+  function renderInputs() {
+    $('fin-inputs').innerHTML = modes[mode].map(i => inputHTML(i.id, i.label, i.opts||{})).join('');
+    refreshIcons();
+  }
+  root.querySelectorAll('[data-mode]').forEach(b => b.onclick = () => { mode = b.dataset.mode; renderInputs(); });
+  renderInputs();
+  $('calc-btn').onclick = () => {
+    const v = {};
+    let valid = true;
+    modes[mode].forEach(i => {
+      const el = $(`in_${i.id}`);
+      const val = parseFloat(el.value);
+      if (isNaN(val)) { valid=false; el.style.borderColor='#ef4444'; }
+      else { v[i.id] = val; el.style.borderColor=''; }
+    });
+    if (!valid) { toast('Preencha corretamente','warning'); return; }
+    const i = v.i/100;
+    if (mode === 'emprestimo') {
+      const pmt = v.p * (i * Math.pow(1+i, v.n)) / (Math.pow(1+i, v.n) - 1);
+      const total = pmt * v.n;
+      showResultTable([
+        {label:'Prestação mensal', value:'R$ '+fmt(pmt), big:true},
+        {label:'Total pago', value:'R$ '+fmt(total)},
+        {label:'Juros pagos', value:'R$ '+fmt(total - v.p)}
+      ]);
+      showSteps([`i = ${v.i}% = ${i}`, `PMT = P · i · (1+i)ⁿ / ((1+i)ⁿ - 1)`, `PMT = ${fmt(v.p)} · ${i} · ${(1+i).toFixed(4)}^${v.n} / ...`]);
+    } else if (mode === 'investimento') {
+      let mont = v.p;
+      for (let k=0; k<v.n; k++) { mont = mont*(1+i) + v.a; }
+      const totalInv = v.p + v.a * v.n;
+      showResultTable([
+        {label:'Montante final', value:'R$ '+fmt(mont), big:true},
+        {label:'Total investido', value:'R$ '+fmt(totalInv)},
+        {label:'Juros ganhos', value:'R$ '+fmt(mont - totalInv)}
+      ]);
+      showSteps([`Capital inicial cresce com juros compostos`, `Aportes mensais acrescidos a cada período`]);
+    } else {
+      const m = v.p * Math.pow(1+i, v.n);
+      showResultTable([
+        {label:'Montante', value:'R$ '+fmt(m), big:true},
+        {label:'Juros', value:'R$ '+fmt(m - v.p)}
+      ]);
+      showSteps([`M = C(1+i)ⁿ`, `M = ${fmt(v.p)} · (1+${i})^${v.n}`, `M = R$ ${fmt(m)}`]);
+    }
+    addHistory('financeira', 'Cálculo realizado');
+  };
+  refreshIcons();
+};
+
+/* --- EQUAÇÃO 1º GRAU --- */
+tools.eq1grau = simpleToolDef({
+  inputs: [
+    {id:'a', label:'Coeficiente a', opts:{value:2}},
+    {id:'b', label:'Termo independente b', opts:{value:-8}}
+  ],
+  formula: 'ax + b = 0 \\Rightarrow x = -\\frac{b}{a}',
+  calc: v => {
+    if (v.a === 0) {
+      if (v.b === 0) return {value:'Infinitas soluções', label:'Resultado'};
+      return {value:'Sem solução', label:'Resultado'};
+    }
+    const x = -v.b / v.a;
+    return { value: fmt(x), label: 'x =',
+      steps: [`${v.a}x + (${v.b}) = 0`, `${v.a}x = ${-v.b}`, `x = ${-v.b}/${v.a}`, `x = ${fmt(x)}`] };
+  }
+});
+
+/* --- EQUAÇÃO 2º GRAU --- */
+tools.eq2grau = simpleToolDef({
+  inputs: [
+    {id:'a', label:'Coeficiente a', opts:{value:1}},
+    {id:'b', label:'Coeficiente b', opts:{value:-3}},
+    {id:'c', label:'Coeficiente c', opts:{value:2}}
+  ],
+  formula: 'x = \\frac{-b \\pm \\sqrt{\\Delta}}{2a} \\quad | \\quad \\Delta = b^2 - 4ac',
+  calc: v => {
+    const delta = v.b*v.b - 4*v.a*v.c;
+    let rows = [{label:'Delta (Δ)', value: fmt(delta), big: true}];
+    let steps = [`Δ = b² - 4ac`, `Δ = ${v.b}² - 4·${v.a}·${v.c}`, `Δ = ${v.b*v.b} - ${4*v.a*v.c}`, `Δ = ${fmt(delta)}`];
+    if (v.a === 0) return {value:'Não é equação do 2º grau (a=0)', label:'Erro'};
+    if (delta < 0) {
+      const re = -v.b/(2*v.a);
+      const im = Math.sqrt(-delta)/(2*v.a);
+      rows.push({label:'x₁', value: `${fmt(re)} + ${fmt(im)}i`});
+      rows.push({label:'x₂', value: `${fmt(re)} - ${fmt(im)}i`});
+      steps.push('Δ < 0: raízes complexas');
+      steps.push(`x = (-b ± √Δ·i)/(2a) = ${fmt(-v.b)} ± ${fmt(Math.sqrt(-delta))}i / ${2*v.a}`);
+    } else if (delta === 0) {
+      const x = -v.b/(2*v.a);
+      rows.push({label:'x (raiz dupla)', value: fmt(x), big: true});
+      steps.push(`Δ = 0: raiz dupla`, `x = -b/(2a) = ${fmt(x)}`);
+    } else {
+      const x1 = (-v.b + Math.sqrt(delta))/(2*v.a);
+      const x2 = (-v.b - Math.sqrt(delta))/(2*v.a);
+      rows.push({label:'x₁', value: fmt(x1), big: true});
+      rows.push({label:'x₂', value: fmt(x2), big: true});
+      steps.push(`√Δ = ${fmt(Math.sqrt(delta))}`, `x₁ = (-b + √Δ)/(2a) = (${fmt(-v.b)} + ${fmt(Math.sqrt(delta))})/${2*v.a} = ${fmt(x1)}`, `x₂ = (-b - √Δ)/(2a) = ${fmt(x2)}`);
+    }
+    // Soma e produto
+    rows.push({label:'Soma (x₁+x₂)', value: fmt(-v.b/v.a)});
+    rows.push({label:'Produto (x₁·x₂)', value: fmt(v.c/v.a)});
+    return { rows, steps };
+  }
+});
+
+/* --- SISTEMA 2x2 --- */
+tools.sistema2x2 = function(root, meta) {
+  root.innerHTML = toolTemplate(meta, '\\begin{cases} a_1 x + b_1 y = c_1 \\\\ a_2 x + b_2 y = c_2 \\end{cases}', `
+    <div class="space-y-3">
+      <div class="text-sm text-slate-600">Equação 1:</div>
+      <div class="grid grid-cols-3 gap-2">
+        ${inputHTML('a1','a₁',{value:1})}${inputHTML('b1','b₁',{value:1})}${inputHTML('c1','c₁',{value:5})}
+      </div>
+      <div class="text-sm text-slate-600">Equação 2:</div>
+      <div class="grid grid-cols-3 gap-2">
+        ${inputHTML('a2','a₂',{value:2})}${inputHTML('b2','b₂',{value:-1})}${inputHTML('c2','c₂',{value:4})}
+      </div>
+    </div>
+  `);
+  showFormula('\\begin{cases} a_1 x + b_1 y = c_1 \\\\ a_2 x + b_2 y = c_2 \\end{cases}');
+  $('calc-btn').onclick = () => {
+    const v = {};
+    ['a1','b1','c1','a2','b2','c2'].forEach(k => v[k] = parseFloat($(`in_${k}`).value));
+    const det = v.a1*v.b2 - v.a2*v.b1;
+    if (det === 0) { showResult('Sistema sem solução única (SPI ou SI)', 'Resultado'); return; }
+    const x = (v.c1*v.b2 - v.c2*v.b1)/det;
+    const y = (v.a1*v.c2 - v.a2*v.c1)/det;
+    showResultTable([
+      {label:'x', value: fmt(x), big:true},
+      {label:'y', value: fmt(y), big:true},
+      {label:'Determinante', value: fmt(det)}
+    ]);
+    showSteps([`det = a₁·b₂ - a₂·b₁ = ${fmt(det)}`, `x = (c₁·b₂ - c₂·b₁)/det = ${fmt(x)}`, `y = (a₁·c₂ - a₂·c₁)/det = ${fmt(y)}`]);
+    addHistory('sistema2x2', `x=${fmt(x)}, y=${fmt(y)}`);
+  };
+  refreshIcons();
+};
+
+/* --- SISTEMA 3x3 --- */
+tools.sistema3x3 = function(root, meta) {
+  root.innerHTML = toolTemplate(meta, null, `
+    <div class="space-y-3">
+      <div class="text-sm text-slate-600">Equação 1:</div>
+      <div class="grid grid-cols-4 gap-2">
+        ${inputHTML('a1','a₁',{value:1})}${inputHTML('b1','b₁',{value:1})}${inputHTML('c1','c₁',{value:1})}${inputHTML('d1','d₁',{value:6})}
+      </div>
+      <div class="text-sm text-slate-600">Equação 2:</div>
+      <div class="grid grid-cols-4 gap-2">
+        ${inputHTML('a2','a₂',{value:2})}${inputHTML('b2','b₂',{value:-1})}${inputHTML('c2','c₂',{value:1})}${inputHTML('d2','d₂',{value:5})}
+      </div>
+      <div class="text-sm text-slate-600">Equação 3:</div>
+      <div class="grid grid-cols-4 gap-2">
+        ${inputHTML('a3','a₃',{value:3})}${inputHTML('b3','b₃',{value:1})}${inputHTML('c3','c₃',{value:-2})}${inputHTML('d3','d₃',{value:7})}
+      </div>
+    </div>
+  `);
+  $('calc-btn').onclick = () => {
+    const v={};
+    ['a1','b1','c1','d1','a2','b2','c2','d2','a3','b3','c3','d3'].forEach(k=>v[k]=parseFloat($(`in_${k}`).value));
+    const det = v.a1*(v.b2*v.c3-v.b3*v.c2) - v.b1*(v.a2*v.c3-v.a3*v.c2) + v.c1*(v.a2*v.b3-v.a3*v.b2);
+    if (det===0) { showResult('Sistema sem solução única','Resultado'); return; }
+    const detX = v.d1*(v.b2*v.c3-v.b3*v.c2) - v.b1*(v.d2*v.c3-v.d3*v.c2) + v.c1*(v.d2*v.b3-v.d3*v.b2);
+    const detY = v.a1*(v.d2*v.c3-v.d3*v.c2) - v.d1*(v.a2*v.c3-v.a3*v.c2) + v.c1*(v.a2*v.d3-v.a3*v.d2);
+    const detZ = v.a1*(v.b2*v.d3-v.b3*v.d2) - v.b1*(v.a2*v.d3-v.a3*v.d2) + v.d1*(v.a2*v.b3-v.a3*v.b2);
+    const x = detX/det, y = detY/det, z = detZ/det;
+    showResultTable([
+      {label:'x', value: fmt(x), big:true},
+      {label:'y', value: fmt(y), big:true},
+      {label:'z', value: fmt(z), big:true},
+      {label:'Determinante (D)', value: fmt(det)}
+    ]);
+    showSteps(['Método de Cramer: x=Dₓ/D, y=Dᵧ/D, z=D_z/D', `D = ${fmt(det)}`, `Dₓ = ${fmt(detX)}`, `Dᵧ = ${fmt(detY)}`, `D_z = ${fmt(detZ)}`]);
+    addHistory('sistema3x3', `x=${fmt(x)}, y=${fmt(y)}, z=${fmt(z)}`);
+  };
+  refreshIcons();
+};
+
+/* --- FATORAÇÃO --- */
+tools.fatoracao = simpleToolDef({
+  inputs: [{id:'n', label:'Número', opts:{value:120}}],
+  formula: 'n = p_1^{k_1} \\cdot p_2^{k_2} \\cdots p_m^{k_m}',
+  calc: v => {
+    let n = Math.floor(v.n); const orig = n;
+    const fatores = {};
+    for (let p=2; p*p<=n; p++) {
+      while (n%p===0) { fatores[p]=(fatores[p]||0)+1; n=n/p; }
+    }
+    if (n>1) fatores[n]=(fatores[n]||0)+1;
+    const str = Object.entries(fatores).map(([p,k])=>k>1?`${p}^${k}`:p).join(' · ');
+    const steps = [`Começar dividindo ${orig} pelos primos`, ...Object.entries(fatores).map(([p,k])=>`${orig} é divisível por ${p} (${k}x)`), `${orig} = ${str}`];
+    return { value: str, label:`${orig} =`, steps };
+  }
+});
+
+/* --- MMC --- */
+tools.mmc = simpleToolDef({
+  inputs: [{id:'n', label:'Números (separados por vírgula)', opts:{type:'text', value:'12, 18, 24'}}],
+  formula: '\\text{MMC}(a,b,c) = \\text{mínimo múltiplo comum}',
+  calc: v => {
+    const nums = v.n.split(',').map(s=>parseInt(s.trim())).filter(n=>!isNaN(n));
+    const mmc2 = (a,b) => { const mdc=(a,b)=>b?mdc(b,a%b):a; return a*b/mdc(a,b); };
+    const r = nums.reduce((acc,n)=>mmc2(acc,n),1);
+    return { value: fmt(r), label: 'MMC',
+      steps: [`Decompor cada número em primos`, ...nums.map(n=>`${n} = ${decomp(n)}`), `MMC = ${fmt(r)}`] };
+  }
+});
+function decomp(n) {
+  let r=''; const f={};
+  for(let p=2;p*p<=n;p++){while(n%p===0){f[p]=(f[p]||0)+1;n=n/p;}}
+  if(n>1)f[n]=1;
+  return Object.entries(f).map(([p,k])=>k>1?`${p}^${k}`:p).join(' · ');
+}
+
+/* --- MDC --- */
+tools.mdc = simpleToolDef({
+  inputs: [{id:'n', label:'Números (separados por vírgula)', opts:{type:'text', value:'48, 36, 24'}}],
+  formula: '\\text{MDC}(a,b,c) = \\text{máximo divisor comum}',
+  calc: v => {
+    const nums = v.n.split(',').map(s=>parseInt(s.trim())).filter(n=>!isNaN(n));
+    const mdc2 = (a,b)=>b?mdc2(b,a%b):a;
+    const r = nums.reduce((acc,n)=>mdc2(acc,n));
+    return { value: fmt(r), label: 'MDC',
+      steps: [`Usar algoritmo de Euclides`, ...nums.map(n=>`Decompor ${n}`), `MDC = ${fmt(r)}`] };
+  }
+});
+
+/* --- DIVISORES --- */
+tools.divisores = simpleToolDef({
+  inputs: [{id:'n', label:'Número', opts:{value:36}}],
+  calc: v => {
+    const n = Math.floor(v.n);
+    const divs = [];
+    for (let i=1; i<=n; i++) if (n%i===0) divs.push(i);
+    return { value: divs.join(', '), label:`Divisores de ${n} (${divs.length})`,
+      steps: [`Testar de 1 até ${n}`, `Divisores: ${divs.join(', ')}`] };
+  }
+});
+
+/* --- PRIMO --- */
+tools.primo = simpleToolDef({
+  inputs: [{id:'n', label:'Número', opts:{value:17}}],
+  calc: v => {
+    const n = Math.floor(v.n);
+    if (n < 2) return {value:'Não é primo', label:'Resultado'};
+    let primo = true;
+    for (let i=2; i*i<=n; i++) if (n%i===0) { primo=false; break; }
+    return { value: primo?'É PRIMO':'NÃO É PRIMO', label:'Resultado',
+      steps: primo ? [`${n} não é divisível por nenhum primo até √${n}≈${Math.floor(Math.sqrt(n))}`] : [`${n} é divisível (encontrado divisor)`, `${n} é composto`] };
+  }
+});
+
+/* --- FATORIAL --- */
+tools.fatorial = simpleToolDef({
+  inputs: [{id:'n', label:'Número (n ≤ 170)', opts:{value:5, min:0, max:170}}],
+  formula: 'n! = 1 \\cdot 2 \\cdot 3 \\cdots n',
+  calc: v => {
+    let r=1;
+    for(let i=2;i<=v.n;i++) r*=i;
+    return { value: fmt(r), label: `${v.n}! =`,
+      steps: [`Multiplicar: 1 × 2 × 3 × ... × ${v.n}`, `Resultado = ${fmt(r)}`] };
+  }
+});
+
+/* --- PA --- */
+tools.pa = simpleToolDef({
+  inputs: [
+    {id:'a1', label:'Primeiro termo (a₁)', opts:{value:2}},
+    {id:'r', label:'Razão (r)', opts:{value:3}},
+    {id:'n', label:'Termo (n)', opts:{value:10}}
+  ],
+  formula: 'a_n = a_1 + (n-1) \\cdot r',
+  calc: v => {
+    const an = v.a1 + (v.n-1)*v.r;
+    return { value: fmt(an), label: `a_${v.n} =`,
+      steps: [`a_n = a₁ + (n-1)·r`, `a_${v.n} = ${v.a1} + (${v.n}-1)·${v.r}`, `a_${v.n} = ${v.a1} + ${(v.n-1)*v.r}`, `a_${v.n} = ${fmt(an)}`] };
+  }
+});
+
+/* --- PG --- */
+tools.pg = simpleToolDef({
+  inputs: [
+    {id:'a1', label:'Primeiro termo (a₁)', opts:{value:3}},
+    {id:'q', label:'Razão (q)', opts:{value:2}},
+    {id:'n', label:'Termo (n)', opts:{value:8}}
+  ],
+  formula: 'a_n = a_1 \\cdot q^{n-1}',
+  calc: v => {
+    const an = v.a1 * Math.pow(v.q, v.n-1);
+    return { value: fmt(an), label: `a_${v.n} =`,
+      steps: [`a_n = a₁ · q^(n-1)`, `a_${v.n} = ${v.a1} · ${v.q}^${v.n-1}`, `a_${v.n} = ${v.a1} · ${fmt(Math.pow(v.q,v.n-1))}`, `a_${v.n} = ${fmt(an)}`] };
+  }
+});
+
+/* --- SOMA PA --- */
+tools.somaPA = simpleToolDef({
+  inputs: [
+    {id:'a1', label:'Primeiro termo (a₁)', opts:{value:1}},
+    {id:'an', label:'Último termo (aₙ)', opts:{value:100}},
+    {id:'n', label:'Número de termos', opts:{value:100}}
+  ],
+  formula: 'S_n = \\frac{(a_1 + a_n) \\cdot n}{2}',
+  calc: v => {
+    const s = (v.a1 + v.an) * v.n / 2;
+    return { value: fmt(s), label: `S_${v.n} =`,
+      steps: [`S_n = (a₁ + aₙ)·n / 2`, `S_${v.n} = (${v.a1} + ${v.an})·${v.n}/2`, `S_${v.n} = ${v.a1+v.an}·${v.n}/2`, `S_${v.n} = ${fmt(s)}`] };
+  }
+});
+
+/* --- SOMA PG --- */
+tools.somaPG = simpleToolDef({
+  inputs: [
+    {id:'a1', label:'Primeiro termo (a₁)', opts:{value:3}},
+    {id:'q', label:'Razão (q)', opts:{value:2}},
+    {id:'n', label:'Número de termos', opts:{value:10}}
+  ],
+  formula: 'S_n = a_1 \\cdot \\frac{q^n - 1}{q - 1}',
+  calc: v => {
+    const s = v.q===1 ? v.a1*v.n : v.a1 * (Math.pow(v.q, v.n) - 1) / (v.q - 1);
+    return { value: fmt(s), label: `S_${v.n} =`,
+      steps: [`S_n = a₁·(qⁿ - 1)/(q - 1)`, `q^${v.n} = ${fmt(Math.pow(v.q,v.n))}`, `S_${v.n} = ${v.a1} · (${fmt(Math.pow(v.q,v.n))} - 1)/(${v.q} - 1)`, `S_${v.n} = ${fmt(s)}`] };
+  }
+});
+
+/* --- FIBONACCI --- */
+tools.fibonacci = simpleToolDef({
+  inputs: [{id:'n', label:'Quantidade de termos', opts:{value:15, min:1, max:100}}],
+  formula: 'F_n = F_{n-1} + F_{n-2} \\quad | \\quad F_1 = F_2 = 1',
+  calc: v => {
+    const seq = [0, 1];
+    for (let i=2; i<v.n; i++) seq.push(seq[i-1]+seq[i-2]);
+    const r = seq.slice(0, v.n);
+    return { value: r.join(', '), label: `Sequência (${v.n} termos)`,
+      steps: [`Iniciar com 0, 1`, `Cada termo = soma dos dois anteriores`, `Termo ${v.n} = ${fmt(r[r.length-1])}`] };
+  }
+});
+
+/* --- TRIANGULAR --- */
+tools.triangular = simpleToolDef({
+  inputs: [{id:'n', label:'Posição (n)', opts:{value:7}}],
+  formula: 'T_n = \\frac{n(n+1)}{2}',
+  calc: v => {
+    const t = v.n*(v.n+1)/2;
+    return { value: fmt(t), label: `T_${v.n} =`,
+      steps: [`T_n = n(n+1)/2`, `T_${v.n} = ${v.n}·${v.n+1}/2`, `T_${v.n} = ${fmt(t)}`] };
+  }
+});
+
+/* --- PERFEITO --- */
+tools.perfeito = simpleToolDef({
+  inputs: [{id:'n', label:'Número', opts:{value:28}}],
+  calc: v => {
+    const n = Math.floor(v.n);
+    const divs = [];
+    for (let i=1; i<n; i++) if (n%i===0) divs.push(i);
+    const soma = divs.reduce((a,b)=>a+b, 0);
+    const perfeito = soma === n;
+    return { value: perfeito?'É PERFEITO':'NÃO É PERFEITO', label:'Resultado',
+      steps: [`Divisores próprios: ${divs.join(' + ')}`, `Soma = ${soma}`, `${soma} ${perfeito?'==':'!='} ${n}`] };
+  }
+});
+
+/* --- CATALAN --- */
+tools.catalan = simpleToolDef({
+  inputs: [{id:'n', label:'n', opts:{value:8, min:0, max:30}}],
+  formula: 'C_n = \\frac{(2n)!}{(n+1)! \\cdot n!}',
+  calc: v => {
+    const f = n => { let r=1; for(let i=2;i<=n;i++)r*=i; return r; };
+    const c = f(2*v.n) / (f(v.n+1) * f(v.n));
+    return { value: fmt(c), label: `C_${v.n} =`,
+      steps: [`C_n = (2n)! / ((n+1)!·n!)`, `(2·${v.n})! = ${f(2*v.n)}`, `C_${v.n} = ${fmt(c)}`] };
+  }
+});
+
+/* --- POTÊNCIAS --- */
+tools.potencias = simpleToolDef({
+  inputs: [
+    {id:'b', label:'Base', opts:{value:2}},
+    {id:'e', label:'Expoente', opts:{value:10}}
+  ],
+  formula: 'a^b = a \\cdot a \\cdot a \\cdots a \\quad (b \\text{ vezes})',
+  calc: v => ({ value: fmt(Math.pow(v.b, v.e)), label: `${v.b}^${v.e} =`,
+    steps: [`${v.b}^${v.e} = ${v.b} multiplicado ${v.e} vezes`, `= ${fmt(Math.pow(v.b,v.e))}`] })
+});
+
+/* --- RADICAIS --- */
+tools.radicais = simpleToolDef({
+  inputs: [{id:'n', label:'Número dentro da raiz', opts:{value:72}}, {id:'i', label:'Índice da raiz', opts:{value:2, min:2}}],
+  formula: '\\sqrt[i]{n} \\text{ simplificado}',
+  calc: v => {
+    // Simplifica raiz
+    if (v.i === 2) {
+      let n = Math.floor(v.n);
+      let outside = 1, inside = 1;
+      for (let p=2; p*p<=n; p++) {
+        let count = 0;
+        while (n%p===0) { count++; n/=p; }
+        outside *= Math.pow(p, Math.floor(count/2));
+        if (count%2===1) inside *= p;
+      }
+      if (n>1) inside *= n;
+      const str = outside===1 ? `√${inside}` : inside===1 ? `${outside}` : `${outside}√${inside}`;
+      return { value: str, label: `√${v.n} =`,
+        steps: [`Decompor ${v.n} = ${decomp(v.n)}`, `Separar pares: ${outside}·√${inside}`, `Resultado: ${str}`] };
+    }
+    const r = Math.pow(v.n, 1/v.i);
+    return { value: fmt(r), label: `${v.i}√${v.n} =`, steps: [`${v.i}√${v.n} = ${v.n}^(1/${v.i}) = ${fmt(r)}`] };
+  }
+});
+
+/* --- GEOMETRIA: gerador --- */
+function geomTool(formulaTex, inputs, calcFn) {
+  return simpleToolDef({ inputs, formula: formulaTex, calc: calcFn, auto: true });
+}
+tools.areaQuadrado = geomTool('A = l^2', [{id:'l', label:'Lado (l)', opts:{value:5, suffix:'un'}}],
+  v => ({ value: fmt(v.l*v.l)+' un²', label:'Área', steps:[`A = ${v.l}²`, `A = ${fmt(v.l*v.l)} un²`] }));
+tools.areaRetangulo = geomTool('A = b \\cdot h', [{id:'b', label:'Base (b)', opts:{value:8}},{id:'h', label:'Altura (h)', opts:{value:5}}],
+  v => ({ value: fmt(v.b*v.h)+' un²', label:'Área', steps:[`A = ${v.b} × ${v.h}`, `A = ${fmt(v.b*v.h)} un²`] }));
+tools.areaCirculo = geomTool('A = \\pi r^2', [{id:'r', label:'Raio (r)', opts:{value:5}}],
+  v => ({ rows:[{label:'Área', value: fmt(Math.PI*v.r*v.r)+' un²', big:true},{label:'Circunferência', value: fmt(2*Math.PI*v.r)+' un'},{label:'Diâmetro', value: fmt(2*v.r)+' un'}], steps:[`A = π·${v.r}²`, `A = π·${fmt(v.r*v.r)}`, `A = ${fmt(Math.PI*v.r*v.r)} un²`] }));
+tools.areaTriangulo = geomTool('A = \\frac{b \\cdot h}{2}', [{id:'b', label:'Base (b)', opts:{value:10}},{id:'h', label:'Altura (h)', opts:{value:6}}],
+  v => ({ value: fmt(v.b*v.h/2)+' un²', label:'Área', steps:[`A = ${v.b}·${v.h}/2`, `A = ${fmt(v.b*v.h)}/2`, `A = ${fmt(v.b*v.h/2)} un²`] }));
+tools.areaTrapezio = geomTool('A = \\frac{(B + b) \\cdot h}{2}', [{id:'B', label:'Base maior (B)', opts:{value:10}},{id:'b', label:'Base menor (b)', opts:{value:6}},{id:'h', label:'Altura (h)', opts:{value:4}}],
+  v => ({ value: fmt((v.B+v.b)*v.h/2)+' un²', label:'Área', steps:[`A = (${v.B}+${v.b})·${v.h}/2`, `A = ${fmt(v.B+v.b)}·${v.h}/2`, `A = ${fmt((v.B+v.b)*v.h/2)} un²`] }));
+tools.areaLosango = geomTool('A = \\frac{D \\cdot d}{2}', [{id:'D', label:'Diagonal maior (D)', opts:{value:12}},{id:'d', label:'Diagonal menor (d)', opts:{value:8}}],
+  v => ({ value: fmt(v.D*v.d/2)+' un²', label:'Área', steps:[`A = ${v.D}·${v.d}/2`, `A = ${fmt(v.D*v.d/2)} un²`] }));
+tools.perimetro = function(root, meta) {
+  root.innerHTML = toolTemplate(meta, null, `
+    ${selectHTML('forma','Forma geométrica',[
+      {v:'quadrado',l:'Quadrado'},{v:'retangulo',l:'Retângulo'},{v:'triangulo',l:'Triângulo'},{v:'circulo',l:'Círculo'},{v:'trapezio',l:'Trapézio'}
+    ])}
+    <div id="shape-inputs"></div>
+  `);
+  function upd() {
+    const f = $('in_forma').value;
+    let html = '';
+    if (f==='quadrado') html = inputHTML('l','Lado',{value:5});
+    else if (f==='retangulo') html = inputHTML('b','Base',{value:8}) + inputHTML('h','Altura',{value:5});
+    else if (f==='triangulo') html = inputHTML('a','Lado a',{value:3})+inputHTML('b','Lado b',{value:4})+inputHTML('c','Lado c',{value:5});
+    else if (f==='circulo') html = inputHTML('r','Raio',{value:5});
+    else if (f==='trapezio') html = inputHTML('B','Base maior',{value:8})+inputHTML('b','Base menor',{value:4})+inputHTML('l','Lateral 1',{value:3})+inputHTML('l2','Lateral 2',{value:3});
+    $('shape-inputs').innerHTML = html;
+  }
+  $('in_forma').onchange = upd; upd();
+  $('calc-btn').onclick = () => {
+    const f = $('in_forma').value;
+    let p=0;
+    if (f==='quadrado') p = 4*parseFloat($('in_l').value);
+    else if (f==='retangulo') p = 2*(parseFloat($('in_b').value)+parseFloat($('in_h').value));
+    else if (f==='triangulo') p = parseFloat($('in_a').value)+parseFloat($('in_b').value)+parseFloat($('in_c').value);
+    else if (f==='circulo') p = 2*Math.PI*parseFloat($('in_r').value);
+    else if (f==='trapezio') p = parseFloat($('in_B').value)+parseFloat($('in_b').value)+parseFloat($('in_l').value)+parseFloat($('in_l2').value);
+    showResult(fmt(p)+' un', 'Perímetro');
+    addHistory('perimetro', fmt(p));
+  };
+  refreshIcons();
+};
+tools.volumeCubo = geomTool('V = a^3', [{id:'a', label:'Aresta (a)', opts:{value:4}}],
+  v => ({ rows:[{label:'Volume', value: fmt(v.a**3)+' un³', big:true},{label:'Área total', value: fmt(6*v.a*v.a)+' un²'}], steps:[`V = ${v.a}³`, `V = ${fmt(v.a**3)} un³`] }));
+tools.volumeEsfera = geomTool('V = \\frac{4}{3}\\pi r^3', [{id:'r', label:'Raio (r)', opts:{value:5}}],
+  v => ({ rows:[{label:'Volume', value: fmt(4/3*Math.PI*v.r**3)+' un³', big:true},{label:'Área superficial', value: fmt(4*Math.PI*v.r*v.r)+' un²'}], steps:[`V = 4/3·π·${v.r}³`, `V = ${fmt(4/3*Math.PI*v.r**3)} un³`] }));
+tools.volumeCilindro = geomTool('V = \\pi r^2 h', [{id:'r', label:'Raio (r)', opts:{value:3}},{id:'h', label:'Altura (h)', opts:{value:8}}],
+  v => ({ rows:[{label:'Volume', value: fmt(Math.PI*v.r*v.r*v.h)+' un³', big:true},{label:'Área lateral', value: fmt(2*Math.PI*v.r*v.h)+' un²'},{label:'Área total', value: fmt(2*Math.PI*v.r*(v.r+v.h))+' un²'}], steps:[`V = π·${v.r}²·${v.h}`, `V = ${fmt(Math.PI*v.r*v.r*v.h)} un³`] }));
+
+/* --- TRIGONOMETRIA --- */
+function trigTool(fn, name, formulaTex) {
+  return simpleToolDef({
+    inputs: [
+      {id:'ang', label:'Ângulo', opts:{value:30}},
+      {id:'unit', label:'Unidade', opts:{}}
+    ],
+    formula: formulaTex,
+    calc: v => {
+      const unitEl = $('in_unit');
+      const unit = unitEl ? unitEl.value : 'deg';
+      const ang = unit === 'rad' ? v.ang : v.ang * Math.PI/180;
+      const r = fn(ang);
+      return { rows: [
+        {label: name, value: fmt(r, 8), big: true},
+        {label: 'Ângulo em rad', value: fmt(ang, 6)},
+        {label: 'Recíproco', value: fmt(1/r, 6)}
+      ], steps: [`Converter para radianos: ${fmt(ang)}`, `${name} = ${fmt(r, 8)}`] };
+    }
+  });
+}
+// Sobrescreve inputs com select
+function trigInputs(formulaTex, fn, name) {
+  return function(root, meta) {
+    root.innerHTML = toolTemplate(meta, formulaTex, `
+      ${inputHTML('ang','Ângulo', {value:30})}
+      ${selectHTML('unit','Unidade', [{v:'deg',l:'Graus'},{v:'rad',l:'Radianos'}], {value:'deg'})}
+    `);
+    showFormula(formulaTex);
+    $('calc-btn').onclick = () => {
+      const ang = parseFloat($('in_ang').value);
+      const unit = $('in_unit').value;
+      const rAng = unit==='rad' ? ang : ang*Math.PI/180;
+      const r = fn(rAng);
+      showResultTable([
+        {label:name, value: fmt(r,8), big:true},
+        {label:'Ângulo (rad)', value: fmt(rAng,6)},
+        {label:'Recíproco', value: r!==0 ? fmt(1/r,6) : '∞'}
+      ]);
+      showSteps([`Ângulo: ${ang} ${unit==='deg'?'°':'rad'}`, unit==='deg'?`Convertendo: ${ang}° = ${fmt(rAng)} rad`:null, `${name} = ${fmt(r,8)}`].filter(Boolean));
+      addHistory(meta.id, fmt(r,6));
+    };
+    refreshIcons();
+  };
+}
+tools.seno = trigInputs('\\sin(\\theta)', Math.sin, 'sen(θ)');
+tools.cosseno = trigInputs('\\cos(\\theta)', Math.cos, 'cos(θ)');
+tools.tangente = trigInputs('\\tan(\\theta)', Math.tan, 'tan(θ)');
+
+/* --- LEI DOS SENOS --- */
+tools.leiSenos = simpleToolDef({
+  inputs: [
+    {id:'a', label:'Lado a', opts:{value:10}},
+    {id:'A', label:'Ângulo A (°)', opts:{value:30}},
+    {id:'B', label:'Ângulo B (°)', opts:{value:60}}
+  ],
+  formula: '\\frac{a}{\\sin A} = \\frac{b}{\\sin B} = \\frac{c}{\\sin C}',
+  calc: v => {
+    const A = v.A*Math.PI/180;
+    const b = v.a * Math.sin(v.B*Math.PI/180) / Math.sin(A);
+    const C = 180 - v.A - v.B;
+    const c = v.a * Math.sin(C*Math.PI/180) / Math.sin(A);
+    return { rows: [
+      {label:'Lado b', value: fmt(b), big:true},
+      {label:'Lado c', value: fmt(c), big:true},
+      {label:'Ângulo C', value: fmt(C)+'°'}
+    ], steps: [`a/sin(A) = ${v.a}/sin(${v.A}°) = ${fmt(v.a/Math.sin(A))}`, `b = ${fmt(v.a/Math.sin(A))}·sin(${v.B}°) = ${fmt(b)}`, `C = 180 - ${v.A} - ${v.B} = ${C}°`, `c = ${fmt(c)}`] };
+  }
+});
+
+/* --- LEI DOS COSSENOS --- */
+tools.leiCossenos = simpleToolDef({
+  inputs: [
+    {id:'a', label:'Lado a', opts:{value:5}},
+    {id:'b', label:'Lado b', opts:{value:7}},
+    {id:'C', label:'Ângulo C entre a e b (°)', opts:{value:60}}
+  ],
+  formula: 'c^2 = a^2 + b^2 - 2ab \\cos C',
+  calc: v => {
+    const C = v.C*Math.PI/180;
+    const c = Math.sqrt(v.a*v.a + v.b*v.b - 2*v.a*v.b*Math.cos(C));
+    return { value: fmt(c), label: 'Lado c',
+      steps: [`c² = ${v.a}² + ${v.b}² - 2·${v.a}·${v.b}·cos(${v.C}°)`, `c² = ${v.a*v.a} + ${v.b*v.b} - ${fmt(2*v.a*v.b*Math.cos(C))}`, `c² = ${fmt(v.a*v.a+v.b*v.b-2*v.a*v.b*Math.cos(C))}`, `c = ${fmt(c)}`] };
+  }
+});
+
+/* --- GRAU/RADIANO --- */
+tools.grauRadiano = function(root, meta) {
+  root.innerHTML = toolTemplate(meta, '\\pi \\text{ rad} = 180°', `
+    ${inputHTML('val','Valor', {value:180})}
+    ${selectHTML('dir','Converter de → para', [
+      {v:'gr', l:'Graus → Radianos'}, {v:'rg', l:'Radianos → Graus'}
+    ])}
+  `);
+  $('calc-btn').onclick = () => {
+    const v = parseFloat($('in_val').value);
+    const dir = $('in_dir').value;
+    const r = dir==='gr' ? v*Math.PI/180 : v*180/Math.PI;
+    showResult(fmt(r,8), dir==='gr'?'Radianos':'Graus');
+    showSteps([`Fator: π = 180°`, dir==='gr'?`${v}° × π/180 = ${fmt(r)} rad`:`${v} rad × 180/π = ${fmt(r)}°`]);
+    addHistory('grauRadiano', fmt(r));
+  };
+  refreshIcons();
+};
+
+/* --- TRIÂNGULO RETÂNGULO --- */
+tools.trianguloRetangulo = simpleToolDef({
+  inputs: [
+    {id:'a', label:'Cateto a', opts:{value:3}},
+    {id:'b', label:'Cateto b', opts:{value:4}}
+  ],
+  formula: 'c = \\sqrt{a^2 + b^2} \\quad | \\quad a^2 + b^2 = c^2',
+  calc: v => {
+    const c = Math.sqrt(v.a*v.a + v.b*v.b);
+    const A = Math.atan(v.a/v.b)*180/Math.PI;
+    const B = 90 - A;
+    const area = v.a*v.b/2;
+    const peri = v.a+v.b+c;
+    return { rows: [
+      {label:'Hipotenusa (c)', value: fmt(c), big:true},
+      {label:'Ângulo A (oposto a a)', value: fmt(A)+'°'},
+      {label:'Ângulo B (oposto a b)', value: fmt(B)+'°'},
+      {label:'Área', value: fmt(area)},
+      {label:'Perímetro', value: fmt(peri)}
+    ], steps: [`c² = ${v.a}² + ${v.b}² = ${v.a*v.a} + ${v.b*v.b}`, `c = √${v.a*v.a+v.b*v.b} = ${fmt(c)}`, `tan(A) = a/b = ${v.a}/${v.b}`, `A = ${fmt(A)}°`] };
+  }
+});
+
+/* --- CICLO TRIGONOMÉTRICO --- */
+tools.cicloTrigonometrico = function(root, meta) {
+  root.innerHTML = toolTemplate(meta, null, `
+    <div class="card p-6">
+      <div class="flex items-center gap-4 mb-4 flex-wrap">
+        <div class="flex-1 min-w-[200px]">
+          ${inputHTML('ang','Ângulo (°)', {value:30, min:0, max:360})}
+        </div>
+        <button id="calc-btn" class="btn-primary">${icon('zap',18)} Calcular</button>
+      </div>
+      <div class="grid md:grid-cols-2 gap-6">
+        <div class="bg-white rounded-xl border p-4 flex items-center justify-center">
+          <svg id="cycle-svg" viewBox="-110 -110 220 220" class="w-full max-w-[400px]"></svg>
+        </div>
+        <div id="result-area"></div>
+      </div>
+    </div>
+  `, {custom:true});
+  function draw(angle) {
+    const rad = angle * Math.PI/180;
+    const x = Math.cos(rad)*80, y = -Math.sin(rad)*80;
+    const svg = $('cycle-svg');
+    svg.innerHTML = `
+      <circle cx="0" cy="0" r="80" fill="none" stroke="#cbd5e1" stroke-width="1.5"/>
+      <line x1="-100" y1="0" x2="100" y2="0" stroke="#94a3b8" stroke-width="1"/>
+      <line x1="0" y1="-100" x2="0" y2="100" stroke="#94a3b8" stroke-width="1"/>
+      <line x1="-80" y1="0" x2="80" y2="0" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="2"/>
+      <line x1="0" y1="-80" x2="0" y2="80" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="2"/>
+      <!-- ângulo -->
+      <path d="M 20 0 A 20 20 0 ${angle>180?1:0} 0 ${20*Math.cos(rad)} ${-20*Math.sin(rad)}" fill="rgba(37,99,235,0.15)" stroke="#2563EB" stroke-width="1.5"/>
+      <!-- linha do raio -->
+      <line x1="0" y1="0" x2="${x}" y2="${y}" stroke="#2563EB" stroke-width="2.5"/>
+      <!-- projeções -->
+      <line x1="${x}" y1="${y}" x2="${x}" y2="0" stroke="#10B981" stroke-width="1.5" stroke-dasharray="3"/>
+      <line x1="${x}" y1="${y}" x2="0" y2="${y}" stroke="#F59E0B" stroke-width="1.5" stroke-dasharray="3"/>
+      <!-- ponto -->
+      <circle cx="${x}" cy="${y}" r="4" fill="#2563EB"/>
+      <text x="${x+8}" y="${y-5}" font-size="11" fill="#1e293b" font-weight="600">P(${fmt(Math.cos(rad),3)}, ${fmt(Math.sin(rad),3)})</text>
+      <text x="0" y="-90" text-anchor="middle" font-size="10" fill="#64748b">90°</text>
+      <text x="90" y="4" text-anchor="middle" font-size="10" fill="#64748b">0°</text>
+      <text x="0" y="98" text-anchor="middle" font-size="10" fill="#64748b">270°</text>
+      <text x="-90" y="4" text-anchor="middle" font-size="10" fill="#64748b">180°</text>
+    `;
+  }
+  function calc() {
+    const ang = parseFloat($('in_ang').value) || 0;
+    const rad = ang*Math.PI/180;
+    const sen = Math.sin(rad), cos = Math.cos(rad), tan = Math.tan(rad);
+    draw(ang);
+    $('result-area').innerHTML = `
+      <div class="result-box animate-scale space-y-3">
+        <div>
+          <div class="text-sm text-slate-500">Ângulo</div>
+          <div class="text-2xl font-bold text-primary">${fmt(ang)}° = ${fmt(rad,4)} rad</div>
+        </div>
+        <div class="grid grid-cols-3 gap-2">
+          <div class="bg-white rounded-lg p-3"><div class="text-xs text-slate-500">sen</div><div class="font-bold text-primary">${fmt(sen,4)}</div></div>
+          <div class="bg-white rounded-lg p-3"><div class="text-xs text-slate-500">cos</div><div class="font-bold text-primary">${fmt(cos,4)}</div></div>
+          <div class="bg-white rounded-lg p-3"><div class="text-xs text-slate-500">tan</div><div class="font-bold text-primary">${isFinite(tan)?fmt(tan,4):'\u221e'}</div></div>
+        </div>
+        <div class="text-sm text-slate-600">
+          <strong>Quadrante:</strong> ${ang<90?'1º':ang<180?'2º':ang<270?'3º':'4º'}<br>
+          <strong>Projeção X (cos):</strong> ${fmt(cos*80,2)}<br>
+          <strong>Projeção Y (sen):</strong> ${fmt(sen*80,2)}
+        </div>
+      </div>
+    `;
+    addHistory('cicloTrigonometrico', `${ang}°`);
+  }
+  $('calc-btn').onclick = calc;
+  $('in_ang').addEventListener('input', calc);
+  calc();
+};
+
+/* --- ESTATÍSTICA DESCRITIVA --- */
+tools.estatisticaDescritiva = function(root, meta) {
+  root.innerHTML = toolTemplate(meta, null, `
+    ${inputHTML('dados','Dados (separados por vírgula)', {type:'text', value:'2, 4, 4, 4, 5, 5, 7, 9', help:'Ex: 2, 4, 4, 4, 5, 5, 7, 9'})}
+  `);
+  $('calc-btn').onclick = () => {
+    const dados = $('in_dados').value.split(/[,\s]+/).map(s=>parseFloat(s)).filter(n=>!isNaN(n));
+    if (dados.length===0) { toast('Dados inválidos','error'); return; }
+    const n = dados.length;
+    const soma = dados.reduce((a,b)=>a+b,0);
+    const media = soma/n;
+    const ord = [...dados].sort((a,b)=>a-b);
+    const mediana = n%2 ? ord[(n-1)/2] : (ord[n/2-1]+ord[n/2])/2;
+    const freq = {};
+    dados.forEach(d=>freq[d]=(freq[d]||0)+1);
+    const maxF = Math.max(...Object.values(freq));
+    const moda = Object.keys(freq).filter(k=>freq[k]===maxF).map(Number);
+    const variancia = dados.reduce((s,d)=>s+(d-media)**2,0)/n;
+    const dp = Math.sqrt(variancia);
+    const cv = dp/media*100;
+    const amp = ord[n-1]-ord[0];
+    showResultTable([
+      {label:'N (quantidade)', value: n},
+      {label:'Soma', value: fmt(soma)},
+      {label:'Média', value: fmt(media), big:true},
+      {label:'Mediana', value: fmt(mediana)},
+      {label:'Moda', value: moda.length===dados.length?'Amodal':moda.join(', ')},
+      {label:'Variância', value: fmt(variancia)},
+      {label:'Desvio padrão', value: fmt(dp), big:true},
+      {label:'Coef. variação', value: fmt(cv)+'%'},
+      {label:'Amplitude', value: fmt(amp)},
+      {label:'Mínimo', value: fmt(ord[0])},
+      {label:'Máximo', value: fmt(ord[n-1])}
+    ]);
+    showSteps([`Somar todos: ${fmt(soma)}`, `Média = soma/n = ${fmt(soma)}/${n} = ${fmt(media)}`, `Variância = Σ(xᵢ-μ)²/n = ${fmt(variancia)}`, `Desvio padrão = √variância = ${fmt(dp)}`]);
+    addHistory('estatisticaDescritiva', `média=${fmt(media)}, σ=${fmt(dp)}`);
+  };
+  refreshIcons();
+};
+
+/* --- QUARTIS --- */
+tools.quartis = simpleToolDef({
+  inputs: [{id:'dados', label:'Dados (separados por vírgula)', opts:{type:'text', value:'1, 2, 3, 4, 5, 6, 7, 8, 9, 10'}}],
+  calc: v => {
+    const dados = v.dados.split(/[,\s]+/).map(s=>parseFloat(s)).filter(n=>!isNaN(n)).sort((a,b)=>a-b);
+    const n = dados.length;
+    const q = p => {
+      const pos = (p/100)*(n-1);
+      const base = Math.floor(pos);
+      const rest = pos - base;
+      return dados[base] + (dados[base+1]!==undefined ? (dados[base+1]-dados[base])*rest : 0);
+    };
+    return { rows: [
+      {label:'Q1 (25%)', value: fmt(q(25)), big:true},
+      {label:'Q2 / Mediana (50%)', value: fmt(q(50)), big:true},
+      {label:'Q3 (75%)', value: fmt(q(75)), big:true},
+      {label:'D5 (50%)', value: fmt(q(50))},
+      {label:'P10', value: fmt(q(10))},
+      {label:'P90', value: fmt(q(90))},
+      {label:'IQR (Q3-Q1)', value: fmt(q(75)-q(25))}
+    ], steps: [`Ordenar dados: ${dados.join(', ')}`, `Q1 na posição 25%`, `Q2 na posição 50% (= mediana)`, `Q3 na posição 75%`] };
+  }
+});
+
+/* --- HISTOGRAMA --- */
+tools.histograma = function(root, meta) {
+  root.innerHTML = toolTemplate(meta, null, `
+    ${inputHTML('dados','Dados (separados por vírgula)', {type:'text', value:'1, 2, 2, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 6, 6, 7, 8'})}
+    ${inputHTML('bins','Número de classes', {value:5, min:2})}
+    <canvas id="chart" class="mt-4"></canvas>
+    <div id="result-area" class="mt-4"></div>
+  `, {custom:true});
+  let chart;
+  $('calc-btn').onclick = () => {
+    const dados = $('in_dados').value.split(/[,\s]+/).map(s=>parseFloat(s)).filter(n=>!isNaN(n));
+    const bins = parseInt($('in_bins').value);
+    const min = Math.min(...dados), max = Math.max(...dados);
+    const w = (max-min)/bins;
+    const labels = [], counts = [];
+    for (let i=0; i<bins; i++) {
+      const lo = min + i*w, hi = lo + w;
+      labels.push(`${fmt(lo,1)}-${fmt(hi,1)}`);
+      counts.push(dados.filter(d => i===bins-1 ? d>=lo && d<=hi : d>=lo && d<hi).length);
+    }
+    if (chart) chart.destroy();
+    chart = new Chart($('chart'), {
+      type: 'bar',
+      data: { labels, datasets: [{ label: 'Frequência', data: counts, backgroundColor: 'rgba(37,99,235,0.7)', borderColor: '#2563EB', borderWidth: 1, borderRadius: 6 }] },
+      options: { responsive: true, plugins: { title: { display: true, text: 'Histograma' } }, scales: { y: { beginAtZero: true } } }
+    });
+    $('result-area').innerHTML = `<div class="result-box"><div class="text-sm text-slate-500 mb-2">Resumo</div>
+      <div>Total: ${dados.length} | Min: ${fmt(min)} | Max: ${fmt(max)} | Amplitude: ${fmt(max-min)}</div></div>`;
+    addHistory('histograma', `${dados.length} dados`);
+  };
+  refreshIcons();
+};
+
+/* --- BOXPLOT --- */
+tools.boxplot = function(root, meta) {
+  root.innerHTML = toolTemplate(meta, null, `
+    ${inputHTML('dados','Dados (separados por vírgula)', {type:'text', value:'5, 7, 8, 9, 12, 14, 15, 17, 18, 19, 21, 22, 25, 28, 30'})}
+    <canvas id="chart" class="mt-4"></canvas>
+    <div id="result-area" class="mt-4"></div>
+  `, {custom:true});
+  $('calc-btn').onclick = () => {
+    const dados = $('in_dados').value.split(/[,\s]+/).map(s=>parseFloat(s)).filter(n=>!isNaN(n)).sort((a,b)=>a-b);
+    const n = dados.length;
+    const q = p => { const pos=(p/100)*(n-1); const b=Math.floor(pos); return dados[b]+((dados[b+1]||dados[b])-dados[b])*(pos-b); };
+    const q1=q(25), q2=q(50), q3=q(75);
+    const iqr = q3-q1;
+    const li = q1 - 1.5*iqr, ls = q3 + 1.5*iqr;
+    const outliers = dados.filter(d => d<li || d>ls);
+    const min = Math.min(...dados.filter(d=>d>=li&&d<=ls));
+    const max = Math.max(...dados.filter(d=>d>=li&&d<=ls));
+    $('result-area').innerHTML = `
+      <div class="result-box space-y-2">
+        <div class="flex justify-between"><span>Mínimo</span><b>${fmt(min)}</b></div>
+        <div class="flex justify-between"><span>Q1</span><b>${fmt(q1)}</b></div>
+        <div class="flex justify-between"><span>Mediana</span><b>${fmt(q2)}</b></div>
+        <div class="flex justify-between"><span>Q3</span><b>${fmt(q3)}</b></div>
+        <div class="flex justify-between"><span>Máximo</span><b>${fmt(max)}</b></div>
+        <div class="flex justify-between"><span>IQR</span><b>${fmt(iqr)}</b></div>
+        <div class="flex justify-between"><span>Outliers</span><b>${outliers.length?outliers.join(', '):'Nenhum'}</b></div>
+      </div>
+    `;
+    addHistory('boxplot', `Q2=${fmt(q2)}`);
+  };
+  refreshIcons();
+};
+
+/* --- CONVERSORES --- */
+tools.decBin = simpleToolDef({
+  inputs: [{id:'n', label:'Número decimal', opts:{value:42}}],
+  calc: v => ({ value: Math.floor(v.n).toString(2), label:'Binário', steps:[`Dividir por 2 sucessivamente`, `${v.n} = ${Math.floor(v.n).toString(2)}₂`] })
+});
+tools.binDec = simpleToolDef({
+  inputs: [{id:'n', label:'Número binário', opts:{type:'text', value:'101010'}}],
+  calc: v => {
+    const bin = v.n.replace(/[^01]/g,'');
+    const dec = parseInt(bin, 2);
+    return { value: fmt(dec), label:'Decimal', steps:[`Cada bit vale 2^n`, ...bin.split('').reverse().map((b,i)=>b==='1'?`2^${i} = ${Math.pow(2,i)}`:null).filter(Boolean), `Soma = ${dec}`] };
+  }
+});
+tools.hexDec = simpleToolDef({
+  inputs: [{id:'n', label:'Número hexadecimal', opts:{type:'text', value:'2A'}}],
+  calc: v => {
+    const hex = v.n.replace(/[^0-9A-Fa-f]/g,'');
+    return { value: fmt(parseInt(hex,16)), label:'Decimal', steps:[`${hex.toUpperCase()}₁₆ = ${parseInt(hex,16)}₁₀`] };
+  }
+});
+tools.decHex = simpleToolDef({
+  inputs: [{id:'n', label:'Número decimal', opts:{value:42}}],
+  calc: v => ({ value: Math.floor(v.n).toString(16).toUpperCase(), label:'Hexadecimal', steps:[`${v.n}₁₀ = ${Math.floor(v.n).toString(16).toUpperCase()}₁₆`] })
+});
+tools.romanoDec = simpleToolDef({
+  inputs: [{id:'s', label:'Número romano', opts:{type:'text', value:'MCMXCIV'}}],
+  calc: v => {
+    const map = {I:1,V:5,X:10,L:50,C:100,D:500,M:1000};
+    const s = v.s.toUpperCase().replace(/[^IVXLCDM]/g,'');
+    let r = 0;
+    for (let i=0; i<s.length; i++) {
+      const cur = map[s[i]], nxt = map[s[i+1]];
+      if (nxt && cur < nxt) r -= cur; else r += cur;
+    }
+    return { value: fmt(r), label:'Decimal', steps:[`Cada símbolo: I=1, V=5, X=10, L=50, C=100, D=500, M=1000`, `Subtrair quando menor antes de maior`, `${s} = ${r}`] };
+  }
+});
+tools.decRomano = simpleToolDef({
+  inputs: [{id:'n', label:'Número decimal', opts:{value:1994, min:1, max:3999}}],
+  calc: v => {
+    const map = [[1000,'M'],[900,'CM'],[500,'D'],[400,'CD'],[100,'C'],[90,'XC'],[50,'L'],[40,'XL'],[10,'X'],[9,'IX'],[5,'V'],[4,'IV'],[1,'I']];
+    let n = Math.floor(v.n), r = '';
+    for (const [val, sym] of map) { while (n>=val) { r+=sym; n-=val; } }
+    return { value: r, label:'Romano', steps:[`Subtrair valores maiores primeiro`, `${v.n} = ${r}`] };
+  }
+});
+tools.notacaoCientifica = simpleToolDef({
+  inputs: [{id:'n', label:'Número', opts:{value:123456.789}}],
+  calc: v => {
+    const abs = Math.abs(v.n);
+    if (abs === 0) return {value:'0 × 10⁰', label:'Notação científica'};
+    const exp = Math.floor(Math.log10(abs));
+    const mant = v.n / Math.pow(10, exp);
+    return { value: `${fmt(mant,4)} × 10${superscript(exp)}`, label:'Notação científica',
+      steps:[`Determinar expoente: log₁₀(${v.n}) ≈ ${fmt(exp)}`, `Mantissa = ${v.n}/10^${exp} = ${fmt(mant,4)}`, `${v.n} = ${fmt(mant,4)} × 10^${exp}`] };
+  }
+});
+function superscript(n) {
+  const map = {'-':'⁻','0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹'};
+  return String(n).split('').map(c=>map[c]||c).join('');
+}
+tools.fracaoDec = simpleToolDef({
+  inputs: [{id:'n', label:'Numerador', opts:{value:3}},{id:'d', label:'Denominador', opts:{value:4}}],
+  calc: v => ({ value: fmt(v.n/v.d, 8), label:`${v.n}/${v.d} =`, steps:[`${v.n} ÷ ${v.d} = ${fmt(v.n/v.d,8)}`] })
+});
+tools.decFracao = simpleToolDef({
+  inputs: [{id:'n', label:'Número decimal', opts:{value:0.75}}],
+  calc: v => {
+    const str = v.n.toString();
+    const dec = str.split('.')[1] || '';
+    const den = Math.pow(10, dec.length);
+    let num = Math.round(v.n * den);
+    // Simplificar
+    const mdc = (a,b) => b ? mdc(b,a%b) : a;
+    const g = mdc(num, den);
+    return { value: `${num/g} / ${den/g}`, label:`${v.n} =`, steps:[`${v.n} = ${num}/${den}`, `MDC(${num},${den}) = ${g}`, `Simplificado: ${num/g}/${den/g}`] };
+  }
+});
+tools.porcentagemFracao = simpleToolDef({
+  inputs: [{id:'p', label:'Porcentagem (%)', opts:{value:25}}],
+  calc: v => {
+    const dec = v.p/100;
+    const den = 100;
+    let num = v.p;
+    const mdc = (a,b) => b ? mdc(b,a%b) : a;
+    const g = mdc(num, den);
+    return { rows: [
+      {label:'Decimal', value: fmt(dec,4), big:true},
+      {label:'Fração simplificada', value: `${num/g}/${den/g}`, big:true},
+      {label:'Fração original', value: `${v.p}/100`}
+    ], steps:[`${v.p}% = ${v.p}/100`, `MDC(${num},${den}) = ${g}`, `Simplificado: ${num/g}/${den/g}`] };
+  },
+  auto: true
+});
+
+/* --- PROBABILIDADE --- */
+tools.permutacao = simpleToolDef({
+  inputs: [{id:'n', label:'n', opts:{value:5}}],
+  formula: 'P(n) = n!',
+  calc: v => {
+    let r=1; for(let i=2;i<=v.n;i++) r*=i;
+    return { value: fmt(r), label:`P(${v.n}) = ${v.n}! =`,
+      steps: [`${v.n}! = ${v.n}·${v.n-1}·...·2·1`, `= ${fmt(r)}`] };
+  }
+});
+tools.arranjo = simpleToolDef({
+  inputs: [{id:'n', label:'n', opts:{value:10}},{id:'k', label:'k', opts:{value:3}}],
+  formula: 'A(n,k) = \\frac{n!}{(n-k)!}',
+  calc: v => {
+    let r=1; for(let i=0;i<v.k;i++) r*=(v.n-i);
+    return { value: fmt(r), label:`A(${v.n},${v.k}) =`,
+      steps: [`A(n,k) = n!/(n-k)!`, `A(${v.n},${v.k}) = ${v.n}!/(${v.n-v.k})!`, `= ${v.n}·${v.n-1}·...·${v.n-v.k+1}`, `= ${fmt(r)}`] };
+  }
+});
+tools.combinacao = simpleToolDef({
+  inputs: [{id:'n', label:'n', opts:{value:10}},{id:'k', label:'k', opts:{value:3}}],
+  formula: 'C(n,k) = \\binom{n}{k} = \\frac{n!}{k!(n-k)!}',
+  calc: v => {
+    let r=1; for(let i=0;i<v.k;i++) r = r*(v.n-i)/(i+1);
+    return { value: fmt(r), label:`C(${v.n},${v.k}) =`,
+      steps: [`C(n,k) = n!/(k!·(n-k)!)`, `= ${v.n}!/(${v.k}!·${v.n-v.k}!)`, `= ${fmt(r)}`] };
+  }
+});
+tools.binomial = simpleToolDef({
+  inputs: [
+    {id:'n', label:'n (tentativas)', opts:{value:10}},
+    {id:'k', label:'k (sucessos)', opts:{value:3}},
+    {id:'p', label:'p (prob. sucesso)', opts:{value:0.5}}
+  ],
+  formula: 'P(X=k) = \\binom{n}{k} p^k (1-p)^{n-k}',
+  calc: v => {
+    let c=1; for(let i=0;i<v.k;i++) c=c*(v.n-i)/(i+1);
+    const prob = c * Math.pow(v.p, v.k) * Math.pow(1-v.p, v.n-v.k);
+    return { rows: [
+      {label:'P(X = k)', value: fmt(prob,6), big:true},
+      {label:'P(X ≤ k)', value: fmt(binomialCDF(v.n, v.k, v.p),6)},
+      {label:'P(X ≥ k)', value: fmt(1-binomialCDF(v.n, v.k-1, v.p),6)},
+      {label:'Combinações C(n,k)', value: fmt(c)}
+    ], steps: [`C(${v.n},${v.k}) = ${fmt(c)}`, `P = ${fmt(c)} · ${v.p}^${v.k} · ${1-v.p}^${v.n-v.k}`, `P = ${fmt(prob,6)}`] };
+  }
+});
+function binomialCDF(n, k, p) {
+  if (k<0) return 0; if (k>=n) return 1;
+  let c=1, sum=0;
+  for (let i=0; i<=k; i++) {
+    if (i>0) c = c * (n-i+1)/i;
+    sum += c * Math.pow(p,i) * Math.pow(1-p, n-i);
+  }
+  return sum;
+}
+tools.probSimples = simpleToolDef({
+  inputs: [{id:'f', label:'Casos favoráveis', opts:{value:3}},{id:'t', label:'Casos possíveis', opts:{value:10}}],
+  formula: 'P(A) = \\frac{\\text{favoráveis}}{\\text{possíveis}}',
+  calc: v => {
+    const p = v.f/v.t;
+    return { rows: [
+      {label:'Probabilidade', value: fmt(p*100,4)+'%', big:true},
+      {label:'Fração', value: `${v.f}/${v.t}`},
+      {label:'Decimal', value: fmt(p,6)},
+      {label:'Prob. contrária', value: fmt((1-p)*100,4)+'%'}
+    ], steps: [`P = ${v.f}/${v.t} = ${fmt(p,4)}`, `Em percentual: ${fmt(p*100)}%`] };
+  }
+});
+tools.probCondicional = simpleToolDef({
+  inputs: [
+    {id:'pa', label:'P(A)', opts:{value:0.4}},
+    {id:'pb', label:'P(B)', opts:{value:0.5}},
+    {id:'pab', label:'P(A∩B)', opts:{value:0.2}}
+  ],
+  formula: 'P(A|B) = \\frac{P(A \\cap B)}{P(B)}',
+  calc: v => {
+    const paGivenB = v.pab/v.pb;
+    const pbGivenA = v.pab/v.pa;
+    return { rows: [
+      {label:'P(A|B)', value: fmt(paGivenB,4), big:true},
+      {label:'P(B|A)', value: fmt(pbGivenA,4)},
+      {label:'P(A∪B)', value: fmt(v.pa+v.pb-v.pab,4)},
+      {label:'Independência', value: (Math.abs(v.pa*v.pb - v.pab)<0.001)?'Sim, independentes':'Não, dependentes'}
+    ], steps: [`P(A|B) = P(A∩B)/P(B) = ${v.pab}/${v.pb} = ${fmt(paGivenB,4)}`, `P(B|A) = P(A∩B)/P(A) = ${fmt(pbGivenA,4)}`] };
+  }
+});
+tools.simDados = function(root, meta) {
+  root.innerHTML = toolTemplate(meta, null, `
+    <div class="grid md:grid-cols-2 gap-4">
+      ${inputHTML('n','Número de lançamentos', {value:1000, min:1, max:100000})}
+      ${inputHTML('faces','Número de faces', {value:6, min:2, max:100})}
+    </div>
+    <button id="calc-btn" class="btn-primary w-full mt-4">${icon('dices',18)} Lançar dados</button>
+    <canvas id="chart" class="mt-4"></canvas>
+    <div id="result-area" class="mt-4"></div>
+  `, {custom:true});
+  let chart;
+  $('calc-btn').onclick = () => {
+    const n = parseInt($('in_n').value);
+    const faces = parseInt($('in_faces').value);
+    const counts = new Array(faces).fill(0);
+    for (let i=0; i<n; i++) counts[Math.floor(Math.random()*faces)]++;
+    if (chart) chart.destroy();
+    chart = new Chart($('chart'), {
+      type: 'bar',
+      data: { labels: counts.map((_,i)=>i+1), datasets: [{ label:'Frequência', data: counts, backgroundColor:'rgba(37,99,235,0.7)', borderColor:'#2563EB', borderWidth:1, borderRadius:6 }] },
+      options: { responsive:true, plugins:{title:{display:true,text:`${n} lançamentos de d${faces}`}}, scales:{y:{beginAtZero:true}} }
+    });
+    const esp = n/faces;
+    const chi = counts.reduce((s,c)=>s+Math.pow(c-esp,2)/esp, 0);
+    $('result-area').innerHTML = `<div class="result-box">
+      <div class="grid grid-cols-2 gap-3 text-sm">
+        <div><div class="text-slate-500">Lançamentos</div><div class="font-bold">${n}</div></div>
+        <div><div class="text-slate-500">Esperado/face</div><div class="font-bold">${fmt(esp)}</div></div>
+        <div><div class="text-slate-500">Qui-quadrado</div><div class="font-bold">${fmt(chi,2)}</div></div>
+        <div><div class="text-slate-500">Faces</div><div class="font-bold">${faces}</div></div>
+      </div></div>`;
+    addHistory('simDados', `${n} lançamentos`);
+  };
+  refreshIcons();
+};
+tools.simMoedas = function(root, meta) {
+  root.innerHTML = toolTemplate(meta, null, `
+    ${inputHTML('n','Número de lançamentos', {value:1000, min:1})}
+    ${inputHTML('m','Número de moedas', {value:3, min:1, max:10})}
+    <button id="calc-btn" class="btn-primary w-full mt-4">${icon('circle-dollar-sign',18)} Lançar moedas</button>
+    <canvas id="chart" class="mt-4"></canvas>
+    <div id="result-area" class="mt-4"></div>
+  `, {custom:true});
+  let chart;
+  $('calc-btn').onclick = () => {
+    const n = parseInt($('in_n').value);
+    const m = parseInt($('in_m').value);
+    const counts = new Array(m+1).fill(0);
+    for (let i=0; i<n; i++) {
+      let cara = 0;
+      for (let j=0; j<m; j++) if (Math.random()<0.5) cara++;
+      counts[cara]++;
+    }
+    if (chart) chart.destroy();
+    chart = new Chart($('chart'), {
+      type: 'bar',
+      data: { labels: counts.map((_,i)=>`${i} cara${i!==1?'s':''}`), datasets:[{label:'Frequência', data:counts, backgroundColor:'rgba(37,99,235,0.7)', borderColor:'#2563EB', borderWidth:1, borderRadius:6}] },
+      options: { responsive:true, plugins:{title:{display:true,text:`${n} lançamentos de ${m} moedas`}}, scales:{y:{beginAtZero:true}} }
+    });
+    $('result-area').innerHTML = `<div class="result-box">Distribuição binomial teórica B(${m}, 0.5) vs observada.</div>`;
+    addHistory('simMoedas', `${n} lançamentos`);
+  };
+  refreshIcons();
+};
+tools.distNormal = function(root, meta) {
+  root.innerHTML = toolTemplate(meta, 'f(x) = \\frac{1}{\\sigma\\sqrt{2\\pi}} e^{-\\frac{(x-\\mu)^2}{2\\sigma^2}}', `
+    <div class="grid md:grid-cols-3 gap-3">
+      ${inputHTML('mu','Média (μ)', {value:0})}
+      ${inputHTML('sigma','Desvio (σ)', {value:1, min:0.01})}
+      ${inputHTML('x','Valor (x)', {value:1})}
+    </div>
+    <canvas id="chart" class="mt-4"></canvas>
+    <div id="result-area" class="mt-4"></div>
+  `, {custom:true});
+  let chart;
+  function calc() {
+    const mu = parseFloat($('in_mu').value);
+    const sigma = parseFloat($('in_sigma').value);
+    const x = parseFloat($('in_x').value);
+    const z = (x-mu)/sigma;
+    const pdf = Math.exp(-0.5*z*z)/(sigma*Math.sqrt(2*Math.PI));
+    const cdf = 0.5*(1+math.erf(z/Math.sqrt(2)));
+    const xs = [], ys = [];
+    for (let i=mu-4*sigma; i<=mu+4*sigma; i+=sigma/20) {
+      xs.push(fmt(i,2));
+      const zz = (i-mu)/sigma;
+      ys.push(Math.exp(-0.5*zz*zz)/(sigma*Math.sqrt(2*Math.PI)));
+    }
+    if (chart) chart.destroy();
+    chart = new Chart($('chart'), {
+      type: 'line',
+      data: { labels: xs, datasets: [{ label:'PDF', data: ys, borderColor:'#2563EB', backgroundColor:'rgba(37,99,235,0.1)', fill:true, tension:0.4, pointRadius:0 }] },
+      options: { responsive:true, plugins:{title:{display:true,text:'Distribuição Normal'}}, scales:{y:{beginAtZero:true}} }
+    });
+    $('result-area').innerHTML = `<div class="result-box space-y-2">
+      <div class="flex justify-between"><span>Score Z</span><b>${fmt(z,4)}</b></div>
+      <div class="flex justify-between"><span>f(x) (densidade)</span><b>${fmt(pdf,6)}</b></div>
+      <div class="flex justify-between"><span>P(X ≤ x)</span><b>${fmt(cdf*100,4)}%</b></div>
+      <div class="flex justify-between"><span>P(X > x)</span><b>${fmt((1-cdf)*100,4)}%</b></div>
+    </div>`;
+    addHistory('distNormal', `z=${fmt(z)}`);
+  }
+  $('calc-btn').onclick = calc;
+  calc();
+  refreshIcons();
+};
+tools.distUniforme = simpleToolDef({
+  inputs: [
+    {id:'a', label:'a (mínimo)', opts:{value:1}},
+    {id:'b', label:'b (máximo)', opts:{value:6}},
+    {id:'x', label:'x (valor)', opts:{value:3}}
+  ],
+  formula: 'P(X=x) = \\frac{1}{b-a+1}',
+  calc: v => {
+    const n = v.b - v.a + 1;
+    const p = 1/n;
+    return { rows: [
+      {label:'P(X = x)', value: fmt(p,6), big:true},
+      {label:'P(X ≤ x)', value: fmt((v.x-v.a+1)/n,6)},
+      {label:'Média', value: fmt((v.a+v.b)/2)},
+      {label:'Variância', value: fmt(((n*n-1)/12),6)},
+      {label:'Desvio padrão', value: fmt(Math.sqrt((n*n-1)/12),6)}
+    ], steps: [`Total de valores: ${n}`, `Cada valor tem prob = 1/${n} = ${fmt(p,6)}`] };
+  }
+});
+
+/* --- FUNÇÕES: PLOTADOR --- */
+tools.plotador = function(root, meta) {
+  root.innerHTML = toolTemplate(meta, null, `
+    <div class="card p-6 mb-4">
+      <div class="grid md:grid-cols-2 gap-4 mb-4">
+        <div>
+          <label class="block text-sm font-medium mb-2">Funções (uma por linha)</label>
+          <textarea id="fns" class="input font-mono text-sm" rows="5" placeholder="sin(x)
+x^2
+2*x + 1
+exp(-x^2)
+log(x)">sin(x)
+x^2/4
+2*x</textarea>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          ${inputHTML('xmin','X mínimo', {value:-10})}
+          ${inputHTML('xmax','X máximo', {value:10})}
+          ${inputHTML('ymin','Y mínimo (opcional)', {value:''})}
+          ${inputHTML('ymax','Y máximo (opcional)', {value:''})}
+        </div>
+      </div>
+      <div class="flex gap-2 flex-wrap">
+        <button id="calc-btn" class="btn-primary">${icon('line-chart',18)} Plotar</button>
+        <button onclick="resetZoom()" class="btn-soft">${icon('maximize',14)} Reset zoom</button>
+        <button onclick="exportPlot()" class="btn-soft">${icon('download',14)} Exportar PNG</button>
+      </div>
+    </div>
+    <div class="card p-4">
+      <div id="plot" style="width:100%;height:500px;"></div>
+    </div>
+    <div id="result-area" class="mt-4"></div>
+  `, {custom:true});
+  window.resetZoom = () => { Plotly.relayout('plot', {xaxis: {range: [parseFloat($('in_xmin').value), parseFloat($('in_xmax').value)]}}); };
+  window.exportPlot = () => Plotly.downloadImage('plot', {format:'png', filename:'grafico-mathtools'});
+  const colors = ['#2563EB','#EF4444','#10B981','#F59E0B','#8B5CF6','#EC4899','#06B6D4','#84CC16'];
+  function plot() {
+    const fns = $('fns').value.split('\n').map(s=>s.trim()).filter(Boolean);
+    const xmin = parseFloat($('in_xmin').value);
+    const xmax = parseFloat($('in_xmax').value);
+    const ymin = $('in_ymin').value !== '' ? parseFloat($('in_ymin').value) : undefined;
+    const ymax = $('in_ymax').value !== '' ? parseFloat($('in_ymax').value) : undefined;
+    const traces = [];
+    const steps = 600;
+    fns.forEach((fn, i) => {
+      const xs = [], ys = [];
+      for (let j=0; j<=steps; j++) {
+        const x = xmin + (xmax-xmin)*j/steps;
+        try {
+          const y = math.evaluate(fn, {x});
+          if (isFinite(y)) { xs.push(x); ys.push(y); } else { xs.push(x); ys.push(null); }
+        } catch(e) { xs.push(x); ys.push(null); }
+      }
+      traces.push({ x: xs, y: ys, type: 'scatter', mode: 'lines', name: `f(x) = ${fn}`, line: { color: colors[i%colors.length], width: 2.5 } });
+    });
+    const layout = {
+      paper_bgcolor: 'white', plot_bgcolor: '#fafbfc',
+      xaxis: { gridcolor: '#e2e8f0', zerolinecolor: '#94a3b8', zerolinewidth: 2, range: [xmin, xmax] },
+      yaxis: { gridcolor: '#e2e8f0', zerolinecolor: '#94a3b8', zerolinewidth: 2, range: [ymin, ymax] },
+      margin: { l: 50, r: 20, t: 20, b: 40 },
+      legend: { orientation: 'h', y: -0.2 },
+      showlegend: true
+    };
+    Plotly.newPlot('plot', traces, layout, { responsive: true, displaylogo: false, modeBarButtonsToRemove: ['lasso2d'] });
+    $('result-area').innerHTML = `<div class="result-box"><div class="text-sm text-slate-500 mb-2">Funções plotadas</div>${fns.map((f,i)=>`<div class="flex items-center gap-2 py-1"><span style="display:inline-block;width:14px;height:3px;background:${colors[i%colors.length]};border-radius:2px"></span><span class="font-mono text-sm">${f}</span></div>`).join('')}</div>`;
+    addHistory('plotador', `${fns.length} funções`);
+  }
+  $('calc-btn').onclick = plot;
+  plot();
+};
+
+/* --- TABELA DE VALORES --- */
+tools.tabela = function(root, meta) {
+  root.innerHTML = toolTemplate(meta, null, `
+    <div class="grid md:grid-cols-4 gap-3 mb-4">
+      ${inputHTML('fn','Função f(x)', {type:'text', value:'x^2 - 3*x + 2'})}
+      ${inputHTML('xmin','X inicial', {value:-3})}
+      ${inputHTML('xmax','X final', {value:5})}
+      ${inputHTML('step','Passo', {value:1})}
+    </div>
+    <button id="calc-btn" class="btn-primary mb-4">${icon('table',18)} Gerar tabela</button>
+    <div id="result-area"></div>
+  `, {custom:true});
+  $('calc-btn').onclick = () => {
+    const fn = $('in_fn').value;
+    const xmin = parseFloat($('in_xmin').value);
+    const xmax = parseFloat($('in_xmax').value);
+    const step = parseFloat($('in_step').value);
+    const rows = [];
+    for (let x=xmin; x<=xmax+1e-9; x+=step) {
+      try {
+        const y = math.evaluate(fn, {x});
+        rows.push(`<tr class="border-b border-slate-100"><td class="py-2 px-3 font-mono">${fmt(x,4)}</td><td class="py-2 px-3 font-mono font-bold text-primary">${fmt(y,6)}</td></tr>`);
+      } catch(e) { rows.push(`<tr><td>${fmt(x)}</td><td class="text-red-500">erro</td></tr>`); }
+    }
+    $('result-area').innerHTML = `<div class="card overflow-hidden"><table class="w-full"><thead><tr class="bg-slate-50 text-sm"><th class="py-2 px-3 text-left">x</th><th class="py-2 px-3 text-left">f(x) = ${fn}</th></tr></thead><tbody>${rows.join('')}</tbody></table></div>`;
+    addHistory('tabela', fn);
+  };
+  refreshIcons();
+};
+
+/* --- INTERSEÇÃO --- */
+tools.intersecao = function(root, meta) {
+  root.innerHTML = toolTemplate(meta, null, `
+    <div class="grid md:grid-cols-2 gap-3 mb-4">
+      ${inputHTML('f1','Função 1 f(x)', {type:'text', value:'x^2'})}
+      ${inputHTML('f2','Função 2 g(x)', {type:'text', value:'x + 2'})}
+    </div>
+    <button id="calc-btn" class="btn-primary mb-4">${icon('git-compare',18)} Encontrar interseções</button>
+    <div id="plot" style="width:100%;height:400px;" class="card p-2"></div>
+    <div id="result-area" class="mt-4"></div>
+  `, {custom:true});
+  $('calc-btn').onclick = () => {
+    const f1 = $('in_f1').value, f2 = $('in_f2').value;
+    const xmin = -10, xmax = 10, steps = 2000;
+    const xs1 = [], ys1 = [], xs2 = [], ys2 = [];
+    const intersections = [];
+    let prevDiff = null, prevX = null;
+    for (let i=0; i<=steps; i++) {
+      const x = xmin + (xmax-xmin)*i/steps;
+      try {
+        const y1 = math.evaluate(f1, {x});
+        const y2 = math.evaluate(f2, {x});
+        if (isFinite(y1)) { xs1.push(x); ys1.push(y1); }
+        if (isFinite(y2)) { xs2.push(x); ys2.push(y2); }
+        if (isFinite(y1) && isFinite(y2)) {
+          const diff = y1 - y2;
+          if (prevDiff !== null && Math.sign(diff) !== Math.sign(prevDiff) && Math.sign(diff) !== 0) {
+            // Interpolação linear para achar x
+            const xi = prevX + (x - prevX) * Math.abs(prevDiff) / (Math.abs(prevDiff) + Math.abs(diff));
+            const yi = math.evaluate(f1, {x: xi});
+            intersections.push({x: xi, y: yi});
+          }
+          prevDiff = diff; prevX = x;
+        }
+      } catch(e) {}
+    }
+    const traces = [
+      { x: xs1, y: ys1, name: `f(x) = ${f1}`, mode: 'lines', line: {color: '#2563EB', width: 2.5} },
+      { x: xs2, y: ys2, name: `g(x) = ${f2}`, mode: 'lines', line: {color: '#EF4444', width: 2.5} },
+      { x: intersections.map(p=>p.x), y: intersections.map(p=>p.y), name: 'Interseções', mode: 'markers', marker: {size: 12, color: '#10B981', symbol: 'x'} }
+    ];
+    Plotly.newPlot('plot', traces, { paper_bgcolor:'white', plot_bgcolor:'#fafbfc', xaxis:{gridcolor:'#e2e8f0'}, yaxis:{gridcolor:'#e2e8f0'}, margin:{l:50,r:20,t:20,b:40} }, {responsive:true, displaylogo:false});
+    $('result-area').innerHTML = intersections.length ? `<div class="result-box"><div class="text-sm text-slate-500 mb-2">Pontos de interseção (${intersections.length})</div>${intersections.map(p=>`<div class="py-1.5 border-b border-blue-200 last:border-0"><span class="font-mono">(${fmt(p.x,4)}, ${fmt(p.y,4)})</span></div>`).join('')}</div>` : '<div class="result-box">Nenhuma interseção encontrada no intervalo [-10, 10].</div>';
+    addHistory('intersecao', `${intersections.length} pontos`);
+  };
+  refreshIcons();
+};
+
+/* --- ANÁLISE DE FUNÇÃO --- */
+tools.analiseFuncao = function(root, meta) {
+  root.innerHTML = toolTemplate(meta, null, `
+    ${inputHTML('fn','Função f(x)', {type:'text', value:'x^3 - 3*x^2 + 2'})}
+    <button id="calc-btn" class="btn-primary w-full mt-4">${icon('activity',18)} Analisar</button>
+    <div id="result-area" class="mt-4"></div>
+    <div id="plot" style="width:100%;height:400px;" class="mt-4 card p-2"></div>
+  `, {custom:true});
+  $('calc-btn').onclick = () => {
+    const fn = $('in_fn').value;
+    let analysis = [];
+    let rows = [];
+    try {
+      // Derivada
+      const d = math.derivative(fn, 'x');
+      const dStr = d.toString();
+      rows.push({label:'Derivada f\'(x)', value: dStr, big: true});
+      // Plot
+      const xs = [], ys = [], dys = [];
+      for (let i=-10; i<=10; i+=0.05) {
+        try {
+          const y = math.evaluate(fn, {x: i});
+          const dy = math.evaluate(dStr, {x: i});
+          if (isFinite(y)) { xs.push(i); ys.push(y); }
+          if (isFinite(dy)) dys.push({x:i, y:dy});
+        } catch(e) {}
+      }
+      Plotly.newPlot('plot', [
+        {x: xs, y: ys, name: 'f(x)', mode:'lines', line:{color:'#2563EB', width:2.5}},
+        {x: dys.map(p=>p.x), y: dys.map(p=>p.y), name:'f\'(x)', mode:'lines', line:{color:'#EF4444', width:1.5, dash:'dash'}}
+      ], {paper_bgcolor:'white', plot_bgcolor:'#fafbfc', xaxis:{gridcolor:'#e2e8f0'}, yaxis:{gridcolor:'#e2e8f0'}, margin:{l:50,r:20,t:20,b:40}}, {responsive:true, displaylogo:false});
+      // Análise de crescimento baseado na derivada
+      let cresc = [], decresc = [];
+      let prevSign = 0;
+      let prevX = -10;
+      dys.forEach(p => {
+        const sign = Math.sign(p.y);
+        if (sign !== prevSign && prevSign !== 0) {
+          if (prevSign > 0) cresc.push(`até ${fmt(p.x,3)}`);
+          else decresc.push(`até ${fmt(p.x,3)}`);
+        }
+        prevSign = sign;
+      });
+      rows.push({label:'Crescente em', value: cresc.length ? cresc.join('; ') : 'verificar gráfico'});
+      rows.push({label:'Decrescente em', value: decresc.length ? decresc.join('; ') : 'verificar gráfico'});
+      // Raízes aproximadas
+      const roots = [];
+      let prevY = ys[0];
+      for (let i=1; i<xs.length; i++) {
+        if (Math.sign(ys[i]) !== Math.sign(prevY) && Math.sign(ys[i]) !== 0) {
+          const xi = xs[i-1] + (xs[i]-xs[i-1]) * Math.abs(prevY) / (Math.abs(prevY)+Math.abs(ys[i]));
+          roots.push(fmt(xi, 4));
+        }
+        prevY = ys[i];
+      }
+      rows.push({label:'Raízes aproximadas', value: roots.length ? roots.join(', ') : 'nenhuma encontrada'});
+      showResultTable(rows);
+    } catch(e) {
+      toast('Erro ao analisar: '+e.message, 'error');
+    }
+    addHistory('analiseFuncao', fn);
+  };
+  refreshIcons();
+};
+
+/* --- MATRIZES: helper --- */
+function matrixInputs(prefix, defaultRows=2, defaultCols=2, defaults=null) {
+  let html = `<div class="grid gap-2" style="grid-template-columns:repeat(${defaultCols}, 1fr);" id="mat-${prefix}">`;
+  for (let i=0; i<defaultRows; i++) {
+    for (let j=0; j<defaultCols; j++) {
+      const v = defaults && defaults[i] && defaults[i][j] !== undefined ? defaults[i][j] : (i===j?1:0);
+      html += `<input class="matrix-input" data-r="${i}" data-c="${j}" value="${v}" id="${prefix}_${i}_${j}">`;
+    }
+  }
+  return html + '</div>';
+}
+function readMatrix(prefix, rows, cols) {
+  const m = [];
+  for (let i=0; i<rows; i++) {
+    const row = [];
+    for (let j=0; j<cols; j++) {
+      const el = $(`${prefix}_${i}_${j}`);
+      row.push(parseFloat(el?.value || 0));
+    }
+    m.push(row);
+  }
+  return m;
+}
+function matrixHTML(m) {
+  if (!m || !m.length) return '';
+  return `<div class="inline-block bg-slate-50 p-3 rounded-lg border border-slate-200"><table class="border-collapse"><tbody>${m.map(row=>`<tr>${row.map(v=>`<td class="px-3 py-1.5 text-center font-mono text-sm border border-slate-200 bg-white">${fmt(v,4)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+}
+function matrixTool(impl) {
+  return function(root, meta) {
+    root.innerHTML = toolTemplate(meta, null, `
+      <div id="matrix-area">${impl.render()}</div>
+      <button id="calc-btn" class="btn-primary w-full mt-5">${icon('zap',18)} Calcular</button>
+      <div id="result-area" class="mt-4"></div>
+    `, {custom:true});
+    if (impl.afterRender) impl.afterRender();
+    $('calc-btn').onclick = () => {
+      try {
+        const out = impl.calc();
+        if (out.matrix) {
+          $('result-area').innerHTML = `<div class="result-box"><div class="text-sm text-slate-500 mb-2">${out.label||'Resultado'}</div>${matrixHTML(out.matrix)}</div>`;
+        } else if (out.rows) showResultTable(out.rows);
+        else if (out.value !== undefined) showResult(out.value, out.label||'Resultado');
+        if (out.steps) showSteps(out.steps);
+        addHistory(meta.id, out.summary || '');
+      } catch(e) { toast('Erro: '+e.message, 'error'); }
+    };
+    refreshIcons();
+  };
+}
+
+tools.matSoma = matrixTool({
+  render: () => `
+    <div class="grid md:grid-cols-2 gap-4">
+      <div><div class="text-sm font-medium mb-2">Matriz A (2×2)</div>${matrixInputs('a',2,2,[[1,2],[3,4]])}</div>
+      <div><div class="text-sm font-medium mb-2">Matriz B (2×2)</div>${matrixInputs('b',2,2,[[5,6],[7,8]])}</div>
+    </div>
+  `,
+  calc: () => {
+    const A = readMatrix('a',2,2), B = readMatrix('b',2,2);
+    const C = A.map((r,i)=>r.map((v,j)=>v+B[i][j]));
+    return { matrix: C, label: 'A + B =', steps: ['Somar elementos correspondentes'] };
+  }
+});
+tools.matMult = matrixTool({
+  render: () => `
+    <div class="grid md:grid-cols-2 gap-4">
+      <div><div class="text-sm font-medium mb-2">Matriz A (2×2)</div>${matrixInputs('a',2,2,[[1,2],[3,4]])}</div>
+      <div><div class="text-sm font-medium mb-2">Matriz B (2×2)</div>${matrixInputs('b',2,2,[[5,6],[7,8]])}</div>
+    </div>
+  `,
+  calc: () => {
+    const A = readMatrix('a',2,2), B = readMatrix('b',2,2);
+    const C = [[0,0],[0,0]];
+    for (let i=0;i<2;i++) for(let j=0;j<2;j++) for(let k=0;k<2;k++) C[i][j]+=A[i][k]*B[k][j];
+    return { matrix: C, label: 'A × B =', steps: ['Multiplicar linha de A por coluna de B'] };
+  }
+});
+tools.matDet = matrixTool({
+  render: () => `<div class="text-sm font-medium mb-2">Matriz (3×3)</div>${matrixInputs('a',3,3,[[1,2,3],[4,5,6],[7,8,10]])}`,
+  calc: () => {
+    const A = readMatrix('a',3,3);
+    const d = A[0][0]*(A[1][1]*A[2][2]-A[1][2]*A[2][1]) - A[0][1]*(A[1][0]*A[2][2]-A[1][2]*A[2][0]) + A[0][2]*(A[1][0]*A[2][1]-A[1][1]*A[2][0]);
+    return { value: fmt(d), label: 'det(A) =', steps: ['Expansão pela 1ª linha', `det = ${fmt(d)}`], summary: fmt(d) };
+  }
+});
+tools.matInversa = matrixTool({
+  render: () => `<div class="text-sm font-medium mb-2">Matriz (3×3)</div>${matrixInputs('a',3,3,[[1,2,3],[0,1,4],[5,6,0]])}`,
+  calc: () => {
+    const A = readMatrix('a',3,3);
+    const det = A[0][0]*(A[1][1]*A[2][2]-A[1][2]*A[2][1]) - A[0][1]*(A[1][0]*A[2][2]-A[1][2]*A[2][0]) + A[0][2]*(A[1][0]*A[2][1]-A[1][1]*A[2][0]);
+    if (Math.abs(det) < 1e-10) return { value: 'Matriz não invertível (det = 0)', label: 'Erro' };
+    const cof = (m,i,j) => { const sub=m.filter((_,r)=>r!==i).map(r=>r.filter((_,c)=>c!==j)); return (sub[0][0]*sub[1][1]-sub[0][1]*sub[1][0])*((i+j)%2?-1:1); };
+    const cofM = A.map((r,i)=>r.map((_,j)=>cof(A,i,j)));
+    const inv = cofM[0].map((_,j)=>cofM.map(r=>r[j])).map(r=>r.map(v=>v/det));
+    return { matrix: inv, label: 'A⁻¹ =', steps: [`det = ${fmt(det)}`, 'Calcular cofatores', 'Transpor matriz de cofatores', 'Dividir pelo determinante'] };
+  }
+});
+tools.matTransposta = matrixTool({
+  render: () => `<div class="text-sm font-medium mb-2">Matriz (3×3)</div>${matrixInputs('a',3,3,[[1,2,3],[4,5,6],[7,8,9]])}`,
+  calc: () => {
+    const A = readMatrix('a',3,3);
+    const T = A[0].map((_,j)=>A.map(r=>r[j]));
+    return { matrix: T, label: 'Aᵀ =', steps: ['Trocar linhas por colunas'] };
+  }
+});
+tools.matEscalonamento = matrixTool({
+  render: () => `<div class="text-sm font-medium mb-2">Matriz aumentada [A|b] (3×4)</div>${matrixInputs('a',3,4,[[1,2,3,6],[2,5,3,15],[1,1,1,3]])}`,
+  calc: () => {
+    const A = readMatrix('a',3,4).map(r=>r.slice());
+    const steps = [];
+    for (let i=0; i<3; i++) {
+      let max = i;
+      for (let k=i+1; k<3; k++) if (Math.abs(A[k][i])>Math.abs(A[max][i])) max=k;
+      [A[i],A[max]]=[A[max],A[i]];
+      const piv = A[i][i];
+      if (Math.abs(piv)<1e-10) continue;
+      for (let j=i; j<4; j++) A[i][j] /= piv;
+      steps.push(`Pivoteamento linha ${i+1}: dividir por ${fmt(piv)}`);
+      for (let k=0; k<3; k++) {
+        if (k!==i) {
+          const f = A[k][i];
+          for (let j=i; j<4; j++) A[k][j] -= f*A[i][j];
+          steps.push(`L${k+1} → L${k+1} - ${fmt(f)}·L${i+1}`);
+        }
+      }
+    }
+    return { matrix: A, label: 'Forma escalonada:', steps, summary: 'Escalonada' };
+  }
+});
+tools.matCofatores = matrixTool({
+  render: () => `<div class="text-sm font-medium mb-2">Matriz (3×3)</div>${matrixInputs('a',3,3,[[1,2,3],[0,1,4],[5,6,0]])}`,
+  calc: () => {
+    const A = readMatrix('a',3,3);
+    const cof = (i,j) => { const sub=A.filter((_,r)=>r!==i).map(r=>r.filter((_,c)=>c!==j)); return (sub[0][0]*sub[1][1]-sub[0][1]*sub[1][0])*((i+j)%2?-1:1); };
+    const C = A.map((r,i)=>r.map((_,j)=>cof(i,j)));
+    return { matrix: C, label: 'Matriz de cofatores:', steps: ['Calcular menor complementar e aplicar sinal (-1)^(i+j)'] };
+  }
+});
+tools.matTraco = matrixTool({
+  render: () => `<div class="text-sm font-medium mb-2">Matriz (3×3)</div>${matrixInputs('a',3,3,[[1,2,3],[4,5,6],[7,8,9]])}`,
+  calc: () => {
+    const A = readMatrix('a',3,3);
+    const tr = A[0][0]+A[1][1]+A[2][2];
+    return { value: fmt(tr), label: 'tr(A) =', steps: ['Soma da diagonal principal', `${A[0][0]} + ${A[1][1]} + ${A[2][2]} = ${fmt(tr)}`] };
+  }
+});
+tools.sisLinear = matrixTool({
+  render: () => `<div class="text-sm font-medium mb-2">Sistema 3×3 (coeficientes e termos independentes)</div>${matrixInputs('a',3,4,[[1,1,1,6],[2,-1,1,5],[3,1,-2,7]])}`,
+  calc: () => {
+    const M = readMatrix('a',3,4);
+    const A = M.map(r=>r.slice(0,3));
+    const b = M.map(r=>r[3]);
+    const det = A[0][0]*(A[1][1]*A[2][2]-A[1][2]*A[2][1]) - A[0][1]*(A[1][0]*A[2][2]-A[1][2]*A[2][0]) + A[0][2]*(A[1][0]*A[2][1]-A[1][1]*A[2][0]);
+    if (Math.abs(det)<1e-10) return {value:'Sistema sem solução única','label':'Resultado'};
+    const replace = (col) => { const Ax = A.map((r,i)=>r.map((v,j)=>j===col?b[i]:v)); return Ax[0][0]*(Ax[1][1]*Ax[2][2]-Ax[1][2]*Ax[2][1]) - Ax[0][1]*(Ax[1][0]*Ax[2][2]-Ax[1][2]*Ax[2][0]) + Ax[0][2]*(Ax[1][0]*Ax[2][1]-Ax[1][1]*Ax[2][0]); };
+    const x = replace(0)/det, y = replace(1)/det, z = replace(2)/det;
+    return { rows: [{label:'x', value: fmt(x), big:true},{label:'y', value: fmt(y), big:true},{label:'z', value: fmt(z), big:true},{label:'det', value: fmt(det)}], steps: ['Regra de Cramer'], summary: `x=${fmt(x)}, y=${fmt(y)}, z=${fmt(z)}` };
+  }
+});
+
+/* --- OUTROS --- */
+tools.imc = simpleToolDef({
+  inputs: [
+    {id:'p', label:'Peso', opts:{value:70, suffix:'kg'}},
+    {id:'a', label:'Altura', opts:{value:1.75, suffix:'m'}}
+  ],
+  formula: '\\text{IMC} = \\frac{\\text{peso}}{\\text{altura}^2}',
+  calc: v => {
+    const imc = v.p/(v.a*v.a);
+    let cat = '';
+    if (imc < 18.5) cat = 'Abaixo do peso';
+    else if (imc < 25) cat = 'Peso normal';
+    else if (imc < 30) cat = 'Sobrepeso';
+    else if (imc < 35) cat = 'Obesidade I';
+    else if (imc < 40) cat = 'Obesidade II';
+    else cat = 'Obesidade III';
+    return { rows: [
+      {label:'IMC', value: fmt(imc,2), big:true},
+      {label:'Classificação', value: cat}
+    ], steps: [`IMC = ${v.p}/${v.a}²`, `IMC = ${v.p}/${fmt(v.a*v.a,4)}`, `IMC = ${fmt(imc,2)} kg/m²`] };
+  },
+  auto: true
+});
+tools.tmb = simpleToolDef({
+  inputs: [
+    {id:'p', label:'Peso', opts:{value:70, suffix:'kg'}},
+    {id:'a', label:'Altura', opts:{value:175, suffix:'cm'}},
+    {id:'i', label:'Idade', opts:{value:30, suffix:'anos'}},
+    {id:'s', label:'Sexo', opts:{}}
+  ],
+  formula: '\\text{TMB} = 10p + 6.25h - 5i + s',
+  calc: v => {
+    const sEl = $('in_s');
+    const s = sEl ? parseFloat(sEl.value) : 5;
+    const tmb = 10*v.p + 6.25*v.a - 5*v.i + s;
+    return { rows: [
+      {label:'TMB', value: fmt(tmb)+' kcal/dia', big:true},
+      {label:'Sedentário', value: fmt(tmb*1.2)+' kcal'},
+      {label:'Leve', value: fmt(tmb*1.375)+' kcal'},
+      {label:'Moderado', value: fmt(tmb*1.55)+' kcal'},
+      {label:'Intenso', value: fmt(tmb*1.725)+' kcal'}
+    ], steps: [`Fórmula de Mifflin-St Jeor`, `TMB = 10·${v.p} + 6.25·${v.a} - 5·${v.i} + ${s}`, `TMB = ${fmt(tmb)} kcal/dia`] };
+  }
+});
+// Sobrescrever TMB para ter select
+tools.tmb = function(root, meta) {
+  root.innerHTML = toolTemplate(meta, '\\text{TMB} = 10p + 6.25h - 5i + s', `
+    ${inputHTML('p','Peso', {value:70, suffix:'kg'})}
+    ${inputHTML('a','Altura', {value:175, suffix:'cm'})}
+    ${inputHTML('i','Idade', {value:30, suffix:'anos'})}
+    ${selectHTML('s','Sexo', [{v:'5',l:'Masculino'},{v:'-161',l:'Feminino'}])}
+  `);
+  showFormula('\\text{TMB} = 10p + 6.25h - 5i + s');
+  $('calc-btn').onclick = () => {
+    const p = parseFloat($('in_p').value);
+    const a = parseFloat($('in_a').value);
+    const i = parseFloat($('in_i').value);
+    const s = parseFloat($('in_s').value);
+    const tmb = 10*p + 6.25*a - 5*i + s;
+    showResultTable([
+      {label:'TMB', value: fmt(tmb)+' kcal/dia', big:true},
+      {label:'Sedentário', value: fmt(tmb*1.2)+' kcal'},
+      {label:'Leve', value: fmt(tmb*1.375)+' kcal'},
+      {label:'Moderado', value: fmt(tmb*1.55)+' kcal'},
+      {label:'Intenso', value: fmt(tmb*1.725)+' kcal'}
+    ]);
+    showSteps(['Fórmula de Mifflin-St Jeor', `TMB = 10·${p} + 6.25·${a} - 5·${i} + ${s}`, `TMB = ${fmt(tmb)} kcal/dia`]);
+    addHistory('tmb', fmt(tmb)+' kcal');
+  };
+  refreshIcons();
+};
+
+tools.velocidadeMedia = simpleToolDef({
+  inputs: [{id:'d', label:'Distância', opts:{value:120, suffix:'km'}},{id:'t', label:'Tempo', opts:{value:2, suffix:'h'}}],
+  formula: 'v = \\frac{\\Delta s}{\\Delta t}',
+  calc: v => ({ value: fmt(v.d/v.t)+' km/h', label:'Velocidade média', steps:[`v = ${v.d}/${v.t}`, `v = ${fmt(v.d/v.t)} km/h`] }),
+  auto: true
+});
+tools.densidade = simpleToolDef({
+  inputs: [{id:'m', label:'Massa', opts:{value:500, suffix:'g'}},{id:'V', label:'Volume', opts:{value:100, suffix:'cm³'}}],
+  formula: 'd = \\frac{m}{V}',
+  calc: v => ({ value: fmt(v.m/v.V)+' g/cm³', label:'Densidade', steps:[`d = ${v.m}/${v.V}`, `d = ${fmt(v.m/v.V)} g/cm³`] }),
+  auto: true
+});
+tools.escalaMapas = simpleToolDef({
+  inputs: [{id:'e', label:'Escala (1:n)', opts:{value:50000}},{id:'d', label:'Distância no mapa', opts:{value:5, suffix:'cm'}}],
+  formula: 'D = d \\times n',
+  calc: v => {
+    const D = v.d * v.e;
+    return { rows: [
+      {label:'Distância real', value: fmt(D)+' cm', big:true},
+      {label:'Em metros', value: fmt(D/100)+' m'},
+      {label:'Em quilômetros', value: fmt(D/100000)+' km'}
+    ], steps: [`D = d × n`, `D = ${v.d} × ${v.e}`, `D = ${fmt(D)} cm = ${fmt(D/100000)} km`] };
+  }
+});
+tools.calculadoraDatas = function(root, meta) {
+  root.innerHTML = toolTemplate(meta, null, `
+    ${inputHTML('d1','Data inicial', {type:'date', value:'2024-01-01'})}
+    ${inputHTML('d2','Data final', {type:'date', value:'2024-12-31'})}
+  `);
+  $('calc-btn').onclick = () => {
+    const d1 = new Date($('in_d1').value);
+    const d2 = new Date($('in_d2').value);
+    const diff = Math.abs(d2-d1);
+    const days = Math.floor(diff/86400000);
+    const weeks = Math.floor(days/7);
+    const months = Math.floor(days/30.4375);
+    const years = (days/365.25).toFixed(2);
+    showResultTable([
+      {label:'Dias', value: fmt(days), big:true},
+      {label:'Semanas', value: fmt(weeks)},
+      {label:'Meses (aprox.)', value: fmt(months)},
+      {label:'Anos (aprox.)', value: years}
+    ]);
+    showSteps([`Diferença em ms: ${diff}`, `Convertendo: 1 dia = 86400000 ms`]);
+    addHistory('calculadoraDatas', `${days} dias`);
+  };
+  refreshIcons();
+};
+tools.conversorUnidades = function(root, meta) {
+  const cats = {
+    comprimento: {name:'Comprimento', units:{m:1, km:1000, cm:0.01, mm:0.001, mi:1609.34, yd:0.9144, ft:0.3048, in:0.0254}},
+    massa: {name:'Massa', units:{kg:1, g:0.001, mg:0.000001, t:1000, lb:0.453592, oz:0.0283495}},
+    tempo: {name:'Tempo', units:{s:1, min:60, h:3600, dia:86400, semana:604800, ms:0.001}},
+    volume: {name:'Volume', units:{L:1, mL:0.001, m3:1000, gal:3.78541, qt:0.946353}},
+    velocidade: {name:'Velocidade', units:{'m/s':1, 'km/h':0.277778, 'mph':0.44704, 'ft/s':0.3048}}
+  };
+  root.innerHTML = toolTemplate(meta, null, `
+    ${selectHTML('cat','Categoria', Object.entries(cats).map(([k,v])=>({v:k,l:v.name})))}
+    <div class="grid grid-cols-2 gap-3">
+      <div>
+        ${inputHTML('val','Valor', {value:1})}
+        ${selectHTML('from','De', [])}
+      </div>
+      <div>
+        <div class="text-sm font-medium mb-1.5 text-slate-700">Resultado</div>
+        <div id="conv-result" class="input bg-slate-50 flex items-center">—</div>
+        ${selectHTML('to','Para', [])}
+      </div>
+    </div>
+    <button id="calc-btn" class="btn-primary w-full mt-4">${icon('repeat',18)} Converter</button>
+  `);
+  function updUnits() {
+    const cat = cats[$('in_cat').value];
+    const opts = Object.entries(cat.units).map(([k])=>({v:k,l:k}));
+    $('in_from').innerHTML = opts.map(o=>`<option value="${o.v}">${o.l}</option>`).join('');
+    $('in_to').innerHTML = opts.map(o=>`<option value="${o.v}">${o.l}</option>`).join('');
+    if (opts.length>1) $('in_to').value = opts[1].v;
+  }
+  $('in_cat').onchange = updUnits; updUnits();
+  function conv() {
+    const cat = cats[$('in_cat').value];
+    const v = parseFloat($('in_val').value);
+    const f = cat.units[$('in_from').value];
+    const t = cat.units[$('in_to').value];
+    const r = v * f / t;
+    $('conv-result').innerHTML = `<span class="font-bold text-primary text-lg">${fmt(r,6)}</span>`;
+    addHistory('conversorUnidades', `${v} ${$('in_from').value} = ${fmt(r,6)} ${$('in_to').value}`);
+  }
+  $('calc-btn').onclick = conv;
+  ['in_val','in_from','in_to'].forEach(id => $(id).addEventListener('input', conv));
+  refreshIcons();
+};
+tools.crescExponencial = function(root, meta) {
+  root.innerHTML = toolTemplate(meta, 'P(t) = P_0 \\cdot (1 + r)^t', `
+    ${inputHTML('p0','População inicial (P₀)', {value:1000})}
+    ${inputHTML('r','Taxa de crescimento (r)', {value:5, suffix:'%'})}
+    ${inputHTML('t','Tempo (t)', {value:10})}
+    <canvas id="chart" class="mt-4"></canvas>
+  `, {custom:true});
+  let chart;
+  $('calc-btn').onclick = () => {
+    const p0 = parseFloat($('in_p0').value);
+    const r = parseFloat($('in_r').value)/100;
+    const t = parseInt($('in_t').value);
+    const labels = [], data = [];
+    for (let i=0; i<=t; i++) { labels.push(i); data.push(p0*Math.pow(1+r, i)); }
+    const final = data[data.length-1];
+    if (chart) chart.destroy();
+    chart = new Chart($('chart'), {
+      type: 'line',
+      data: { labels, datasets: [{ label: 'P(t)', data, borderColor: '#2563EB', backgroundColor: 'rgba(37,99,235,0.1)', fill: true, tension: 0.3 }] },
+      options: { responsive: true, plugins: { title: { display: true, text: 'Crescimento Exponencial' } }, scales: { y: { beginAtZero: true } } }
+    });
+    showResultTable([
+      { label: 'Valor final', value: fmt(final), big: true },
+      { label: 'Crescimento total', value: fmt(final - p0) },
+      { label: 'Taxa aplicada', value: (r*100).toFixed(2) + '%' }
+    ]);
+    showSteps([`P(t) = P₀ · (1 + r)^t`, `P(${t}) = ${fmt(p0)} · (1 + ${r})^${t}`, `P(${t}) = ${fmt(final)}`]);
+    addHistory('crescExponencial', fmt(final));
+  };
+  refreshIcons();
+};
+
+tools.decaimentoExponencial = function(root, meta) {
+  root.innerHTML = toolTemplate(meta, 'P(t) = P_0 \\cdot (1 - r)^t', `
+    ${inputHTML('p0','Quantidade inicial (P₀)', {value:1000})}
+    ${inputHTML('r','Taxa de decaimento (r)', {value:5, suffix:'%'})}
+    ${inputHTML('t','Tempo (t)', {value:10})}
+    <canvas id="chart" class="mt-4"></canvas>
+  `, {custom:true});
+  let chart;
+  $('calc-btn').onclick = () => {
+    const p0 = parseFloat($('in_p0').value);
+    const r = Math.min(0.99, parseFloat($('in_r').value)/100);
+    const t = parseInt($('in_t').value);
+    const labels = [], data = [];
+    for (let i=0; i<=t; i++) { labels.push(i); data.push(p0*Math.pow(1-r, i)); }
+    const final = data[data.length-1];
+    if (chart) chart.destroy();
+    chart = new Chart($('chart'), {
+      type: 'line',
+      data: { labels, datasets: [{ label: 'P(t)', data, borderColor: '#EF4444', backgroundColor: 'rgba(239,68,68,0.1)', fill: true, tension: 0.3 }] },
+      options: { responsive: true, plugins: { title: { display: true, text: 'Decaimento Exponencial' } }, scales: { y: { beginAtZero: true } } }
+    });
+    showResultTable([
+      { label: 'Valor final', value: fmt(final), big: true },
+      { label: 'Redução total', value: fmt(p0 - final) },
+      { label: 'Taxa aplicada', value: (r*100).toFixed(2) + '%' }
+    ]);
+    showSteps([`P(t) = P₀ · (1 - r)^t`, `P(${t}) = ${fmt(p0)} · (1 - ${r})^${t}`, `P(${t}) = ${fmt(final)}`]);
+    addHistory('decaimentoExponencial', fmt(final));
+  };
+  refreshIcons();
+};
+
+/* ========== ROTEADOR E NAVEGAÇÃO ========== */
+function getMeta(id) { return catalog.find(t => t.id === id); }
+
+function toggleSidebar() {
+  $('sidebar').classList.toggle('open');
+  $('sidebar-backdrop').classList.toggle('hidden');
+}
+
+function renderSidebar() {
+  const activeCat = State.view === 'category' ? State.params.id : null;
+  $('sidebar-cats').innerHTML = categories.map(c => {
+    const count = catalog.filter(t => t.cat === c.id).length;
+    const active = activeCat === c.id ? 'active' : '';
+    return `<a onclick="go('category', {id:'${c.id}'})" class="sidebar-link ${active}">
+      <span class="cat-icon-bg tool-icon cat-${c.id}" style="width:28px;height:28px;border-radius:8px;">${icon(c.icon, 16)}</span>
+      <span class="flex-1">${c.name}</span>
+      <span class="text-xs opacity-60">${count}</span>
+    </a>`;
+  }).join('');
+  refreshIcons();
+}
+
+function renderHome() {
+  $('app').innerHTML = `
+    <div class="hero-bg hero-grid rounded-3xl p-8 md:p-12 mb-8 animate-fade">
+      <div class="max-w-3xl">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-100 text-xs font-medium text-blue-700 mb-4">
+          ${icon('sparkles', 14)} ${catalog.length} ferramentas matemáticas
+        </div>
+        <h1 class="text-3xl md:text-5xl font-extrabold tracking-tight text-slate-900 mb-4">Sua plataforma de <span class="text-primary">matemática</span></h1>
+        <p class="text-slate-500 text-lg mb-6">Calculadoras, álgebra, geometria, estatística, probabilidade e muito mais — tudo no navegador, sem instalação.</p>
+      </div>
+    </div>
+    <div class="mb-8">
+      <h2 class="text-xl font-bold mb-4 flex items-center gap-2">${icon('folder', 20)} Categorias</h2>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        ${categories.map(c => {
+          const count = catalog.filter(t => t.cat === c.id).length;
+          return `<div class="card p-5 card-hover cursor-pointer" onclick="go('category', {id:'${c.id}'})">
+            <div class="tool-icon cat-${c.id} mb-3">${icon(c.icon, 22)}</div>
+            <div class="font-bold text-slate-900">${c.name}</div>
+            <div class="text-sm text-slate-500 mt-1">${count} ferramentas</div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>
+    ${State.recent.length ? `
+    <div class="mb-8">
+      <h2 class="text-xl font-bold mb-4 flex items-center gap-2">${icon('clock', 20)} Recentes</h2>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        ${State.recent.map(id => { const m = getMeta(id); if (!m) return ''; return `
+          <div class="card p-4 card-hover cursor-pointer" onclick="go('tool', {id:'${m.id}'})">
+            <div class="font-semibold text-sm">${m.name}</div>
+            <div class="text-xs text-slate-500 mt-1">${catName(m.cat)}</div>
+          </div>`; }).join('')}
+      </div>
+    </div>` : ''}
+    <div>
+      <h2 class="text-xl font-bold mb-4 flex items-center gap-2">${icon('star', 20)} Populares</h2>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        ${['cientifica','eq2grau','porcentagem','imc','histograma','plotador'].map(id => {
+          const m = getMeta(id); if (!m) return '';
+          return `<div class="card p-4 card-hover cursor-pointer" onclick="go('tool', {id:'${m.id}'})">
+            <div class="tool-icon cat-${m.cat} mb-2" style="width:36px;height:36px;">${icon(m.icon, 18)}</div>
+            <div class="font-semibold text-sm">${m.name}</div>
+            <div class="text-xs text-slate-500 mt-1">${m.desc}</div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>`;
+  refreshIcons();
+}
+
+function renderCategory(catId) {
+  const cat = categories.find(c => c.id === catId);
+  if (!cat) return go('home');
+  const list = catalog.filter(t => t.cat === catId);
+  $('app').innerHTML = `
+    <div class="animate-fade">
+      <nav class="flex items-center gap-2 text-sm text-slate-500 mb-6">
+        <a onclick="go('home')" class="hover:text-primary cursor-pointer">Início</a>
+        ${icon('chevron-right', 16)}
+        <span class="text-slate-800 font-medium">${cat.name}</span>
+      </nav>
+      <div class="flex items-center gap-4 mb-8">
+        <div class="tool-icon cat-${catId}">${icon(cat.icon, 28)}</div>
+        <div>
+          <h1 class="text-2xl md:text-3xl font-bold">${cat.name}</h1>
+          <p class="text-slate-500">${list.length} ferramentas disponíveis</p>
+        </div>
+      </div>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        ${list.map(m => `
+          <div class="card p-5 card-hover cursor-pointer" onclick="go('tool', {id:'${m.id}'})">
+            <div class="flex items-start gap-3">
+              <div class="tool-icon cat-${m.cat}">${icon(m.icon, 20)}</div>
+              <div class="min-w-0">
+                <div class="font-semibold text-slate-900">${m.name}</div>
+                <div class="text-sm text-slate-500 mt-1 line-clamp-2">${m.desc}</div>
+              </div>
+            </div>
+          </div>`).join('')}
+      </div>
+    </div>`;
+  refreshIcons();
+}
+
+function renderTool(toolId) {
+  const meta = getMeta(toolId);
+  if (!meta) {
+    $('app').innerHTML = `<div class="text-center py-20">
+      <h2 class="text-xl font-bold mb-2">Ferramenta não encontrada</h2>
+      <button onclick="go('home')" class="btn-primary mt-4">Voltar ao início</button>
+    </div>`;
+    return;
+  }
+  addRecent(toolId);
+  State.view = 'tool';
+  State.params = { id: toolId };
+  $('app').innerHTML = '<div id="tool-root"></div>';
+  const root = $('tool-root');
+  const impl = tools[toolId];
+  if (impl) {
+    impl(root, meta);
+  } else {
+    root.innerHTML = toolTemplate(meta, null, `
+      <div class="text-center py-12 text-slate-500">
+        ${icon('wrench', 32)}
+        <p class="mt-4">Esta ferramenta está em desenvolvimento.</p>
+      </div>
+    `, { custom: true });
+    refreshIcons();
+  }
+  renderSidebar();
+  window.scrollTo(0, 0);
+}
+
+function renderFavorites() {
+  const favs = State.favorites.map(id => getMeta(id)).filter(Boolean);
+  $('app').innerHTML = `
+    <div class="animate-fade">
+      <nav class="flex items-center gap-2 text-sm text-slate-500 mb-6">
+        <a onclick="go('home')" class="hover:text-primary cursor-pointer">Início</a>
+        ${icon('chevron-right', 16)}
+        <span class="text-slate-800 font-medium">Favoritos</span>
+      </nav>
+      <h1 class="text-2xl md:text-3xl font-bold mb-6 flex items-center gap-3">${icon('star', 28)} Favoritos</h1>
+      ${favs.length ? `<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        ${favs.map(m => `
+          <div class="card p-5 card-hover cursor-pointer" onclick="go('tool', {id:'${m.id}'})">
+            <div class="font-semibold">${m.name}</div>
+            <div class="text-sm text-slate-500 mt-1">${m.desc}</div>
+          </div>`).join('')}
+      </div>` : `<div class="card p-12 text-center text-slate-500">Nenhum favorito ainda. Clique na estrela em qualquer ferramenta.</div>`}
+    </div>`;
+  refreshIcons();
+}
+
+function renderHistory() {
+  $('app').innerHTML = `
+    <div class="animate-fade">
+      <nav class="flex items-center gap-2 text-sm text-slate-500 mb-6">
+        <a onclick="go('home')" class="hover:text-primary cursor-pointer">Início</a>
+        ${icon('chevron-right', 16)}
+        <span class="text-slate-800 font-medium">Histórico</span>
+      </nav>
+      <h1 class="text-2xl md:text-3xl font-bold mb-6 flex items-center gap-3">${icon('history', 28)} Histórico</h1>
+      ${State.history.length ? `<div class="space-y-2">
+        ${State.history.map(h => {
+          const m = getMeta(h.id);
+          if (!m) return '';
+          const date = new Date(h.ts).toLocaleString('pt-BR');
+          return `<div class="card p-4 flex items-center justify-between gap-4 cursor-pointer card-hover" onclick="go('tool', {id:'${m.id}'})">
+            <div><div class="font-semibold">${m.name}</div><div class="text-sm text-slate-500">${h.summary || m.desc}</div></div>
+            <div class="text-xs text-slate-400 whitespace-nowrap">${date}</div>
+          </div>`;
+        }).join('')}
+      </div>` : `<div class="card p-12 text-center text-slate-500">Nenhum cálculo registrado ainda.</div>`}
+    </div>`;
+  refreshIcons();
+}
+
+function renderAbout() {
+  $('app').innerHTML = `
+    <div class="animate-fade max-w-2xl">
+      <h1 class="text-2xl md:text-3xl font-bold mb-4">Sobre o MathTools</h1>
+      <div class="card p-6 space-y-4 text-slate-600">
+        <p>Plataforma de ferramentas matemáticas com ${catalog.length} utilitários em categorias como álgebra, geometria, estatística e probabilidade.</p>
+        <p>Tudo roda localmente no seu navegador — sem login, sem servidor, com favoritos e histórico salvos no dispositivo.</p>
+        <a href="index.html" class="btn-primary inline-flex">${icon('layout-grid', 16)} Voltar ao Toolbox Hub</a>
+      </div>
+    </div>`;
+  refreshIcons();
+}
+
+function render() {
+  renderSidebar();
+  switch (State.view) {
+    case 'home': renderHome(); break;
+    case 'category': renderCategory(State.params.id); break;
+    case 'tool': renderTool(State.params.id); break;
+    case 'favorites': renderFavorites(); break;
+    case 'history': renderHistory(); break;
+    case 'about': renderAbout(); break;
+    default: renderHome();
+  }
+  refreshIcons();
+}
+
+function go(view, params = {}) {
+  State.view = view;
+  State.params = params;
+  if (window.innerWidth < 768) {
+    $('sidebar').classList.remove('open');
+    $('sidebar-backdrop').classList.add('hidden');
+  }
+  render();
+}
+
+function handleSearch(query) {
+  const dropdown = $('search-dropdown');
+  if (!query.trim()) { dropdown.classList.add('hidden'); return; }
+  const q = query.toLowerCase();
+  const results = catalog.filter(t =>
+    t.name.toLowerCase().includes(q) ||
+    t.desc.toLowerCase().includes(q) ||
+    catName(t.cat).toLowerCase().includes(q)
+  ).slice(0, 8);
+  if (!results.length) {
+    dropdown.innerHTML = `<div class="p-4 text-sm text-slate-500 text-center">Nenhuma ferramenta encontrada</div>`;
+  } else {
+    dropdown.innerHTML = results.map(m => `
+      <div class="px-4 py-3 hover:bg-slate-50 cursor-pointer flex items-center gap-3 border-b border-slate-50 last:border-0" onclick="go('tool', {id:'${m.id}'}); $('search-input').value=''; $('search-dropdown').classList.add('hidden');">
+        <div class="tool-icon cat-${m.cat}" style="width:32px;height:32px;">${icon(m.icon, 16)}</div>
+        <div><div class="font-medium text-sm">${m.name}</div><div class="text-xs text-slate-500">${catName(m.cat)}</div></div>
+      </div>`).join('');
+  }
+  dropdown.classList.remove('hidden');
+  refreshIcons();
+}
+
+/* ========== INICIALIZAÇÃO ========== */
+$('search-input').addEventListener('input', e => handleSearch(e.target.value));
+$('search-input').addEventListener('focus', e => { if (e.target.value.trim()) handleSearch(e.target.value); });
+document.addEventListener('click', e => {
+  if (!e.target.closest('#search-input') && !e.target.closest('#search-dropdown')) {
+    $('search-dropdown').classList.add('hidden');
+  }
+});
+document.addEventListener('keydown', e => {
+  if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+    e.preventDefault();
+    $('search-input').focus();
+  }
+  if (e.key === 'Escape') $('search-dropdown').classList.add('hidden');
+});
+
+renderSidebar();
+go('home');
+refreshIcons();
+</script>
+</body>
+</html>
