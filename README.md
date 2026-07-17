@@ -13,13 +13,11 @@ toolhub/
 
 ### Como funciona
 
-| Arquivo | Papel | Navegação |
-|---------|-------|-----------|
-| **index.html** | Portal central com busca, categorias, favoritos (localStorage) e ferramentas leves abertas em modal | Single-page, JavaScript vanilla |
-| **math.html** | Suite matemática completa com sidebar, KaTeX, Chart.js, Math.js | `go('home' \| 'category' \| 'tool' \| ...)` |
-| **text.html** | Suite de texto com hash routing | `#/`, `#/ferramenta/:id`, `#/favoritos` |
-
-Os três sites compartilham o mesmo repositório e se linkam entre si pelo header.
+| Arquivo | Papel |
+|---------|-------|
+| **index.html** | Portal — escolha entre MathTools ou TextTools |
+| **math.html** | Suite matemática completa (sidebar, KaTeX, Chart.js, Math.js) |
+| **text.html** | Suite de texto (hash routing, favoritos, histórico) |
 
 ## Uso local
 
@@ -28,12 +26,6 @@ Abra `index.html` no navegador ou sirva com qualquer servidor estático:
 ```bash
 npx serve .
 ```
-
-## GitHub Pages
-
-1. Vá em **Settings → Pages**
-2. Source: branch `main`, pasta `/ (root)`
-3. Acesse `https://<usuario>.github.io/toolhub/`
 
 ## Tecnologias
 

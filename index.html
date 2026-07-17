@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Toolbox Hub — Suas ferramentas essenciais</title>
+<meta name="description" content="Portal para MathTools e TextTools — ferramentas online gratuitas de matemática e texto.">
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -23,14 +24,11 @@
     --accent: #ff5e3a;
     --accent-2: #00d9a3;
     --accent-3: #ffd166;
-    --accent-4: #c084fc;
-    --accent-5: #60a5fa;
-    --accent-6: #f87171;
   }
-  
+
   * { box-sizing: border-box; }
   html { scroll-behavior: smooth; }
-  
+
   body {
     font-family: 'Space Grotesk', sans-serif;
     background: var(--bg);
@@ -40,333 +38,100 @@
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
   }
-  
+
   .mono { font-family: 'JetBrains Mono', monospace; }
-  
-  /* Atmosphere */
-  .atmosphere {
-    position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden;
-  }
-  .blob {
-    position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.7;
-  }
-  .blob-1 {
-    top: -10%; left: -5%; width: 40vw; height: 40vw;
-    background: radial-gradient(circle, rgba(255, 94, 58, 0.35), transparent 70%);
-    animation: drift1 18s ease-in-out infinite;
-  }
-  .blob-2 {
-    bottom: -15%; right: -5%; width: 50vw; height: 50vw;
-    background: radial-gradient(circle, rgba(0, 217, 163, 0.22), transparent 70%);
-    animation: drift2 22s ease-in-out infinite;
-  }
-  .blob-3 {
-    top: 30%; right: 20%; width: 25vw; height: 25vw;
-    background: radial-gradient(circle, rgba(255, 209, 102, 0.15), transparent 70%);
-    animation: drift3 16s ease-in-out infinite;
-  }
-  @keyframes drift1 {
-    0%, 100% { transform: translate(0,0) scale(1); }
-    50% { transform: translate(80px, 40px) scale(1.1); }
-  }
-  @keyframes drift2 {
-    0%, 100% { transform: translate(0,0) scale(1); }
-    50% { transform: translate(-60px, -40px) scale(1.15); }
-  }
-  @keyframes drift3 {
-    0%, 100% { transform: translate(0,0); }
-    50% { transform: translate(-40px, 60px); }
-  }
-  
+
+  .atmosphere { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+  .blob { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.7; }
+  .blob-1 { top: -10%; left: -5%; width: 40vw; height: 40vw; background: radial-gradient(circle, rgba(255, 94, 58, 0.35), transparent 70%); animation: drift1 18s ease-in-out infinite; }
+  .blob-2 { bottom: -15%; right: -5%; width: 50vw; height: 50vw; background: radial-gradient(circle, rgba(0, 217, 163, 0.22), transparent 70%); animation: drift2 22s ease-in-out infinite; }
+  .blob-3 { top: 30%; right: 20%; width: 25vw; height: 25vw; background: radial-gradient(circle, rgba(255, 209, 102, 0.15), transparent 70%); animation: drift3 16s ease-in-out infinite; }
+  @keyframes drift1 { 0%, 100% { transform: translate(0,0) scale(1); } 50% { transform: translate(80px, 40px) scale(1.1); } }
+  @keyframes drift2 { 0%, 100% { transform: translate(0,0) scale(1); } 50% { transform: translate(-60px, -40px) scale(1.15); } }
+  @keyframes drift3 { 0%, 100% { transform: translate(0,0); } 50% { transform: translate(-40px, 60px); } }
+
   .grid-pattern {
     position: fixed; inset: 0; pointer-events: none; z-index: 1;
-    background-image: 
-      linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+    background-image: linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
     background-size: 60px 60px;
     mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, black 30%, transparent 90%);
     -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, black 30%, transparent 90%);
   }
-  
-  ::-webkit-scrollbar { width: 10px; height: 10px; }
-  ::-webkit-scrollbar-track { background: transparent; }
+
+  ::-webkit-scrollbar { width: 10px; }
   ::-webkit-scrollbar-thumb { background: var(--border-bright); border-radius: 5px; }
-  ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
   ::selection { background: var(--accent); color: black; }
-  
+
   .header-glass {
     background: rgba(10, 10, 13, 0.7);
     backdrop-filter: blur(20px) saturate(180%);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
   }
-  
-  .search-input { transition: all 0.2s ease; }
-  .search-input:focus {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 4px rgba(255, 94, 58, 0.12);
-  }
-  
-  /* Category pills */
-  .cat-pill {
-    display: inline-flex; align-items: center; gap: 8px;
-    padding: 8px 14px; border-radius: 999px;
-    border: 1px solid var(--border); background: var(--card);
-    color: var(--muted); font-size: 13px; font-weight: 500;
-    cursor: pointer; transition: all 0.2s ease; white-space: nowrap;
-  }
-  .cat-pill:hover {
-    color: var(--fg); border-color: var(--border-bright); background: var(--card-hover);
-    transform: translateY(-1px);
-  }
-  .cat-pill.active {
-    background: var(--fg); color: var(--bg); border-color: var(--fg);
-  }
-  .cat-pill .count {
-    font-size: 11px; opacity: 0.7; font-family: 'JetBrains Mono', monospace;
-  }
-  .cat-pill.active .count { opacity: 0.5; }
-  
-  /* Tool cards */
-  .tool-card {
-    position: relative; background: var(--card);
-    border: 1px solid var(--border); border-radius: 16px;
-    padding: 20px; cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); overflow: hidden;
-  }
-  .tool-card::before {
-    content: ''; position: absolute; inset: 0;
-    background: radial-gradient(circle at var(--mx, 50%) var(--my, 0%), 
-                rgba(255, 255, 255, 0.04), transparent 50%);
-    opacity: 0; transition: opacity 0.3s ease; pointer-events: none;
-  }
-  .tool-card:hover::before { opacity: 1; }
-  .tool-card:hover {
-    border-color: var(--border-bright);
-    background: var(--card-hover);
-    transform: translateY(-3px);
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
-  }
-  .tool-card .tool-icon {
-    width: 44px; height: 44px; border-radius: 12px;
-    display: flex; align-items: center; justify-content: center;
-    margin-bottom: 14px; transition: all 0.3s ease;
-  }
-  .tool-card:hover .tool-icon { transform: scale(1.08) rotate(-4deg); }
-  .tool-card .fav-btn {
-    position: absolute; top: 14px; right: 14px;
-    width: 30px; height: 30px; border-radius: 8px;
-    display: flex; align-items: center; justify-content: center;
-    background: transparent; border: none; color: var(--muted-2);
-    cursor: pointer; transition: all 0.2s ease; opacity: 0;
-  }
-  .tool-card:hover .fav-btn { opacity: 1; }
-  .tool-card .fav-btn.fav-active { opacity: 1; color: var(--accent-3); }
-  .tool-card .fav-btn:hover { background: var(--bg-2); color: var(--accent-3); }
-  
-  @keyframes cardIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  .tool-card { animation: cardIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) backwards; }
 
   .module-card {
-    position: relative; background: var(--card);
-    border: 1px solid var(--border); border-radius: 20px;
-    padding: 24px; cursor: pointer; text-decoration: none; color: inherit;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); overflow: hidden;
-    display: block;
+    position: relative;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 32px;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    min-height: 320px;
+    overflow: hidden;
   }
+  .module-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at var(--mx, 50%) var(--my, 0%), rgba(255,255,255,0.05), transparent 55%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
+  .module-card:hover::after { opacity: 1; }
   .module-card:hover {
     border-color: var(--border-bright);
     background: var(--card-hover);
-    transform: translateY(-4px);
-    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.35);
+    transform: translateY(-6px);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
   }
   .module-card .module-icon {
-    width: 52px; height: 52px; border-radius: 14px;
+    width: 64px; height: 64px; border-radius: 18px;
     display: flex; align-items: center; justify-content: center;
-    margin-bottom: 16px;
+    margin-bottom: 24px;
   }
-  
-  /* Tool icon colors by category */
-  .tool-card[data-cat="math"] .tool-icon { color: var(--accent); border: 1px solid rgba(255, 94, 58, 0.3); background: rgba(255, 94, 58, 0.1); }
-  .tool-card[data-cat="text"] .tool-icon { color: var(--accent-2); border: 1px solid rgba(0, 217, 163, 0.3); background: rgba(0, 217, 163, 0.1); }
-  .tool-card[data-cat="convert"] .tool-icon { color: var(--accent-3); border: 1px solid rgba(255, 209, 102, 0.3); background: rgba(255, 209, 102, 0.1); }
-  .tool-card[data-cat="datetime"] .tool-icon { color: var(--accent-4); border: 1px solid rgba(192, 132, 252, 0.3); background: rgba(192, 132, 252, 0.1); }
-  .tool-card[data-cat="dev"] .tool-icon { color: var(--accent-5); border: 1px solid rgba(96, 165, 250, 0.3); background: rgba(96, 165, 250, 0.1); }
-  .tool-card[data-cat="color"] .tool-icon { color: var(--accent-6); border: 1px solid rgba(248, 113, 113, 0.3); background: rgba(248, 113, 113, 0.1); }
-  
-  /* Modal */
-  .modal-backdrop {
-    background: rgba(5, 5, 8, 0.7);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    animation: backdropIn 0.25s ease;
+  .module-card .arrow {
+    margin-top: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--muted);
+    transition: color 0.2s, gap 0.2s;
   }
-  @keyframes backdropIn { from { opacity: 0; } to { opacity: 1; } }
-  
-  .modal-card {
-    background: var(--bg-2);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
-    animation: modalIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-  @keyframes modalIn {
-    from { opacity: 0; transform: scale(0.96) translateY(10px); }
-    to { opacity: 1; transform: scale(1) translateY(0); }
-  }
-  
-  /* Inputs */
-  .input {
-    width: 100%; background: var(--card);
-    border: 1px solid var(--border); border-radius: 10px;
-    padding: 10px 14px; color: var(--fg);
-    font-size: 14px; font-family: inherit;
-    transition: all 0.2s ease;
-  }
-  .input:focus {
-    outline: none; border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(255, 94, 58, 0.1);
-  }
-  .input.mono { font-family: 'JetBrains Mono', monospace; }
-  textarea.input { resize: vertical; min-height: 100px; font-family: 'JetBrains Mono', monospace; line-height: 1.5; }
-  
-  /* Buttons */
-  .btn {
-    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-    padding: 10px 16px; border-radius: 10px;
-    border: 1px solid var(--border); background: var(--card);
-    color: var(--fg); font-size: 14px; font-weight: 500;
-    font-family: inherit; cursor: pointer;
-    transition: all 0.15s ease;
-  }
-  .btn:hover { background: var(--card-hover); border-color: var(--border-bright); }
-  .btn:active { transform: scale(0.97); }
-  .btn-primary {
-    background: var(--accent); border-color: var(--accent);
-    color: black; font-weight: 600;
-  }
-  .btn-primary:hover { background: #ff7755; border-color: #ff7755; }
-  .btn-ghost { background: transparent; border-color: transparent; }
-  .btn-ghost:hover { background: var(--card); }
-  .btn-sm { padding: 6px 10px; font-size: 12px; }
-  
-  /* Toast */
-  .toast {
-    background: var(--card);
-    border: 1px solid var(--border-bright);
-    border-radius: 12px;
-    padding: 12px 16px; color: var(--fg); font-size: 14px;
-    display: flex; align-items: center; gap: 10px;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.4);
-    animation: toastIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-  @keyframes toastIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  .toast.toast-out { animation: toastOut 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
-  @keyframes toastOut { to { opacity: 0; transform: translateY(20px); } }
-  
-  /* Calculator */
-  .calc-btn {
-    aspect-ratio: 1; border-radius: 12px;
-    border: 1px solid var(--border); background: var(--card);
-    color: var(--fg); font-size: 18px; font-weight: 500;
-    font-family: 'JetBrains Mono', monospace;
-    cursor: pointer; transition: all 0.1s ease;
-    display: flex; align-items: center; justify-content: center;
-  }
-  .calc-btn:hover { background: var(--card-hover); border-color: var(--border-bright); }
-  .calc-btn:active { transform: scale(0.94); }
-  .calc-btn.op { color: var(--accent); border-color: rgba(255, 94, 58, 0.3); }
-  .calc-btn.op:hover { background: rgba(255, 94, 58, 0.1); }
-  .calc-btn.eq { background: var(--accent); color: black; border-color: var(--accent); font-weight: 700; }
-  .calc-btn.eq:hover { background: #ff7755; }
-  .calc-btn.fn { color: var(--accent-3); }
-  
-  /* Stopwatch */
-  .stopwatch-display {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: clamp(40px, 8vw, 64px); font-weight: 600;
-    letter-spacing: -2px; text-align: center;
-    background: linear-gradient(135deg, var(--fg), var(--muted));
-    -webkit-background-clip: text; background-clip: text;
-    color: transparent;
-  }
-  
-  /* JSON output */
-  .json-output {
-    background: var(--bg); border: 1px solid var(--border);
-    border-radius: 10px; padding: 14px;
-    font-family: 'JetBrains Mono', monospace; font-size: 13px;
-    color: var(--accent-2); white-space: pre-wrap; word-break: break-all;
-    max-height: 300px; overflow-y: auto; line-height: 1.6;
-  }
-  
-  /* Strength bar */
-  .strength-bar {
-    height: 6px; border-radius: 3px;
-    background: var(--border); overflow: hidden;
-  }
-  .strength-fill {
-    height: 100%; border-radius: 3px;
-    transition: all 0.3s ease; width: 0%;
-  }
-  
-  /* Badge */
+  .module-card:hover .arrow { color: var(--fg); gap: 12px; }
+
   .badge {
     display: inline-flex; align-items: center; gap: 4px;
-    padding: 3px 8px; border-radius: 6px;
+    padding: 4px 10px; border-radius: 999px;
     font-size: 11px; font-weight: 500;
     font-family: 'JetBrains Mono', monospace;
     background: var(--bg-2); border: 1px solid var(--border);
     color: var(--muted);
   }
-  
-  /* Color swatch */
-  .swatch {
-    aspect-ratio: 1; border-radius: 10px;
-    cursor: pointer; transition: all 0.2s ease;
-    border: 1px solid var(--border); position: relative;
-    overflow: hidden;
-  }
-  .swatch:hover { transform: scale(1.05); }
-  .swatch .label {
-    position: absolute; bottom: 6px; left: 6px; right: 6px;
-    background: rgba(0,0,0,0.6); color: white;
-    font-size: 10px; font-family: 'JetBrains Mono', monospace;
-    padding: 2px 4px; border-radius: 4px;
-    text-align: center; backdrop-filter: blur(4px);
-  }
-  
-  /* Tag button */
-  .tag-btn {
-    padding: 8px 14px; border-radius: 10px;
-    border: 1px solid var(--border); background: var(--card);
-    color: var(--fg); font-size: 13px; font-weight: 500;
-    font-family: inherit; cursor: pointer;
-    transition: all 0.15s ease;
-  }
-  .tag-btn:hover { background: var(--card-hover); border-color: var(--border-bright); }
-  .tag-btn.active { background: var(--accent); border-color: var(--accent); color: black; }
-  
-  /* Animations */
-  .pulse-dot {
-    position: relative; display: inline-flex; width: 6px; height: 6px;
-  }
+
+  .pulse-dot { position: relative; display: inline-flex; width: 6px; height: 6px; }
   .pulse-dot::before {
     content: ''; position: absolute; inset: 0;
     background: var(--accent-2); border-radius: 50%;
     animation: pulse 2s ease-in-out infinite;
   }
-  @keyframes pulse {
-    0%, 100% { transform: scale(1); opacity: 1; }
-    50% { transform: scale(1.8); opacity: 0; }
-  }
-  
-  /* Hero gradient text animation */
+  @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.8); opacity: 0; } }
+
   @keyframes shimmer {
     0%, 100% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
@@ -378,18 +143,23 @@
     color: transparent;
     animation: shimmer 8s ease-in-out infinite;
   }
-  
-  /* Reduced motion */
-  @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
-      animation-duration: 0.01ms !important;
-      transition-duration: 0.01ms !important;
-    }
+
+  @keyframes cardIn {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
   }
-  
-  kbd {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
+  .module-card { animation: cardIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) backwards; }
+  .module-card:nth-child(2) { animation-delay: 0.1s; }
+
+  .feature {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
   }
 </style>
 </head>
@@ -402,1861 +172,111 @@
 </div>
 <div class="grid-pattern"></div>
 
-<!-- Header -->
 <header class="header-glass sticky top-0 z-50 border-b border-[var(--border)]">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center gap-3 sm:gap-6">
-    <a href="index.html" class="flex items-center gap-2.5 group flex-shrink-0">
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between">
+    <a href="index.html" class="flex items-center gap-2.5">
       <div class="relative w-9 h-9 rounded-xl bg-gradient-to-br from-[var(--accent)] via-[var(--accent-3)] to-[var(--accent-2)] flex items-center justify-center overflow-hidden">
         <i data-lucide="layout-grid" class="w-[18px] h-[18px] text-black stroke-[2.5]"></i>
-        <div class="absolute inset-0 bg-gradient-to-tr from-transparent to-white/20"></div>
       </div>
       <div class="hidden sm:block">
         <div class="font-bold text-base leading-none tracking-tight">Toolbox</div>
-        <div class="text-[10px] text-[var(--muted)] mono leading-none mt-1 tracking-wider">HUB · v1.0</div>
+        <div class="text-[10px] text-[var(--muted)] mono leading-none mt-1 tracking-wider">HUB</div>
       </div>
     </a>
-    
-    <div class="flex-1 max-w-xl relative">
-      <i data-lucide="search" class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--muted)] pointer-events-none"></i>
-      <input id="search" type="text" placeholder="Buscar ferramentas..." 
-             class="search-input w-full bg-[var(--card)] border border-[var(--border)] rounded-xl pl-10 pr-12 py-2.5 text-sm placeholder:text-[var(--muted-2)]">
-      <kbd class="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--muted)] border border-[var(--border)] rounded px-1.5 py-0.5 pointer-events-none">/</kbd>
-    </div>
-    
-    <div class="hidden md:flex items-center gap-4 text-xs">
-      <div class="flex items-center gap-1.5">
-        <span class="pulse-dot"></span>
-        <span class="text-[var(--muted)] mono"><span id="tool-count" class="text-[var(--fg)] font-medium">0</span> ferramentas</span>
-      </div>
-      <button id="favorites-btn" class="flex items-center gap-1.5 text-[var(--muted)] hover:text-[var(--accent-3)] transition-colors">
-        <i data-lucide="star" class="w-3.5 h-3.5"></i>
-        <span class="mono"><span id="fav-count">0</span> favoritas</span>
-      </button>
+    <div class="flex items-center gap-1.5 text-xs text-[var(--muted)]">
+      <span class="pulse-dot"></span>
+      <span class="mono">2 suites · 200+ ferramentas</span>
     </div>
   </div>
 </header>
 
-<!-- Hero -->
-<section class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 sm:pt-20 pb-10">
-  <div class="max-w-3xl">
-    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--card)] border border-[var(--border)] text-xs text-[var(--muted)] mb-6">
-      <span class="pulse-dot"></span>
-      Tudo em um só lugar · sem login · 100% local
-    </div>
-    <h1 class="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight mb-5 leading-[1.05]">
-      Ferramentas que <br>
-      <span class="gradient-text">cabem no bolso.</span>
-    </h1>
-    <p class="text-base sm:text-lg text-[var(--muted)] max-w-2xl leading-relaxed">
-      Matemática, texto, datas, desenvolvimento e cores — uma coleção curada de utilitários rápidos. Sem instalação, sem espera, sem distração.
-    </p>
+<section class="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 sm:pt-24 pb-8 text-center">
+  <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--card)] border border-[var(--border)] text-xs text-[var(--muted)] mb-6">
+    <span class="pulse-dot"></span>
+    Sem login · 100% no navegador · dados locais
   </div>
+  <h1 class="text-4xl sm:text-6xl font-bold tracking-tight mb-5 leading-[1.05]">
+    Escolha sua <span class="gradient-text">suite de ferramentas.</span>
+  </h1>
+  <p class="text-base sm:text-lg text-[var(--muted)] max-w-xl mx-auto leading-relaxed">
+    O Toolbox Hub reúne duas plataformas completas — matemática e texto — cada uma com dezenas de utilitários prontos para usar.
+  </p>
 </section>
 
-<!-- Módulos completos -->
-<section class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-10">
-  <div class="flex items-center gap-2 mb-4">
-    <i data-lucide="layers" class="w-4 h-4 text-[var(--muted)]"></i>
-    <span class="text-xs uppercase tracking-wider text-[var(--muted)] font-medium mono">Suites completas</span>
-  </div>
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-    <a href="math.html" class="module-card" data-cat="math">
+<section class="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+    <a href="math.html" class="module-card" id="card-math">
       <div class="module-icon" style="color: var(--accent); border: 1px solid rgba(255, 94, 58, 0.3); background: rgba(255, 94, 58, 0.1);">
-        <i data-lucide="sigma" class="w-6 h-6"></i>
+        <i data-lucide="sigma" class="w-8 h-8"></i>
       </div>
-      <h3 class="font-semibold text-lg mb-1">MathTools</h3>
-      <p class="text-sm text-[var(--muted)] leading-snug mb-3">Calculadoras, álgebra, geometria, estatística, matrizes e dezenas de ferramentas matemáticas avançadas.</p>
-      <span class="badge">100+ ferramentas · Abrir suite</span>
+      <span class="badge mb-3">Matemática</span>
+      <h2 class="font-bold text-2xl mb-2">MathTools</h2>
+      <p class="text-sm text-[var(--muted)] leading-relaxed flex-1">
+        Calculadoras, álgebra, geometria, trigonometria, estatística, probabilidade, matrizes e conversores — com fórmulas, gráficos e passo a passo.
+      </p>
+      <span class="arrow mt-6">
+        Abrir MathTools
+        <i data-lucide="arrow-right" class="w-4 h-4"></i>
+      </span>
     </a>
-    <a href="text.html" class="module-card" data-cat="text">
+    <a href="text.html" class="module-card" id="card-text">
       <div class="module-icon" style="color: var(--accent-2); border: 1px solid rgba(0, 217, 163, 0.3); background: rgba(0, 217, 163, 0.1);">
-        <i data-lucide="type" class="w-6 h-6"></i>
+        <i data-lucide="type" class="w-8 h-8"></i>
       </div>
-      <h3 class="font-semibold text-lg mb-1">TextTools</h3>
-      <p class="text-sm text-[var(--muted)] leading-snug mb-3">Formatação, conversão, criptografia, geração de texto e utilitários para desenvolvedores e escritores.</p>
-      <span class="badge">100+ ferramentas · Abrir suite</span>
+      <span class="badge mb-3">Texto</span>
+      <h2 class="font-bold text-2xl mb-2">TextTools</h2>
+      <p class="text-sm text-[var(--muted)] leading-relaxed flex-1">
+        Formatação, conversão, criptografia, geração, JSON, Markdown, comparadores e utilitários para devs e escritores.
+      </p>
+      <span class="arrow mt-6">
+        Abrir TextTools
+        <i data-lucide="arrow-right" class="w-4 h-4"></i>
+      </span>
     </a>
   </div>
 </section>
 
-<!-- Categories -->
-<section class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-6">
-  <div class="flex items-center gap-2 mb-4">
-    <i data-lucide="folder-open" class="w-4 h-4 text-[var(--muted)]"></i>
-    <span class="text-xs uppercase tracking-wider text-[var(--muted)] font-medium mono">Categorias</span>
+<section class="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+    <div class="feature">
+      <i data-lucide="zap" class="w-5 h-5 text-[var(--accent-3)] mb-2"></i>
+      <div class="font-semibold text-sm mb-1">Instantâneo</div>
+      <div class="text-xs text-[var(--muted)] leading-relaxed">Abre direto no navegador, sem instalar nada.</div>
+    </div>
+    <div class="feature">
+      <i data-lucide="shield-check" class="w-5 h-5 text-[var(--accent-2)] mb-2"></i>
+      <div class="font-semibold text-sm mb-1">Privado</div>
+      <div class="text-xs text-[var(--muted)] leading-relaxed">Seus dados ficam no dispositivo, não em servidores.</div>
+    </div>
+    <div class="feature">
+      <i data-lucide="star" class="w-5 h-5 text-[var(--accent)] mb-2"></i>
+      <div class="font-semibold text-sm mb-1">Favoritos</div>
+      <div class="text-xs text-[var(--muted)] leading-relaxed">Cada suite salva favoritos e histórico localmente.</div>
+    </div>
   </div>
-  <div class="flex flex-wrap gap-2" id="categories"></div>
 </section>
 
-<!-- Tools grid -->
-<main class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
-  <div class="flex items-center justify-between mb-4">
-    <h2 class="text-lg font-semibold" id="results-title">Todas as ferramentas</h2>
-    <span class="text-xs text-[var(--muted)] mono" id="results-count"></span>
-  </div>
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3" id="tools-grid"></div>
-  <div id="empty-state" class="hidden text-center py-20">
-    <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-[var(--card)] border border-[var(--border)] mb-4">
-      <i data-lucide="search-x" class="w-7 h-7 text-[var(--muted)]"></i>
-    </div>
-    <p class="text-[var(--muted)] mb-1">Nenhuma ferramenta encontrada</p>
-    <p class="text-xs text-[var(--muted-2)]">Tente outros termos ou limpe os filtros</p>
-  </div>
-</main>
-
-<!-- Footer -->
 <footer class="relative z-10 border-t border-[var(--border)]">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[var(--muted)]">
-    <div class="flex items-center gap-2">
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center text-xs text-[var(--muted)]">
+    <div class="flex items-center justify-center gap-2 mb-2">
       <div class="w-5 h-5 rounded-md bg-gradient-to-br from-[var(--accent)] to-[var(--accent-2)] flex items-center justify-center">
         <i data-lucide="layout-grid" class="w-3 h-3 text-black"></i>
       </div>
-      <span>Toolbox Hub — feito com foco em velocidade e clareza.</span>
+      <span>Toolbox Hub</span>
     </div>
-    <div class="flex items-center gap-4">
-      <span class="mono">Atalhos: <kbd class="border border-[var(--border)] rounded px-1 py-0.5">/</kbd> busca · <kbd class="border border-[var(--border)] rounded px-1 py-0.5">ESC</kbd> fecha</span>
-    </div>
+    <span class="mono">MathTools · TextTools</span>
   </div>
 </footer>
 
-<!-- Modal -->
-<div id="modal" class="fixed inset-0 z-[100] hidden items-start sm:items-center justify-center p-3 sm:p-6 overflow-y-auto">
-  <div class="modal-backdrop absolute inset-0" data-close></div>
-  <div class="modal-card relative w-full max-w-2xl my-auto" id="modal-card">
-    <div class="flex items-start justify-between p-5 border-b border-[var(--border)]">
-      <div class="flex items-start gap-3 min-w-0">
-        <div id="modal-icon" class="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"></div>
-        <div class="min-w-0">
-          <h3 id="modal-title" class="text-lg font-semibold leading-tight truncate"></h3>
-          <p id="modal-desc" class="text-sm text-[var(--muted)] mt-0.5"></p>
-        </div>
-      </div>
-      <div class="flex items-center gap-1 flex-shrink-0">
-        <button id="modal-fav" class="w-9 h-9 rounded-lg flex items-center justify-center text-[var(--muted)] hover:text-[var(--accent-3)] hover:bg-[var(--card)] transition-colors">
-          <i data-lucide="star" class="w-4 h-4"></i>
-        </button>
-        <button class="w-9 h-9 rounded-lg flex items-center justify-center text-[var(--muted)] hover:text-[var(--fg)] hover:bg-[var(--card)] transition-colors" data-close>
-          <i data-lucide="x" class="w-4 h-4"></i>
-        </button>
-      </div>
-    </div>
-    <div class="p-5" id="modal-body"></div>
-  </div>
-</div>
-
-<!-- Toast container -->
-<div id="toast-container" class="fixed bottom-6 right-6 z-[200] flex flex-col gap-2 pointer-events-none"></div>
-
 <script>
-// ====== DATA ======
-const categories = [
-  { id: 'all', name: 'Todas', icon: 'layout-grid' },
-  { id: 'math', name: 'Matemática', icon: 'calculator' },
-  { id: 'text', name: 'Texto', icon: 'type' },
-  { id: 'convert', name: 'Conversores', icon: 'arrow-left-right' },
-  { id: 'datetime', name: 'Data & Hora', icon: 'clock' },
-  { id: 'dev', name: 'Dev', icon: 'code-2' },
-  { id: 'color', name: 'Cores', icon: 'palette' },
-];
-
-const categoryColors = {
-  math: { fg: '#ff5e3a', bg: 'rgba(255, 94, 58, 0.12)', border: 'rgba(255, 94, 58, 0.3)' },
-  text: { fg: '#00d9a3', bg: 'rgba(0, 217, 163, 0.12)', border: 'rgba(0, 217, 163, 0.3)' },
-  convert: { fg: '#ffd166', bg: 'rgba(255, 209, 102, 0.12)', border: 'rgba(255, 209, 102, 0.3)' },
-  datetime: { fg: '#c084fc', bg: 'rgba(192, 132, 252, 0.12)', border: 'rgba(192, 132, 252, 0.3)' },
-  dev: { fg: '#60a5fa', bg: 'rgba(96, 165, 250, 0.12)', border: 'rgba(96, 165, 250, 0.3)' },
-  color: { fg: '#f87171', bg: 'rgba(248, 113, 113, 0.12)', border: 'rgba(248, 113, 113, 0.3)' },
-};
-
-const tools = [
-  // MATH
-  { id: 'calculator', name: 'Calculadora', description: 'Operações com memória e atalhos', category: 'math', icon: 'calculator', keywords: ['calculadora','calc','soma','subtracao','multiplicacao','divisao','math'], render: calculatorHTML, init: initCalculator },
-  { id: 'imc', name: 'Calculadora de IMC', description: 'Índice de massa corporal', category: 'math', icon: 'scale', keywords: ['imc','peso','altura','saude'], render: imcHTML, init: initIMC },
-  { id: 'base-converter', name: 'Conversor de Bases', description: 'Binário, decimal, hexa, octal', category: 'math', icon: 'binary', keywords: ['binario','decimal','hexadecimal','octal','base'], render: baseConverterHTML, init: initBaseConverter },
-  { id: 'tabuada', name: 'Tabuada', description: 'Gere tabuadas instantaneamente', category: 'math', icon: 'hash', keywords: ['tabuada','multiplicacao','matematica'], render: tabuadaHTML, init: initTabuada },
-  // TEXT
-  { id: 'word-counter', name: 'Contador de Palavras', description: 'Palavras, caracteres, frases, leitura', category: 'text', icon: 'file-text', keywords: ['palavras','caracteres','contar','texto','leitura'], render: wordCounterHTML, init: initWordCounter },
-  { id: 'case-converter', name: 'Converter Maiúsculas', description: 'UPPER, lower, Title, camelCase', category: 'text', icon: 'case-sensitive', keywords: ['maiuscula','minuscula','case','titulo','camel','snake'], render: caseConverterHTML, init: initCaseConverter },
-  { id: 'remove-duplicates', name: 'Remover Duplicatas', description: 'Linhas e palavras únicas', category: 'text', icon: 'copy-x', keywords: ['duplicata','repetir','unico','linhas','dedupe'], render: removeDuplicatesHTML, init: initRemoveDuplicates },
-  { id: 'reverse-text', name: 'Inverter Texto', description: 'Espelha caracteres, palavras ou linhas', category: 'text', icon: 'flip-horizontal', keywords: ['inverter','reverter','espelhar','reverse'], render: reverseTextHTML, init: initReverseText },
-  // CONVERT
-  { id: 'temperature', name: 'Conversor de Temperatura', description: 'Celsius, Fahrenheit, Kelvin', category: 'convert', icon: 'thermometer', keywords: ['temperatura','celsius','fahrenheit','kelvin','graus'], render: temperatureHTML, init: initTemperature },
-  { id: 'data-size', name: 'Tamanho de Dados', description: 'Bytes, KB, MB, GB, TB', category: 'convert', icon: 'hard-drive', keywords: ['bytes','kilobytes','megabytes','gigabytes','dados','armazenamento'], render: dataSizeHTML, init: initDataSize },
-  // DATETIME
-  { id: 'stopwatch', name: 'Cronômetro', description: 'Marque tempo com voltas', category: 'datetime', icon: 'timer', keywords: ['cronometro','stopwatch','tempo','voltas'], render: stopwatchHTML, init: initStopwatch },
-  { id: 'countdown', name: 'Timer Regressivo', description: 'Contagem regressiva com alerta', category: 'datetime', icon: 'hourglass', keywords: ['timer','regressivo','countdown','alarme'], render: countdownHTML, init: initCountdown },
-  { id: 'date-diff', name: 'Diferença entre Datas', description: 'Dias, semanas, meses entre datas', category: 'datetime', icon: 'calendar-days', keywords: ['data','dias','diferenca','entre','datas'], render: dateDiffHTML, init: initDateDiff },
-  // DEV
-  { id: 'password-gen', name: 'Gerador de Senhas', description: 'Senhas fortes e customizáveis', category: 'dev', icon: 'key-round', keywords: ['senha','password','gerar','seguranca'], render: passwordGenHTML, init: initPasswordGen },
-  { id: 'base64', name: 'Base64 Encoder', description: 'Codificar e decodificar Base64', category: 'dev', icon: 'braces', keywords: ['base64','encoder','decoder','codificar'], render: base64HTML, init: initBase64Tool },
-  { id: 'json-formatter', name: 'Formatador JSON', description: 'Beautify, minify e validar', category: 'dev', icon: 'brackets', keywords: ['json','formatar','beautify','minify','validar'], render: jsonFormatterHTML, init: initJsonFormatter },
-  // COLOR
-  { id: 'color-converter', name: 'Conversor de Cores', description: 'HEX, RGB, HSL em tempo real', category: 'color', icon: 'pipette', keywords: ['cor','hex','rgb','hsl','converter'], render: colorConverterHTML, init: initColorConverter },
-  { id: 'palette-gen', name: 'Gerador de Paleta', description: 'Crie paletas harmoniosas', category: 'color', icon: 'palette', keywords: ['paleta','cores','gradient','harmonia'], render: paletteGenHTML, init: initPaletteGen },
-];
-
-// ====== STATE ======
-const state = {
-  category: 'all',
-  search: '',
-  favorites: JSON.parse(localStorage.getItem('toolbox-favs') || '[]'),
-  showFavsOnly: false
-};
-
-let modalOpen = false;
-let modalTool = null;
-let modalCleanup = null;
-
-// ====== HELPERS ======
-const $ = (s, el = document) => el.querySelector(s);
-const $$ = (s, el = document) => [...el.querySelectorAll(s)];
-
-function toast(msg, icon = 'check') {
-  const container = $('#toast-container');
-  const t = document.createElement('div');
-  t.className = 'toast pointer-events-auto';
-  t.innerHTML = `<i data-lucide="${icon}" class="w-4 h-4 text-[var(--accent-2)]"></i><span>${msg}</span>`;
-  container.appendChild(t);
-  lucide.createIcons();
-  setTimeout(() => {
-    t.classList.add('toast-out');
-    setTimeout(() => t.remove(), 300);
-  }, 2200);
-}
-
-function copyToClipboard(text) {
-  navigator.clipboard.writeText(text).then(
-    () => toast('Copiado para a área de transferência', 'clipboard-check'),
-    () => toast('Não foi possível copiar', 'alert-circle')
-  );
-}
-
-// ====== RENDER ======
-function renderCategories() {
-  const container = $('#categories');
-  container.innerHTML = categories.map(cat => {
-    const count = cat.id === 'all' ? tools.length : tools.filter(t => t.category === cat.id).length;
-    return `<button class="cat-pill ${state.category === cat.id && !state.showFavsOnly ? 'active' : ''}" data-cat="${cat.id}">
-      <i data-lucide="${cat.icon}" class="w-3.5 h-3.5"></i>
-      <span>${cat.name}</span>
-      <span class="count">${count}</span>
-    </button>`;
-  }).join('');
-  
-  $$('.cat-pill').forEach(btn => {
-    btn.addEventListener('click', () => {
-      state.category = btn.dataset.cat;
-      state.showFavsOnly = false;
-      $('#favorites-btn').classList.remove('text-[var(--accent-3)]');
-      renderCategories();
-      renderTools();
-    });
+document.querySelectorAll('.module-card').forEach(card => {
+  card.addEventListener('mousemove', e => {
+    const r = card.getBoundingClientRect();
+    card.style.setProperty('--mx', `${((e.clientX - r.left) / r.width) * 100}%`);
+    card.style.setProperty('--my', `${((e.clientY - r.top) / r.height) * 100}%`);
   });
-  
-  lucide.createIcons();
-}
-
-function renderTools() {
-  const grid = $('#tools-grid');
-  const empty = $('#empty-state');
-  
-  let filtered = tools;
-  if (state.showFavsOnly) filtered = filtered.filter(t => state.favorites.includes(t.id));
-  if (state.category !== 'all') filtered = filtered.filter(t => t.category === state.category);
-  if (state.search) {
-    const q = state.search.toLowerCase();
-    filtered = filtered.filter(t => 
-      t.name.toLowerCase().includes(q) ||
-      t.description.toLowerCase().includes(q) ||
-      t.keywords.some(k => k.includes(q))
-    );
-  }
-  
-  $('#results-count').textContent = `${filtered.length} ${filtered.length === 1 ? 'ferramenta' : 'ferramentas'}`;
-  
-  let title = 'Todas as ferramentas';
-  if (state.showFavsOnly) title = 'Suas favoritas';
-  else if (state.category !== 'all') title = categories.find(c => c.id === state.category)?.name + ' · ferramentas';
-  if (state.search) title = `Resultados para "${state.search}"`;
-  $('#results-title').textContent = title;
-  
-  if (filtered.length === 0) {
-    grid.innerHTML = '';
-    empty.classList.remove('hidden');
-    return;
-  }
-  empty.classList.add('hidden');
-  
-  grid.innerHTML = filtered.map((tool, i) => {
-    const isFav = state.favorites.includes(tool.id);
-    const catName = categories.find(c => c.id === tool.category)?.name;
-    return `<div class="tool-card" data-id="${tool.id}" data-cat="${tool.category}" style="animation-delay: ${Math.min(i * 30, 400)}ms">
-      <button class="fav-btn ${isFav ? 'fav-active' : ''}" data-fav="${tool.id}" aria-label="Favoritar">
-        <i data-lucide="star" class="w-4 h-4 ${isFav ? 'fill-current' : ''}"></i>
-      </button>
-      <div class="tool-icon">
-        <i data-lucide="${tool.icon}" class="w-5 h-5"></i>
-      </div>
-      <h3 class="font-semibold text-base mb-1 pr-8">${tool.name}</h3>
-      <p class="text-sm text-[var(--muted)] leading-snug">${tool.description}</p>
-      <div class="flex items-center gap-1.5 mt-3">
-        <span class="badge">${catName}</span>
-      </div>
-    </div>`;
-  }).join('');
-  
-  $$('.tool-card').forEach(card => {
-    card.addEventListener('click', (e) => {
-      if (e.target.closest('.fav-btn')) return;
-      openTool(card.dataset.id);
-    });
-    card.addEventListener('mousemove', (e) => {
-      const r = card.getBoundingClientRect();
-      card.style.setProperty('--mx', `${((e.clientX - r.left) / r.width) * 100}%`);
-      card.style.setProperty('--my', `${((e.clientY - r.top) / r.height) * 100}%`);
-    });
-  });
-  
-  $$('.fav-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      toggleFav(btn.dataset.fav);
-    });
-  });
-  
-  lucide.createIcons();
-  $('#tool-count').textContent = tools.length;
-  $('#fav-count').textContent = state.favorites.length;
-}
-
-function toggleFav(id) {
-  if (state.favorites.includes(id)) {
-    state.favorites = state.favorites.filter(f => f !== id);
-    toast('Removido dos favoritos', 'star');
-  } else {
-    state.favorites.push(id);
-    toast('Adicionado aos favoritos', 'star');
-  }
-  localStorage.setItem('toolbox-favs', JSON.stringify(state.favorites));
-  renderTools();
-  if (modalOpen && modalTool?.id === id) updateModalFavButton(id);
-}
-
-// ====== MODAL ======
-function openTool(id) {
-  const tool = tools.find(t => t.id === id);
-  if (!tool) return;
-  
-  // Cleanup previous
-  if (modalCleanup) { modalCleanup(); modalCleanup = null; }
-  if (window._stopwatchInterval) { clearInterval(window._stopwatchInterval); window._stopwatchInterval = null; }
-  if (window._countdownInterval) { clearInterval(window._countdownInterval); window._countdownInterval = null; }
-  
-  modalTool = tool;
-  modalOpen = true;
-  
-  const colors = categoryColors[tool.category];
-  const iconWrap = $('#modal-icon');
-  iconWrap.style.color = colors.fg;
-  iconWrap.style.background = colors.bg;
-  iconWrap.style.border = `1px solid ${colors.border}`;
-  iconWrap.innerHTML = `<i data-lucide="${tool.icon}" class="w-5 h-5"></i>`;
-  
-  $('#modal-title').textContent = tool.name;
-  $('#modal-desc').textContent = tool.description;
-  
-  const favBtn = $('#modal-fav');
-  favBtn.dataset.id = id;
-  updateModalFavButton(id);
-  favBtn.onclick = () => toggleFav(id);
-  
-  $('#modal-body').innerHTML = tool.render();
-  
-  const modal = $('#modal');
-  modal.classList.remove('hidden');
-  modal.classList.add('flex');
-  document.body.style.overflow = 'hidden';
-  
-  lucide.createIcons();
-  tool.init($('#modal-body'));
-}
-
-function updateModalFavButton(id) {
-  const favBtn = $('#modal-fav');
-  const isFav = state.favorites.includes(id);
-  favBtn.innerHTML = `<i data-lucide="star" class="w-4 h-4 ${isFav ? 'fill-current' : ''}"></i>`;
-  favBtn.style.color = isFav ? 'var(--accent-3)' : '';
-  lucide.createIcons();
-}
-
-function closeModal() {
-  const modal = $('#modal');
-  modal.classList.add('hidden');
-  modal.classList.remove('flex');
-  document.body.style.overflow = '';
-  modalOpen = false;
-  modalTool = null;
-  if (modalCleanup) { modalCleanup(); modalCleanup = null; }
-  if (window._stopwatchInterval) { clearInterval(window._stopwatchInterval); window._stopwatchInterval = null; }
-  if (window._countdownInterval) { clearInterval(window._countdownInterval); window._countdownInterval = null; }
-  // Stop any audio
-  if (window._alarmAudio) { window._alarmAudio.pause(); window._alarmAudio = null; }
-}
-
-// ====== TOOL: CALCULATOR ======
-function calculatorHTML() {
-  return `<div class="space-y-4">
-    <div class="bg-[var(--bg)] border border-[var(--border)] rounded-2xl p-5">
-      <div id="calc-expr" class="text-right text-sm text-[var(--muted)] mono h-5 truncate"></div>
-      <div id="calc-display" class="text-right text-4xl font-bold mono mt-1 truncate">0</div>
-    </div>
-    <div class="grid grid-cols-4 gap-2">
-      <button class="calc-btn fn" data-action="clear">AC</button>
-      <button class="calc-btn fn" data-action="sign">±</button>
-      <button class="calc-btn fn" data-action="percent">%</button>
-      <button class="calc-btn op" data-op="/">÷</button>
-      <button class="calc-btn" data-num="7">7</button>
-      <button class="calc-btn" data-num="8">8</button>
-      <button class="calc-btn" data-num="9">9</button>
-      <button class="calc-btn op" data-op="*">×</button>
-      <button class="calc-btn" data-num="4">4</button>
-      <button class="calc-btn" data-num="5">5</button>
-      <button class="calc-btn" data-num="6">6</button>
-      <button class="calc-btn op" data-op="-">−</button>
-      <button class="calc-btn" data-num="1">1</button>
-      <button class="calc-btn" data-num="2">2</button>
-      <button class="calc-btn" data-num="3">3</button>
-      <button class="calc-btn op" data-op="+">+</button>
-      <button class="calc-btn col-span-2" data-num="0" style="aspect-ratio: auto;">0</button>
-      <button class="calc-btn" data-action="dot">.</button>
-      <button class="calc-btn eq" data-action="equals">=</button>
-    </div>
-    <p class="text-xs text-[var(--muted)] text-center">Use o teclado: 0-9, +, −, ×, ÷, Enter, Esc, Backspace</p>
-  </div>`;
-}
-
-function initCalculator(scope) {
-  let display = '0';
-  let expr = '';
-  let justEvaluated = false;
-  
-  const displayEl = $('#calc-display', scope);
-  const exprEl = $('#calc-expr', scope);
-  
-  function update() {
-    displayEl.textContent = display.length > 12 ? parseFloat(display).toExponential(6) : display;
-    exprEl.textContent = expr;
-  }
-  
-  function safeEval(s) {
-    if (!/^[0-9+\-*/.()\s]+$/.test(s)) return 'Erro';
-    try {
-      const r = Function('"use strict";return (' + s + ')')();
-      if (!isFinite(r)) return 'Erro';
-      return String(Math.round(r * 1e10) / 1e10);
-    } catch { return 'Erro'; }
-  }
-  
-  function input(n) {
-    if (display === 'Erro') display = '0';
-    if (justEvaluated) { display = '0'; justEvaluated = false; }
-    if (display === '0' && n !== '.') display = n;
-    else if (n === '.' && display.includes('.')) return;
-    else display += n;
-    update();
-  }
-  
-  function setOp(op) {
-    if (display === 'Erro') return;
-    justEvaluated = false;
-    if (expr && !/[+\-*/]$/.test(expr)) {
-      const r = safeEval(expr + display);
-      expr = r + op;
-      display = r;
-    } else {
-      expr = display + op;
-    }
-    display = '0';
-    update();
-    exprEl.textContent = expr;
-  }
-  
-  function equals() {
-    if (!expr) return;
-    const r = safeEval(expr + display);
-    exprEl.textContent = expr + display + '=';
-    display = r;
-    expr = '';
-    justEvaluated = true;
-    update();
-  }
-  
-  function clear() { display = '0'; expr = ''; justEvaluated = false; update(); }
-  function sign() { if (display === '0' || display === 'Erro') return; display = display.startsWith('-') ? display.slice(1) : '-' + display; update(); }
-  function percent() { if (display === 'Erro') return; display = String(parseFloat(display) / 100); update(); }
-  
-  $$('.calc-btn', scope).forEach(btn => {
-    btn.addEventListener('click', () => {
-      if (btn.dataset.num) input(btn.dataset.num);
-      else if (btn.dataset.op) setOp(btn.dataset.op);
-      else if (btn.dataset.action === 'dot') input('.');
-      else if (btn.dataset.action === 'clear') clear();
-      else if (btn.dataset.action === 'sign') sign();
-      else if (btn.dataset.action === 'percent') percent();
-      else if (btn.dataset.action === 'equals') equals();
-    });
-  });
-  
-  const keyHandler = (e) => {
-    if (!modalOpen || modalTool?.id !== 'calculator') return;
-    const k = e.key;
-    if (/^[0-9]$/.test(k)) input(k);
-    else if (k === '.') input('.');
-    else if (['+', '-', '*', '/'].includes(k)) setOp(k);
-    else if (k === 'Enter' || k === '=') { e.preventDefault(); equals(); }
-    else if (k === 'Escape') { e.stopPropagation(); clear(); }
-    else if (k === 'Backspace') { 
-      if (display.length > 1) display = display.slice(0, -1);
-      else display = '0';
-      update(); 
-    }
-  };
-  document.addEventListener('keydown', keyHandler);
-  modalCleanup = () => document.removeEventListener('keydown', keyHandler);
-}
-
-// ====== TOOL: IMC ======
-function imcHTML() {
-  return `<div class="space-y-4">
-    <div class="grid grid-cols-2 gap-3">
-      <div>
-        <label class="text-xs text-[var(--muted)] mb-1.5 block">Peso (kg)</label>
-        <input id="imc-weight" type="number" min="0" step="0.1" class="input mono" placeholder="70">
-      </div>
-      <div>
-        <label class="text-xs text-[var(--muted)] mb-1.5 block">Altura (m)</label>
-        <input id="imc-height" type="number" min="0" step="0.01" class="input mono" placeholder="1.70">
-      </div>
-    </div>
-    <div id="imc-result" class="bg-[var(--bg)] border border-[var(--border)] rounded-2xl p-6 text-center transition-colors">
-      <div class="text-xs text-[var(--muted)] uppercase tracking-wider mono mb-2">Resultado</div>
-      <div id="imc-value" class="text-5xl font-bold mono">—</div>
-      <div id="imc-category" class="text-sm mt-2 text-[var(--muted)]">Digite peso e altura</div>
-    </div>
-    <div class="grid grid-cols-4 gap-2 text-center text-xs">
-      <div class="p-2 rounded-lg bg-[var(--card)] border border-[var(--border)]"><div class="font-medium mono">&lt;18.5</div><div class="text-[var(--muted)] mt-0.5">Abaixo</div></div>
-      <div class="p-2 rounded-lg bg-[var(--card)] border border-[var(--border)]"><div class="font-medium mono">18.5-24.9</div><div class="text-[var(--muted)] mt-0.5">Normal</div></div>
-      <div class="p-2 rounded-lg bg-[var(--card)] border border-[var(--border)]"><div class="font-medium mono">25-29.9</div><div class="text-[var(--muted)] mt-0.5">Sobrepeso</div></div>
-      <div class="p-2 rounded-lg bg-[var(--card)] border border-[var(--border)]"><div class="font-medium mono">≥30</div><div class="text-[var(--muted)] mt-0.5">Obesidade</div></div>
-    </div>
-  </div>`;
-}
-
-function initIMC(scope) {
-  const w = $('#imc-weight', scope);
-  const h = $('#imc-height', scope);
-  const val = $('#imc-value', scope);
-  const cat = $('#imc-category', scope);
-  const result = $('#imc-result', scope);
-  
-  function calc() {
-    const weight = parseFloat(w.value);
-    const height = parseFloat(h.value);
-    if (!weight || !height || weight <= 0 || height <= 0) {
-      val.textContent = '—';
-      cat.textContent = 'Digite peso e altura';
-      cat.style.color = '';
-      result.style.borderColor = 'var(--border)';
-      return;
-    }
-    const imc = weight / (height * height);
-    val.textContent = imc.toFixed(1);
-    let category, color;
-    if (imc < 18.5) { category = 'Abaixo do peso'; color = '#60a5fa'; }
-    else if (imc < 25) { category = 'Peso normal'; color = 'var(--accent-2)'; }
-    else if (imc < 30) { category = 'Sobrepeso'; color = 'var(--accent-3)'; }
-    else { category = 'Obesidade'; color = 'var(--accent)'; }
-    cat.textContent = category;
-    cat.style.color = color;
-    result.style.borderColor = color;
-  }
-  w.addEventListener('input', calc);
-  h.addEventListener('input', calc);
-}
-
-// ====== TOOL: BASE CONVERTER ======
-function baseConverterHTML() {
-  return `<div class="space-y-3">
-    <div>
-      <label class="text-xs text-[var(--muted)] mb-1.5 block flex items-center gap-2">
-        <span class="w-2 h-2 rounded-full bg-[var(--accent)]"></span> Binário (base 2)
-      </label>
-      <input id="bc-bin" type="text" class="input mono" placeholder="1010">
-    </div>
-    <div>
-      <label class="text-xs text-[var(--muted)] mb-1.5 block flex items-center gap-2">
-        <span class="w-2 h-2 rounded-full bg-[var(--accent-3)]"></span> Octal (base 8)
-      </label>
-      <input id="bc-oct" type="text" class="input mono" placeholder="12">
-    </div>
-    <div>
-      <label class="text-xs text-[var(--muted)] mb-1.5 block flex items-center gap-2">
-        <span class="w-2 h-2 rounded-full bg-[var(--accent-2)]"></span> Decimal (base 10)
-      </label>
-      <input id="bc-dec" type="text" class="input mono" placeholder="10">
-    </div>
-    <div>
-      <label class="text-xs text-[var(--muted)] mb-1.5 block flex items-center gap-2">
-        <span class="w-2 h-2 rounded-full bg-[var(--accent-4)]"></span> Hexadecimal (base 16)
-      </label>
-      <input id="bc-hex" type="text" class="input mono" placeholder="A">
-    </div>
-    <p class="text-xs text-[var(--muted)] text-center pt-2">Digite em qualquer campo — os outros atualizam em tempo real</p>
-  </div>`;
-}
-
-function initBaseConverter(scope) {
-  const bin = $('#bc-bin', scope);
-  const oct = $('#bc-oct', scope);
-  const dec = $('#bc-dec', scope);
-  const hex = $('#bc-hex', scope);
-  
-  const fields = [
-    { el: bin, base: 2, validator: /^[01]*$/ },
-    { el: oct, base: 8, validator: /^[0-7]*$/ },
-    { el: dec, base: 10, validator: /^\d*$/ },
-    { el: hex, base: 16, validator: /^[0-9a-fA-F]*$/ },
-  ];
-  
-  fields.forEach(({ el, base, validator }) => {
-    el.addEventListener('input', () => {
-      let v = el.value.trim();
-      if (!v) {
-        fields.forEach(f => { if (f.el !== el) f.el.value = ''; });
-        return;
-      }
-      if (!validator.test(v)) {
-        el.value = v.replace(new RegExp(`[^${validator.source.slice(1,-1)}]`, 'g'), '');
-        v = el.value;
-      }
-      const num = parseInt(v, base);
-      if (isNaN(num)) return;
-      fields.forEach(f => {
-        if (f.el !== el) f.el.value = num.toString(f.base).toUpperCase();
-      });
-    });
-  });
-}
-
-// ====== TOOL: TABUADA ======
-function tabuadaHTML() {
-  return `<div class="space-y-4">
-    <div class="flex gap-3 items-end">
-      <div class="flex-1">
-        <label class="text-xs text-[var(--muted)] mb-1.5 block">Número</label>
-        <input id="tab-num" type="number" class="input mono" value="7">
-      </div>
-      <div class="flex-1">
-        <label class="text-xs text-[var(--muted)] mb-1.5 block">Até</label>
-        <input id="tab-limit" type="number" class="input mono" value="10" min="1" max="1000">
-      </div>
-    </div>
-    <div id="tab-result" class="space-y-1.5 max-h-80 overflow-y-auto"></div>
-  </div>`;
-}
-
-function initTabuada(scope) {
-  const num = $('#tab-num', scope);
-  const limit = $('#tab-limit', scope);
-  const result = $('#tab-result', scope);
-  
-  function calc() {
-    const n = parseFloat(num.value);
-    const l = Math.min(parseInt(limit.value) || 10, 1000);
-    if (isNaN(n)) { result.innerHTML = ''; return; }
-    let html = '';
-    for (let i = 1; i <= l; i++) {
-      const r = n * i;
-      html += `<div class="flex items-center justify-between py-2 px-3 rounded-lg bg-[var(--card)] border border-[var(--border)] hover:border-[var(--border-bright)] transition-colors">
-        <span class="mono text-sm text-[var(--muted)]">${n} × ${i}</span>
-        <span class="mono text-sm font-semibold">${r}</span>
-      </div>`;
-    }
-    result.innerHTML = html;
-  }
-  num.addEventListener('input', calc);
-  limit.addEventListener('input', calc);
-  calc();
-}
-
-// ====== TOOL: WORD COUNTER ======
-function wordCounterHTML() {
-  return `<div class="space-y-4">
-    <textarea id="wc-input" class="input" rows="6" placeholder="Cole ou digite seu texto aqui..."></textarea>
-    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
-      <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-3 text-center">
-        <div id="wc-words" class="text-2xl font-bold mono">0</div>
-        <div class="text-xs text-[var(--muted)] mt-0.5">Palavras</div>
-      </div>
-      <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-3 text-center">
-        <div id="wc-chars" class="text-2xl font-bold mono">0</div>
-        <div class="text-xs text-[var(--muted)] mt-0.5">Caracteres</div>
-      </div>
-      <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-3 text-center">
-        <div id="wc-sentences" class="text-2xl font-bold mono">0</div>
-        <div class="text-xs text-[var(--muted)] mt-0.5">Frases</div>
-      </div>
-      <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-3 text-center">
-        <div id="wc-reading" class="text-2xl font-bold mono">0s</div>
-        <div class="text-xs text-[var(--muted)] mt-0.5">Leitura</div>
-      </div>
-    </div>
-    <button id="wc-clear" class="btn btn-ghost btn-sm w-full">Limpar texto</button>
-  </div>`;
-}
-
-function initWordCounter(scope) {
-  const input = $('#wc-input', scope);
-  const words = $('#wc-words', scope);
-  const chars = $('#wc-chars', scope);
-  const sentences = $('#wc-sentences', scope);
-  const reading = $('#wc-reading', scope);
-  
-  function update() {
-    const text = input.value;
-    const w = text.trim() ? text.trim().split(/\s+/).length : 0;
-    const c = text.length;
-    const s = text.trim() ? (text.match(/[.!?]+(\s|$)/g) || []).length || 1 : 0;
-    const seconds = Math.ceil((w / 200) * 60);
-    words.textContent = w;
-    chars.textContent = c;
-    sentences.textContent = s;
-    if (seconds < 60) reading.textContent = `${seconds}s`;
-    else reading.textContent = `${Math.floor(seconds/60)}m ${seconds%60}s`;
-  }
-  input.addEventListener('input', update);
-  $('#wc-clear', scope).addEventListener('click', () => { input.value = ''; update(); input.focus(); });
-  update();
-}
-
-// ====== TOOL: CASE CONVERTER ======
-function caseConverterHTML() {
-  return `<div class="space-y-4">
-    <textarea id="cc-input" class="input" rows="4" placeholder="Digite seu texto..."></textarea>
-    <div class="flex flex-wrap gap-2">
-      <button class="tag-btn" data-case="upper">MAIÚSCULAS</button>
-      <button class="tag-btn" data-case="lower">minúsculas</button>
-      <button class="tag-btn" data-case="title">Title Case</button>
-      <button class="tag-btn" data-case="sentence">Sentence case</button>
-      <button class="tag-btn" data-case="camel">camelCase</button>
-      <button class="tag-btn" data-case="pascal">PascalCase</button>
-      <button class="tag-btn" data-case="snake">snake_case</button>
-      <button class="tag-btn" data-case="kebab">kebab-case</button>
-      <button class="tag-btn" data-case="alt">aLtErNaDo</button>
-    </div>
-    <div>
-      <div class="flex items-center justify-between mb-2">
-        <label class="text-xs text-[var(--muted)]">Resultado</label>
-        <button id="cc-copy" class="btn btn-ghost btn-sm"><i data-lucide="copy" class="w-3 h-3"></i> Copiar</button>
-      </div>
-      <textarea id="cc-output" class="input" rows="4" readonly></textarea>
-    </div>
-  </div>`;
-}
-
-function initCaseConverter(scope) {
-  const input = $('#cc-input', scope);
-  const output = $('#cc-output', scope);
-  
-  function convert(type) {
-    const t = input.value;
-    if (!t) { output.value = ''; return; }
-    let r = '';
-    switch(type) {
-      case 'upper': r = t.toUpperCase(); break;
-      case 'lower': r = t.toLowerCase(); break;
-      case 'title': r = t.replace(/\w\S*/g, w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()); break;
-      case 'sentence': r = t.toLowerCase().replace(/(^\s*\w|[.!?]\s*\w)/g, c => c.toUpperCase()); break;
-      case 'camel': r = t.toLowerCase().replace(/[^a-zA-Z0-9]+(.)/g, (_, c) => c.toUpperCase()); break;
-      case 'pascal': r = t.toLowerCase().replace(/(?:^|[^a-zA-Z0-9]+)(.)/g, (_, c) => c.toUpperCase()); break;
-      case 'snake': r = t.trim().toLowerCase().replace(/[^a-zA-Z0-9]+/g, '_').replace(/^_|_$/g, ''); break;
-      case 'kebab': r = t.trim().toLowerCase().replace(/[^a-zA-Z0-9]+/g, '-').replace(/^-|-$/g, ''); break;
-      case 'alt': r = t.split('').map((c, i) => i % 2 ? c.toUpperCase() : c.toLowerCase()).join(''); break;
-    }
-    output.value = r;
-  }
-  
-  $$('[data-case]', scope).forEach(btn => {
-    btn.addEventListener('click', () => {
-      $$('[data-case]', scope).forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      convert(btn.dataset.case);
-    });
-  });
-  
-  $('#cc-copy', scope).addEventListener('click', () => {
-    if (output.value) copyToClipboard(output.value);
-  });
-}
-
-// ====== TOOL: REMOVE DUPLICATES ======
-function removeDuplicatesHTML() {
-  return `<div class="space-y-4">
-    <textarea id="rd-input" class="input" rows="5" placeholder="Cole sua lista aqui, um item por linha..."></textarea>
-    <div class="flex flex-wrap gap-3 items-center">
-      <div class="flex gap-2">
-        <button class="tag-btn active" data-mode="lines">Linhas</button>
-        <button class="tag-btn" data-mode="words">Palavras</button>
-      </div>
-      <label class="flex items-center gap-2 text-sm text-[var(--muted)] cursor-pointer">
-        <input type="checkbox" id="rd-trim" checked class="accent-[var(--accent)]"> Ignorar espaços
-      </label>
-      <label class="flex items-center gap-2 text-sm text-[var(--muted)] cursor-pointer">
-        <input type="checkbox" id="rd-case" class="accent-[var(--accent)]"> Ignorar maiúsculas
-      </label>
-      <label class="flex items-center gap-2 text-sm text-[var(--muted)] cursor-pointer">
-        <input type="checkbox" id="rd-sort" class="accent-[var(--accent)]"> Ordenar A-Z
-      </label>
-    </div>
-    <div class="flex items-center justify-between">
-      <div class="text-xs text-[var(--muted)] mono">
-        <span id="rd-stats">0 → 0 itens</span>
-      </div>
-      <button id="rd-copy" class="btn btn-ghost btn-sm"><i data-lucide="copy" class="w-3 h-3"></i> Copiar</button>
-    </div>
-    <textarea id="rd-output" class="input" rows="5" readonly placeholder="Resultado aparecerá aqui..."></textarea>
-  </div>`;
-}
-
-function initRemoveDuplicates(scope) {
-  const input = $('#rd-input', scope);
-  const output = $('#rd-output', scope);
-  const stats = $('#rd-stats', scope);
-  let mode = 'lines';
-  
-  function process() {
-    const text = input.value;
-    if (!text.trim()) { output.value = ''; stats.textContent = '0 → 0 itens'; return; }
-    const trim = $('#rd-trim', scope).checked;
-    const ignoreCase = $('#rd-case', scope).checked;
-    const sort = $('#rd-sort', scope).checked;
-    
-    let items;
-    if (mode === 'lines') items = text.split('\n');
-    else items = text.split(/\s+/);
-    
-    const seen = new Set();
-    const result = [];
-    items.forEach(item => {
-      let key = trim ? item.trim() : item;
-      if (!key && mode === 'words') return;
-      const cmp = ignoreCase ? key.toLowerCase() : key;
-      if (!seen.has(cmp)) { seen.add(cmp); result.push(item); }
-    });
-    
-    if (sort) result.sort((a, b) => {
-      const ca = ignoreCase ? a.toLowerCase() : a;
-      const cb = ignoreCase ? b.toLowerCase() : b;
-      return ca.localeCompare(cb);
-    });
-    
-    output.value = result.join(mode === 'lines' ? '\n' : ' ');
-    stats.textContent = `${items.length} → ${result.length} itens`;
-  }
-  
-  input.addEventListener('input', process);
-  $$('[data-mode]', scope).forEach(btn => {
-    btn.addEventListener('click', () => {
-      $$('[data-mode]', scope).forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      mode = btn.dataset.mode;
-      process();
-    });
-  });
-  ['#rd-trim', '#rd-case', '#rd-sort'].forEach(s => $(s, scope).addEventListener('change', process));
-  $('#rd-copy', scope).addEventListener('click', () => {
-    if (output.value) copyToClipboard(output.value);
-  });
-}
-
-// ====== TOOL: REVERSE TEXT ======
-function reverseTextHTML() {
-  return `<div class="space-y-4">
-    <textarea id="rt-input" class="input" rows="4" placeholder="Digite o texto..."></textarea>
-    <div class="flex gap-2">
-      <button class="tag-btn active" data-mode="chars">Caracteres</button>
-      <button class="tag-btn" data-mode="words">Palavras</button>
-      <button class="tag-btn" data-mode="lines">Linhas</button>
-    </div>
-    <div class="flex items-center justify-between">
-      <label class="flex items-center gap-2 text-sm text-[var(--muted)] cursor-pointer">
-        <input type="checkbox" id="rt-preserve" class="accent-[var(--accent)]"> Preservar palavras
-      </label>
-      <button id="rt-copy" class="btn btn-ghost btn-sm"><i data-lucide="copy" class="w-3 h-3"></i> Copiar</button>
-    </div>
-    <textarea id="rt-output" class="input" rows="4" readonly placeholder="Resultado..."></textarea>
-  </div>`;
-}
-
-function initReverseText(scope) {
-  const input = $('#rt-input', scope);
-  const output = $('#rt-output', scope);
-  let mode = 'chars';
-  
-  function process() {
-    const t = input.value;
-    if (!t) { output.value = ''; return; }
-    let r = '';
-    if (mode === 'chars') r = [...t].reverse().join('');
-    else if (mode === 'words') r = t.split(/\s+/).reverse().join(' ');
-    else if (mode === 'lines') r = t.split('\n').reverse().join('\n');
-    output.value = r;
-  }
-  
-  input.addEventListener('input', process);
-  $$('[data-mode]', scope).forEach(btn => {
-    btn.addEventListener('click', () => {
-      $$('[data-mode]', scope).forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      mode = btn.dataset.mode;
-      process();
-    });
-  });
-  $('#rt-copy', scope).addEventListener('click', () => {
-    if (output.value) copyToClipboard(output.value);
-  });
-}
-
-// ====== TOOL: TEMPERATURE ======
-function temperatureHTML() {
-  return `<div class="space-y-3">
-    <div>
-      <label class="text-xs text-[var(--muted)] mb-1.5 block flex items-center gap-2">
-        <span class="w-2 h-2 rounded-full bg-[var(--accent)]"></span> Celsius (°C)
-      </label>
-      <input id="temp-c" type="number" class="input mono" placeholder="0">
-    </div>
-    <div>
-      <label class="text-xs text-[var(--muted)] mb-1.5 block flex items-center gap-2">
-        <span class="w-2 h-2 rounded-full bg-[var(--accent-3)]"></span> Fahrenheit (°F)
-      </label>
-      <input id="temp-f" type="number" class="input mono" placeholder="32">
-    </div>
-    <div>
-      <label class="text-xs text-[var(--muted)] mb-1.5 block flex items-center gap-2">
-        <span class="w-2 h-2 rounded-full bg-[var(--accent-4)]"></span> Kelvin (K)
-      </label>
-      <input id="temp-k" type="number" class="input mono" placeholder="273.15">
-    </div>
-    <div class="grid grid-cols-3 gap-2 pt-2">
-      <button class="btn btn-sm" data-preset="freeze">Gelo</button>
-      <button class="btn btn-sm" data-preset="room">Ambiente</button>
-      <button class="btn btn-sm" data-preset="boil">Ebulição</button>
-    </div>
-  </div>`;
-}
-
-function initTemperature(scope) {
-  const c = $('#temp-c', scope);
-  const f = $('#temp-f', scope);
-  const k = $('#temp-k', scope);
-  let lock = false;
-  
-  function setAll(cVal) {
-    if (isNaN(cVal)) return;
-    c.value = Math.round(cVal * 100) / 100;
-    f.value = Math.round((cVal * 9/5 + 32) * 100) / 100;
-    k.value = Math.round((cVal + 273.15) * 100) / 100;
-  }
-  
-  c.addEventListener('input', () => { if (lock) return; lock = true; const v = parseFloat(c.value); if (!isNaN(v)) { f.value = Math.round((v * 9/5 + 32) * 100) / 100; k.value = Math.round((v + 273.15) * 100) / 100; } lock = false; });
-  f.addEventListener('input', () => { if (lock) return; lock = true; const v = parseFloat(f.value); if (!isNaN(v)) { c.value = Math.round(((v - 32) * 5/9) * 100) / 100; k.value = Math.round(((v - 32) * 5/9 + 273.15) * 100) / 100; } lock = false; });
-  k.addEventListener('input', () => { if (lock) return; lock = true; const v = parseFloat(k.value); if (!isNaN(v)) { c.value = Math.round((v - 273.15) * 100) / 100; f.value = Math.round(((v - 273.15) * 9/5 + 32) * 100) / 100; } lock = false; });
-  
-  $$('[data-preset]', scope).forEach(btn => {
-    btn.addEventListener('click', () => {
-      const presets = { freeze: 0, room: 22, boil: 100 };
-      lock = true;
-      setAll(presets[btn.dataset.preset]);
-      lock = false;
-    });
-  });
-}
-
-// ====== TOOL: DATA SIZE ======
-function dataSizeHTML() {
-  return `<div class="space-y-4">
-    <div class="grid grid-cols-2 gap-3">
-      <div>
-        <label class="text-xs text-[var(--muted)] mb-1.5 block">Valor</label>
-        <input id="ds-value" type="number" class="input mono" value="1" min="0">
-      </div>
-      <div>
-        <label class="text-xs text-[var(--muted)] mb-1.5 block">Unidade</label>
-        <select id="ds-unit" class="input mono">
-          <option value="0">Bytes</option>
-          <option value="1">KB</option>
-          <option value="2" selected>MB</option>
-          <option value="3">GB</option>
-          <option value="4">TB</option>
-          <option value="5">PB</option>
-        </select>
-      </div>
-    </div>
-    <div class="space-y-1.5" id="ds-results"></div>
-  </div>`;
-}
-
-function initDataSize(scope) {
-  const val = $('#ds-value', scope);
-  const unit = $('#ds-unit', scope);
-  const results = $('#ds-results', scope);
-  const units = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB'];
-  
-  function calc() {
-    const v = parseFloat(val.value);
-    if (isNaN(v)) { results.innerHTML = ''; return; }
-    const u = parseInt(unit.value);
-    const bytes = v * Math.pow(1024, u);
-    let html = '';
-    for (let i = 0; i < units.length; i++) {
-      const r = bytes / Math.pow(1024, i);
-      const formatted = r >= 100 || r < 1 ? r.toFixed(4).replace(/\.?0+$/, '') : r.toFixed(4);
-      const active = i === u;
-      html += `<div class="flex items-center justify-between py-2.5 px-3 rounded-lg border ${active ? 'bg-[var(--accent)]/10 border-[var(--accent)]/30' : 'bg-[var(--card)] border-[var(--border)]'}">
-        <span class="text-sm text-[var(--muted)]">${units[i]}</span>
-        <span class="mono text-sm font-semibold">${formatted}</span>
-      </div>`;
-    }
-    results.innerHTML = html;
-  }
-  val.addEventListener('input', calc);
-  unit.addEventListener('change', calc);
-  calc();
-}
-
-// ====== TOOL: STOPWATCH ======
-function stopwatchHTML() {
-  return `<div class="space-y-4">
-    <div class="bg-[var(--bg)] border border-[var(--border)] rounded-2xl p-6">
-      <div id="sw-display" class="stopwatch-display">00:00.00</div>
-    </div>
-    <div class="grid grid-cols-3 gap-2">
-      <button id="sw-start" class="btn btn-primary"><i data-lucide="play" class="w-4 h-4"></i> Iniciar</button>
-      <button id="sw-lap" class="btn" disabled><i data-lucide="flag" class="w-4 h-4"></i> Volta</button>
-      <button id="sw-reset" class="btn" disabled><i data-lucide="rotate-ccw" class="w-4 h-4"></i> Reset</button>
-    </div>
-    <div class="text-xs text-[var(--muted)] mb-2 mono">VOLTAS</div>
-    <div id="sw-laps" class="space-y-1.5 max-h-48 overflow-y-auto"></div>
-  </div>`;
-}
-
-function initStopwatch(scope) {
-  const display = $('#sw-display', scope);
-  const startBtn = $('#sw-start', scope);
-  const lapBtn = $('#sw-lap', scope);
-  const resetBtn = $('#sw-reset', scope);
-  const lapsEl = $('#sw-laps', scope);
-  
-  let elapsed = 0;
-  let startTime = 0;
-  let running = false;
-  let laps = [];
-  
-  function format(ms) {
-    const m = Math.floor(ms / 60000);
-    const s = Math.floor((ms % 60000) / 1000);
-    const cs = Math.floor((ms % 1000) / 10);
-    return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}.${String(cs).padStart(2,'0')}`;
-  }
-  
-  function tick() {
-    elapsed = Date.now() - startTime;
-    display.textContent = format(elapsed);
-  }
-  
-  function start() {
-    if (running) {
-      running = false;
-      clearInterval(window._stopwatchInterval);
-      startBtn.innerHTML = '<i data-lucide="play" class="w-4 h-4"></i> Continuar';
-      lapBtn.disabled = true;
-    } else {
-      running = true;
-      startTime = Date.now() - elapsed;
-      window._stopwatchInterval = setInterval(tick, 10);
-      startBtn.innerHTML = '<i data-lucide="pause" class="w-4 h-4"></i> Pausar';
-      lapBtn.disabled = false;
-      resetBtn.disabled = false;
-    }
-    lucide.createIcons();
-  }
-  
-  function lap() {
-    if (!running) return;
-    laps.unshift({ n: laps.length + 1, time: elapsed });
-    renderLaps();
-  }
-  
-  function renderLaps() {
-    if (laps.length === 0) { lapsEl.innerHTML = ''; return; }
-    lapsEl.innerHTML = laps.map((l, i) => {
-      const prev = i < laps.length - 1 ? laps[i + 1].time : 0;
-      const diff = l.time - prev;
-      const isFastest = laps.length > 1 && l.time - prev === Math.min(...laps.slice(0, -1).map((lap, idx) => lap.time - (laps[idx+1]?.time || 0)));
-      const isSlowest = laps.length > 1 && l.time - prev === Math.max(...laps.slice(0, -1).map((lap, idx) => lap.time - (laps[idx+1]?.time || 0)));
-      const color = isFastest ? 'var(--accent-2)' : isSlowest ? 'var(--accent)' : 'var(--muted)';
-      return `<div class="flex items-center justify-between py-2 px-3 rounded-lg bg-[var(--card)] border border-[var(--border)]">
-        <span class="mono text-xs text-[var(--muted)]">Volta ${l.n}</span>
-        <span class="mono text-xs" style="color: ${color}">+${format(diff)}</span>
-        <span class="mono text-sm font-semibold">${format(l.time)}</span>
-      </div>`;
-    }).join('');
-  }
-  
-  function reset() {
-    running = false;
-    clearInterval(window._stopwatchInterval);
-    elapsed = 0;
-    laps = [];
-    display.textContent = '00:00.00';
-    startBtn.innerHTML = '<i data-lucide="play" class="w-4 h-4"></i> Iniciar';
-    lapBtn.disabled = true;
-    resetBtn.disabled = true;
-    renderLaps();
-    lucide.createIcons();
-  }
-  
-  startBtn.addEventListener('click', start);
-  lapBtn.addEventListener('click', lap);
-  resetBtn.addEventListener('click', reset);
-}
-
-// ====== TOOL: COUNTDOWN ======
-function countdownHTML() {
-  return `<div class="space-y-4">
-    <div class="bg-[var(--bg)] border border-[var(--border)] rounded-2xl p-6">
-      <div id="cd-display" class="stopwatch-display">00:00:00</div>
-    </div>
-    <div class="grid grid-cols-3 gap-2">
-      <div>
-        <label class="text-xs text-[var(--muted)] mb-1.5 block text-center">Horas</label>
-        <input id="cd-h" type="number" class="input mono text-center" value="0" min="0" max="99">
-      </div>
-      <div>
-        <label class="text-xs text-[var(--muted)] mb-1.5 block text-center">Min</label>
-        <input id="cd-m" type="number" class="input mono text-center" value="5" min="0" max="59">
-      </div>
-      <div>
-        <label class="text-xs text-[var(--muted)] mb-1.5 block text-center">Seg</label>
-        <input id="cd-s" type="number" class="input mono text-center" value="0" min="0" max="59">
-      </div>
-    </div>
-    <div class="grid grid-cols-2 gap-2">
-      <button id="cd-start" class="btn btn-primary"><i data-lucide="play" class="w-4 h-4"></i> Iniciar</button>
-      <button id="cd-reset" class="btn"><i data-lucide="rotate-ccw" class="w-4 h-4"></i> Reset</button>
-    </div>
-    <div class="flex gap-2">
-      <button class="btn btn-sm flex-1" data-preset="1">1 min</button>
-      <button class="btn btn-sm flex-1" data-preset="5">5 min</button>
-      <button class="btn btn-sm flex-1" data-preset="15">15 min</button>
-      <button class="btn btn-sm flex-1" data-preset="25">25 min</button>
-    </div>
-  </div>`;
-}
-
-function initCountdown(scope) {
-  const display = $('#cd-display', scope);
-  const h = $('#cd-h', scope);
-  const m = $('#cd-m', scope);
-  const s = $('#cd-s', scope);
-  const startBtn = $('#cd-start', scope);
-  const resetBtn = $('#cd-reset', scope);
-  
-  let remaining = 0;
-  let endTime = 0;
-  let running = false;
-  
-  function format(sec) {
-    const hh = Math.floor(sec / 3600);
-    const mm = Math.floor((sec % 3600) / 60);
-    const ss = sec % 60;
-    return `${String(hh).padStart(2,'0')}:${String(mm).padStart(2,'0')}:${String(ss).padStart(2,'0')}`;
-  }
-  
-  function getInputSeconds() {
-    return Math.max(0, (parseInt(h.value) || 0) * 3600 + (parseInt(m.value) || 0) * 60 + (parseInt(s.value) || 0));
-  }
-  
-  function tick() {
-    const now = Math.floor(Date.now() / 1000);
-    remaining = Math.max(0, endTime - now);
-    display.textContent = format(remaining);
-    if (remaining <= 0) {
-      clearInterval(window._countdownInterval);
-      running = false;
-      startBtn.innerHTML = '<i data-lucide="play" class="w-4 h-4"></i> Iniciar';
-      lucide.createIcons();
-      // Beep
-      try {
-        const ctx = new (window.AudioContext || window.webkitAudioContext)();
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.connect(gain); gain.connect(ctx.destination);
-        osc.frequency.value = 880; osc.type = 'sine';
-        gain.gain.setValueAtTime(0.3, ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.5);
-        osc.start(); osc.stop(ctx.currentTime + 1.5);
-        window._alarmAudio = { ctx, osc };
-      } catch {}
-      toast('Tempo esgotado!', 'alarm-clock');
-    }
-  }
-  
-  function start() {
-    if (running) {
-      running = false;
-      clearInterval(window._countdownInterval);
-      startBtn.innerHTML = '<i data-lucide="play" class="w-4 h-4"></i> Continuar';
-      // Store remaining as new start
-    } else {
-      if (remaining === 0) remaining = getInputSeconds();
-      if (remaining <= 0) return;
-      running = true;
-      endTime = Math.floor(Date.now() / 1000) + remaining;
-      window._countdownInterval = setInterval(tick, 200);
-      startBtn.innerHTML = '<i data-lucide="pause" class="w-4 h-4"></i> Pausar';
-    }
-    lucide.createIcons();
-  }
-  
-  function reset() {
-    running = false;
-    clearInterval(window._countdownInterval);
-    remaining = 0;
-    display.textContent = format(getInputSeconds());
-    startBtn.innerHTML = '<i data-lucide="play" class="w-4 h-4"></i> Iniciar';
-    if (window._alarmAudio) { window._alarmAudio.osc.stop(); window._alarmAudio = null; }
-    lucide.createIcons();
-  }
-  
-  startBtn.addEventListener('click', start);
-  resetBtn.addEventListener('click', reset);
-  
-  [h, m, s].forEach(el => el.addEventListener('input', () => {
-    if (!running) display.textContent = format(getInputSeconds());
-  }));
-  
-  $$('[data-preset]', scope).forEach(btn => {
-    btn.addEventListener('click', () => {
-      if (running) return;
-      const mins = parseInt(btn.dataset.preset);
-      h.value = Math.floor(mins / 60);
-      m.value = mins % 60;
-      s.value = 0;
-      display.textContent = format(mins * 60);
-    });
-  });
-  
-  display.textContent = format(getInputSeconds());
-}
-
-// ====== TOOL: DATE DIFF ======
-function dateDiffHTML() {
-  const today = new Date().toISOString().split('T')[0];
-  return `<div class="space-y-4">
-    <div class="grid grid-cols-2 gap-3">
-      <div>
-        <label class="text-xs text-[var(--muted)] mb-1.5 block">Data inicial</label>
-        <input id="dd-start" type="date" class="input mono" value="${today}">
-      </div>
-      <div>
-        <label class="text-xs text-[var(--muted)] mb-1.5 block">Data final</label>
-        <input id="dd-end" type="date" class="input mono" value="${today}">
-      </div>
-    </div>
-    <div class="bg-[var(--bg)] border border-[var(--border)] rounded-2xl p-5 space-y-3">
-      <div class="flex items-center justify-between">
-        <span class="text-sm text-[var(--muted)]">Total de dias</span>
-        <span id="dd-days" class="mono text-2xl font-bold">0</span>
-      </div>
-      <div class="flex items-center justify-between">
-        <span class="text-sm text-[var(--muted)]">Semanas</span>
-        <span id="dd-weeks" class="mono text-lg">0</span>
-      </div>
-      <div class="flex items-center justify-between">
-        <span class="text-sm text-[var(--muted)]">Meses (aprox.)</span>
-        <span id="dd-months" class="mono text-lg">0</span>
-      </div>
-      <div class="flex items-center justify-between">
-        <span class="text-sm text-[var(--muted)]">Anos (aprox.)</span>
-        <span id="dd-years" class="mono text-lg">0</span>
-      </div>
-      <div class="flex items-center justify-between">
-        <span class="text-sm text-[var(--muted)]">Horas</span>
-        <span id="dd-hours" class="mono text-lg">0</span>
-      </div>
-      <div class="flex items-center justify-between">
-        <span class="text-sm text-[var(--muted)]">Minutos</span>
-        <span id="dd-minutes" class="mono text-lg">0</span>
-      </div>
-    </div>
-    <p id="dd-summary" class="text-sm text-center text-[var(--muted)]"></p>
-  </div>`;
-}
-
-function initDateDiff(scope) {
-  const start = $('#dd-start', scope);
-  const end = $('#dd-end', scope);
-  
-  function calc() {
-    const s = new Date(start.value);
-    const e = new Date(end.value);
-    if (isNaN(s) || isNaN(e)) return;
-    const diffMs = e - s;
-    const days = Math.round(diffMs / (1000 * 60 * 60 * 24));
-    
-    $('#dd-days', scope).textContent = Math.abs(days);
-    $('#dd-weeks', scope).textContent = (Math.abs(days) / 7).toFixed(1);
-    $('#dd-months', scope).textContent = (Math.abs(days) / 30.44).toFixed(1);
-    $('#dd-years', scope).textContent = (Math.abs(days) / 365.25).toFixed(2);
-    $('#dd-hours', scope).textContent = Math.abs(days) * 24;
-    $('#dd-minutes', scope).textContent = (Math.abs(days) * 24 * 60);
-    
-    const sign = days >= 0 ? 'depois' : 'antes';
-    $('#dd-summary', scope).textContent = days === 0 ? 'As datas são iguais' : `${Math.abs(days)} dias ${sign}`;
-  }
-  
-  start.addEventListener('input', calc);
-  end.addEventListener('input', calc);
-  calc();
-}
-
-// ====== TOOL: PASSWORD GEN ======
-function passwordGenHTML() {
-  return `<div class="space-y-4">
-    <div class="bg-[var(--bg)] border border-[var(--border)] rounded-2xl p-4">
-      <div class="flex items-center gap-2">
-        <div id="pw-output" class="flex-1 mono text-lg font-medium truncate">—</div>
-        <button id="pw-copy" class="btn btn-ghost btn-sm flex-shrink-0"><i data-lucide="copy" class="w-4 h-4"></i></button>
-        <button id="pw-refresh" class="btn btn-ghost btn-sm flex-shrink-0"><i data-lucide="refresh-cw" class="w-4 h-4"></i></button>
-      </div>
-      <div class="mt-3">
-        <div class="strength-bar"><div id="pw-strength" class="strength-fill"></div></div>
-        <div class="flex justify-between mt-1.5">
-          <span id="pw-strength-label" class="text-xs text-[var(--muted)]">—</span>
-          <span id="pw-length-display" class="text-xs text-[var(--muted)] mono">0 chars</span>
-        </div>
-      </div>
-    </div>
-    <div>
-      <div class="flex justify-between mb-1.5">
-        <label class="text-xs text-[var(--muted)]">Comprimento</label>
-        <span id="pw-len-val" class="text-xs mono">16</span>
-      </div>
-      <input id="pw-len" type="range" min="4" max="64" value="16" class="w-full accent-[var(--accent)]">
-    </div>
-    <div class="grid grid-cols-2 gap-2">
-      <label class="flex items-center gap-2 p-2.5 rounded-lg bg-[var(--card)] border border-[var(--border)] cursor-pointer hover:border-[var(--border-bright)] transition-colors">
-        <input type="checkbox" id="pw-upper" checked class="accent-[var(--accent)]"> 
-        <span class="text-sm">A-Z Maiúsculas</span>
-      </label>
-      <label class="flex items-center gap-2 p-2.5 rounded-lg bg-[var(--card)] border border-[var(--border)] cursor-pointer hover:border-[var(--border-bright)] transition-colors">
-        <input type="checkbox" id="pw-lower" checked class="accent-[var(--accent)]"> 
-        <span class="text-sm">a-z Minúsculas</span>
-      </label>
-      <label class="flex items-center gap-2 p-2.5 rounded-lg bg-[var(--card)] border border-[var(--border)] cursor-pointer hover:border-[var(--border-bright)] transition-colors">
-        <input type="checkbox" id="pw-num" checked class="accent-[var(--accent)]"> 
-        <span class="text-sm">0-9 Números</span>
-      </label>
-      <label class="flex items-center gap-2 p-2.5 rounded-lg bg-[var(--card)] border border-[var(--border)] cursor-pointer hover:border-[var(--border-bright)] transition-colors">
-        <input type="checkbox" id="pw-sym" checked class="accent-[var(--accent)]"> 
-        <span class="text-sm">!@# Símbolos</span>
-      </label>
-    </div>
-    <button id="pw-generate" class="btn btn-primary w-full"><i data-lucide="key-round" class="w-4 h-4"></i> Gerar nova senha</button>
-  </div>`;
-}
-
-function initPasswordGen(scope) {
-  const output = $('#pw-output', scope);
-  const lenInput = $('#pw-len', scope);
-  const lenVal = $('#pw-len-val', scope);
-  const strength = $('#pw-strength', scope);
-  const strengthLabel = $('#pw-strength-label', scope);
-  const lengthDisplay = $('#pw-length-display', scope);
-  
-  function generate() {
-    const len = parseInt(lenInput.value);
-    let chars = '';
-    if ($('#pw-upper', scope).checked) chars += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    if ($('#pw-lower', scope).checked) chars += 'abcdefghijklmnopqrstuvwxyz';
-    if ($('#pw-num', scope).checked) chars += '0123456789';
-    if ($('#pw-sym', scope).checked) chars += '!@#$%^&*()_+-=[]{}|;:,.<>?';
-    if (!chars) { output.textContent = '—'; strength.style.width = '0%'; strengthLabel.textContent = 'Selecione uma opção'; return; }
-    
-    const arr = new Uint32Array(len);
-    crypto.getRandomValues(arr);
-    let pw = '';
-    for (let i = 0; i < len; i++) pw += chars[arr[i] % chars.length];
-    output.textContent = pw;
-    lengthDisplay.textContent = `${len} chars`;
-    
-    // Strength
-    let score = 0;
-    if (len >= 8) score++;
-    if (len >= 12) score++;
-    if (len >= 16) score++;
-    if ($('#pw-upper', scope).checked) score++;
-    if ($('#pw-lower', scope).checked) score++;
-    if ($('#pw-num', scope).checked) score++;
-    if ($('#pw-sym', scope).checked) score++;
-    
-    const levels = [
-      { label: 'Muito fraca', color: '#ef476f', w: '12%' },
-      { label: 'Fraca', color: '#ef476f', w: '30%' },
-      { label: 'Razoável', color: '#ffd166', w: '50%' },
-      { label: 'Boa', color: '#00d9a3', w: '70%' },
-      { label: 'Forte', color: '#00d9a3', w: '85%' },
-      { label: 'Muito forte', color: '#00d9a3', w: '95%' },
-      { label: 'Excelente', color: '#00d9a3', w: '100%' },
-    ];
-    const lvl = levels[Math.min(score, 6)];
-    strength.style.width = lvl.w;
-    strength.style.background = lvl.color;
-    strengthLabel.textContent = lvl.label;
-    strengthLabel.style.color = lvl.color;
-  }
-  
-  lenInput.addEventListener('input', () => { lenVal.textContent = lenInput.value; generate(); });
-  ['#pw-upper', '#pw-lower', '#pw-num', '#pw-sym'].forEach(s => $(s, scope).addEventListener('change', generate));
-  $('#pw-generate', scope).addEventListener('click', generate);
-  $('#pw-refresh', scope).addEventListener('click', generate);
-  $('#pw-copy', scope).addEventListener('click', () => {
-    if (output.textContent && output.textContent !== '—') copyToClipboard(output.textContent);
-  });
-  generate();
-}
-
-// ====== TOOL: BASE64 ======
-function base64HTML() {
-  return `<div class="space-y-4">
-    <div>
-      <label class="text-xs text-[var(--muted)] mb-1.5 block">Texto original</label>
-      <textarea id="b64-input" class="input" rows="4" placeholder="Digite o texto..."></textarea>
-    </div>
-    <div class="flex gap-2">
-      <button id="b64-encode" class="btn btn-primary flex-1"><i data-lucide="lock" class="w-4 h-4"></i> Codificar</button>
-      <button id="b64-decode" class="btn flex-1"><i data-lucide="unlock" class="w-4 h-4"></i> Decodificar</button>
-    </div>
-    <div>
-      <div class="flex items-center justify-between mb-1.5">
-        <label class="text-xs text-[var(--muted)]">Resultado</label>
-        <button id="b64-copy" class="btn btn-ghost btn-sm"><i data-lucide="copy" class="w-3 h-3"></i> Copiar</button>
-      </div>
-      <textarea id="b64-output" class="input" rows="4" readonly></textarea>
-    </div>
-  </div>`;
-}
-
-function initBase64Tool(scope) {
-  const input = $('#b64-input', scope);
-  const output = $('#b64-output', scope);
-  
-  $('#b64-encode', scope).addEventListener('click', () => {
-    try {
-      output.value = btoa(unescape(encodeURIComponent(input.value)));
-    } catch { output.value = 'Erro ao codificar'; }
-  });
-  $('#b64-decode', scope).addEventListener('click', () => {
-    try {
-      output.value = decodeURIComponent(escape(atob(input.value)));
-    } catch { output.value = 'Erro: texto Base64 inválido'; }
-  });
-  $('#b64-copy', scope).addEventListener('click', () => {
-    if (output.value) copyToClipboard(output.value);
-  });
-}
-
-// ====== TOOL: JSON FORMATTER ======
-function jsonFormatterHTML() {
-  return `<div class="space-y-4">
-    <div>
-      <label class="text-xs text-[var(--muted)] mb-1.5 block">JSON de entrada</label>
-      <textarea id="json-input" class="input" rows="5" placeholder='{"hello": "world", "items": [1, 2, 3]}'></textarea>
-    </div>
-    <div class="flex flex-wrap gap-2">
-      <button id="json-beautify" class="btn btn-primary btn-sm"><i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Formatnar</button>
-      <button id="json-minify" class="btn btn-sm"><i data-lucide="minimize-2" class="w-3.5 h-3.5"></i> Minificar</button>
-      <button id="json-validate" class="btn btn-sm"><i data-lucide="check-circle" class="w-3.5 h-3.5"></i> Validar</button>
-      <button id="json-copy" class="btn btn-sm"><i data-lucide="copy" class="w-3.5 h-3.5"></i> Copiar</button>
-      <button id="json-clear" class="btn btn-ghost btn-sm"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Limpar</button>
-    </div>
-    <div id="json-status" class="text-xs"></div>
-    <div>
-      <label class="text-xs text-[var(--muted)] mb-1.5 block">Saída</label>
-      <div id="json-output" class="json-output">—</div>
-    </div>
-  </div>`;
-}
-
-function initJsonFormatter(scope) {
-  const input = $('#json-input', scope);
-  const output = $('#json-output', scope);
-  const status = $('#json-status', scope);
-  
-  function setStatus(msg, type) {
-    const colors = { ok: 'var(--accent-2)', err: 'var(--accent)', warn: 'var(--accent-3)' };
-    status.innerHTML = `<span style="color: ${colors[type]}">●</span> <span class="text-[var(--muted)]">${msg}</span>`;
-  }
-  
-  function parse() {
-    try { return JSON.parse(input.value); }
-    catch (e) { setStatus('JSON inválido: ' + e.message, 'err'); return null; }
-  }
-  
-  $('#json-beautify', scope).addEventListener('click', () => {
-    const obj = parse();
-    if (obj === null) return;
-    output.textContent = JSON.stringify(obj, null, 2);
-    setStatus('Formatado com sucesso', 'ok');
-  });
-  $('#json-minify', scope).addEventListener('click', () => {
-    const obj = parse();
-    if (obj === null) return;
-    output.textContent = JSON.stringify(obj);
-    setStatus('Minificado com sucesso', 'ok');
-  });
-  $('#json-validate', scope).addEventListener('click', () => {
-    if (!input.value.trim()) { setStatus('Digite um JSON primeiro', 'warn'); return; }
-    const obj = parse();
-    if (obj !== null) setStatus('JSON válido ✓', 'ok');
-  });
-  $('#json-copy', scope).addEventListener('click', () => {
-    if (output.textContent && output.textContent !== '—') copyToClipboard(output.textContent);
-  });
-  $('#json-clear', scope).addEventListener('click', () => {
-    input.value = ''; output.textContent = '—'; status.innerHTML = '';
-  });
-}
-
-// ====== TOOL: COLOR CONVERTER ======
-function colorConverterHTML() {
-  return `<div class="space-y-4">
-    <div id="cc-preview" class="h-24 rounded-2xl border border-[var(--border)] transition-colors" style="background: #ff5e3a"></div>
-    <div class="grid grid-cols-3 gap-2">
-      <button class="tag-btn active" data-mode="hex">HEX</button>
-      <button class="tag-btn" data-mode="rgb">RGB</button>
-      <button class="tag-btn" data-mode="hsl">HSL</button>
-    </div>
-    <div>
-      <label class="text-xs text-[var(--muted)] mb-1.5 block">Entrada</label>
-      <input id="cc-input" type="text" class="input mono" value="#ff5e3a">
-    </div>
-    <div class="grid grid-cols-3 gap-2">
-      <button id="cc-pick" class="btn btn-sm col-span-2"><i data-lucide="pipette" class="w-3.5 h-3.5"></i> Seletor de cor</button>
-      <input id="cc-picker" type="color" value="#ff5e3a" class="w-full h-9 rounded-lg cursor-pointer bg-transparent border border-[var(--border)]">
-    </div>
-    <div class="space-y-2">
-      <div class="flex items-center gap-2 p-2.5 rounded-lg bg-[var(--card)] border border-[var(--border)]">
-        <span class="text-xs text-[var(--muted)] w-10">HEX</span>
-        <span id="cc-hex" class="flex-1 mono text-sm">#FF5E3A</span>
-        <button class="btn btn-ghost btn-sm" data-copy="hex"><i data-lucide="copy" class="w-3 h-3"></i></button>
-      </div>
-      <div class="flex items-center gap-2 p-2.5 rounded-lg bg-[var(--card)] border border-[var(--border)]">
-        <span class="text-xs text-[var(--muted)] w-10">RGB</span>
-        <span id="cc-rgb" class="flex-1 mono text-sm">255, 94, 58</span>
-        <button class="btn btn-ghost btn-sm" data-copy="rgb"><i data-lucide="copy" class="w-3 h-3"></i></button>
-      </div>
-      <div class="flex items-center gap-2 p-2.5 rounded-lg bg-[var(--card)] border border-[var(--border)]">
-        <span class="text-xs text-[var(--muted)] w-10">HSL</span>
-        <span id="cc-hsl" class="flex-1 mono text-sm">11°, 100%, 61%</span>
-        <button class="btn btn-ghost btn-sm" data-copy="hsl"><i data-lucide="copy" class="w-3 h-3"></i></button>
-      </div>
-    </div>
-  </div>`;
-}
-
-function initColorConverter(scope) {
-  const input = $('#cc-input', scope);
-  const preview = $('#cc-preview', scope);
-  const picker = $('#cc-picker', scope);
-  const hexEl = $('#cc-hex', scope);
-  const rgbEl = $('#cc-rgb', scope);
-  const hslEl = $('#cc-hsl', scope);
-  let mode = 'hex';
-  
-  function hexToRgb(hex) {
-    hex = hex.replace('#', '');
-    if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
-    if (!/^[0-9a-fA-F]{6}$/.test(hex)) return null;
-    return { r: parseInt(hex.slice(0,2), 16), g: parseInt(hex.slice(2,4), 16), b: parseInt(hex.slice(4,6), 16) };
-  }
-  function rgbToHex(r, g, b) {
-    return '#' + [r, g, b].map(x => Math.max(0, Math.min(255, x)).toString(16).padStart(2, '0')).join('').toUpperCase();
-  }
-  function rgbToHsl(r, g, b) {
-    r /= 255; g /= 255; b /= 255;
-    const max = Math.max(r, g, b), min = Math.min(r, g, b);
-    let h = 0, s, l = (max + min) / 2;
-    if (max === min) { h = s = 0; }
-    else {
-      const d = max - min;
-      s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-      switch (max) {
-        case r: h = (g - b) / d + (g < b ? 6 : 0); break;
-        case g: h = (b - r) / d + 2; break;
-        case b: h = (r - g) / d + 4; break;
-      }
-      h /= 6;
-    }
-    return { h: Math.round(h * 360), s: Math.round(s * 100), l: Math.round(l * 100) };
-  }
-  
-  function update(rgb) {
-    if (!rgb) return;
-    const hex = rgbToHex(rgb.r, rgb.g, rgb.b);
-    const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
-    preview.style.background = hex;
-    hexEl.textContent = hex;
-    rgbEl.textContent = `${rgb.r}, ${rgb.g}, ${rgb.b}`;
-    hslEl.textContent = `${hsl.h}°, ${hsl.s}%, ${hsl.l}%`;
-    picker.value = hex.toLowerCase();
-    if (mode === 'hex') input.value = hex.toLowerCase();
-    else if (mode === 'rgb') input.value = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
-    else input.value = `hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`;
-  }
-  
-  function parse(text) {
-    text = text.trim();
-    // Try HEX
-    if (/^#?[0-9a-fA-F]{3}([0-9a-fA-F]{3})?$/.test(text)) {
-      return hexToRgb(text);
-    }
-    // Try RGB
-    const rgbM = text.match(/rgb\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)/i);
-    if (rgbM) return { r: +rgbM[1], g: +rgbM[2], b: +rgbM[3] };
-    // Try HSL
-    const hslM = text.match(/hsl\(\s*(\d+)\s*,\s*(\d+)%?\s*,\s*(\d+)%?\s*\)/i);
-    if (hslM) {
-      const h = +hslM[1] / 360, s = +hslM[2] / 100, l = +hslM[3] / 100;
-      let r, g, b;
-      if (s === 0) { r = g = b = l; }
-      else {
-        const hue2rgb = (p, q, t) => {
-          if (t < 0) t += 1; if (t > 1) t -= 1;
-          if (t < 1/6) return p + (q - p) * 6 * t;
-          if (t < 1/2) return q;
-          if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
-          return p;
-        };
-        const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-        const p = 2 * l - q;
-        r = hue2rgb(p, q, h + 1/3);
-        g = hue2rgb(p, q, h);
-        b = hue2rgb(p, q, h - 1/3);
-      }
-      return { r: Math.round(r * 255), g: Math.round(g * 255), b: Math.round(b * 255) };
-    }
-    return null;
-  }
-  
-  input.addEventListener('input', () => {
-    const rgb = parse(input.value);
-    if (rgb) update(rgb);
-  });
-  picker.addEventListener('input', () => {
-    const rgb = hexToRgb(picker.value);
-    if (rgb) update(rgb);
-  });
-  $$('[data-mode]', scope).forEach(btn => {
-    btn.addEventListener('click', () => {
-      $$('[data-mode]', scope).forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      mode = btn.dataset.mode;
-      const rgb = parse(input.value);
-      if (rgb) update(rgb);
-    });
-  });
-  $$('[data-copy]', scope).forEach(btn => {
-    btn.addEventListener('click', () => {
-      const m = btn.dataset.copy;
-      const text = m === 'hex' ? hexEl.textContent : m === 'rgb' ? `rgb(${rgbEl.textContent})` : `hsl(${hslEl.textContent.replace(/°/, '')})`;
-      copyToClipboard(text);
-    });
-  });
-  
-  update({ r: 255, g: 94, b: 58 });
-}
-
-// ====== TOOL: PALETTE GEN ======
-function paletteGenHTML() {
-  return `<div class="space-y-4">
-    <div class="grid grid-cols-5 gap-2" id="pg-palette"></div>
-    <div>
-      <div class="flex justify-between mb-1.5">
-        <label class="text-xs text-[var(--muted)]">Cor base (HSL)</label>
-        <span id="pg-base-val" class="text-xs mono">0°, 70%, 55%</span>
-      </div>
-      <div class="grid grid-cols-3 gap-2 mb-3">
-        <div>
-          <label class="text-[10px] text-[var(--muted)] block mb-1">Matiz</label>
-          <input id="pg-h" type="range" min="0" max="360" value="0" class="w-full accent-[var(--accent)]">
-        </div>
-        <div>
-          <label class="text-[10px] text-[var(--muted)] block mb-1">Saturação</label>
-          <input id="pg-s" type="range" min="0" max="100" value="70" class="w-full accent-[var(--accent)]">
-        </div>
-        <div>
-          <label class="text-[10px] text-[var(--muted)] block mb-1">Luz</label>
-          <input id="pg-l" type="range" min="0" max="100" value="55" class="w-full accent-[var(--accent)]">
-        </div>
-      </div>
-    </div>
-    <div>
-      <label class="text-xs text-[var(--muted)] mb-1.5 block">Esquema de harmonia</label>
-      <div class="grid grid-cols-2 gap-2">
-        <button class="tag-btn active" data-scheme="analogous">Análogas</button>
-        <button class="tag-btn" data-scheme="complementary">Complementar</button>
-        <button class="tag-btn" data-scheme="triadic">Triádica</button>
-        <button class="tag-btn" data-scheme="monochrome">Monocromática</button>
-      </div>
-    </div>
-    <button id="pg-random" class="btn w-full"><i data-lucide="shuffle" class="w-4 h-4"></i> Aleatória</button>
-  </div>`;
-}
-
-function initPaletteGen(scope) {
-  const paletteEl = $('#pg-palette', scope);
-  const hInput = $('#pg-h', scope);
-  const sInput = $('#pg-s', scope);
-  const lInput = $('#pg-l', scope);
-  const baseVal = $('#pg-base-val', scope);
-  let scheme = 'analogous';
-  
-  function hslToHex(h, s, l) {
-    s /= 100; l /= 100;
-    const c = (1 - Math.abs(2 * l - 1)) * s;
-    const x = c * (1 - Math.abs((h / 60) % 2 - 1));
-    const m = l - c / 2;
-    let r, g, b;
-    if (h < 60) { r = c; g = x; b = 0; }
-    else if (h < 120) { r = x; g = c; b = 0; }
-    else if (h < 180) { r = 0; g = c; b = x; }
-    else if (h < 240) { r = 0; g = x; b = c; }
-    else if (h < 300) { r = x; g = 0; b = c; }
-    else { r = c; g = 0; b = x; }
-    const toHex = v => Math.round((v + m) * 255).toString(16).padStart(2, '0');
-    return ('#' + toHex(r) + toHex(g) + toHex(b)).toUpperCase();
-  }
-  
-  function generate() {
-    const h = parseInt(hInput.value);
-    const s = parseInt(sInput.value);
-    const l = parseInt(lInput.value);
-    baseVal.textContent = `${h}°, ${s}%, ${l}%`;
-    
-    let colors = [];
-    if (scheme === 'analogous') {
-      colors = [-40, -20, 0, 20, 40].map(d => ({ h: (h + d + 360) % 360, s, l }));
-    } else if (scheme === 'complementary') {
-      colors = [
-        { h, s, l: Math.max(20, l - 20) },
-        { h, s, l },
-        { h, s, l: Math.min(85, l + 20) },
-        { h: (h + 180) % 360, s, l },
-        { h: (h + 180) % 360, s, l: Math.max(20, l - 15) },
-      ];
-    } else if (scheme === 'triadic') {
-      colors = [
-        { h, s, l },
-        { h: (h + 120) % 360, s, l },
-        { h: (h + 240) % 360, s, l },
-        { h, s, l: Math.min(85, l + 15) },
-        { h, s, l: Math.max(20, l - 15) },
-      ];
-    } else if (scheme === 'monochrome') {
-      colors = [25, 40, 55, 70, 85].map(li => ({ h, s, l: li }));
-    }
-    
-    paletteEl.innerHTML = colors.map(c => {
-      const hex = hslToHex(c.h, c.s, c.l);
-      return `<div class="swatch" style="background: ${hex}" data-hex="${hex}">
-        <div class="label">${hex}</div>
-      </div>`;
-    }).join('');
-    
-    $$('.swatch', scope).forEach(sw => {
-      sw.addEventListener('click', () => copyToClipboard(sw.dataset.hex));
-    });
-  }
-  
-  [hInput, sInput, lInput].forEach(el => el.addEventListener('input', generate));
-  $$('[data-scheme]', scope).forEach(btn => {
-    btn.addEventListener('click', () => {
-      $$('[data-scheme]', scope).forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      scheme = btn.dataset.scheme;
-      generate();
-    });
-  });
-  $('#pg-random', scope).addEventListener('click', () => {
-    hInput.value = Math.floor(Math.random() * 360);
-    sInput.value = 50 + Math.floor(Math.random() * 40);
-    lInput.value = 40 + Math.floor(Math.random() * 30);
-    generate();
-  });
-  generate();
-}
-
-// ====== INIT ======
-function init() {
-  renderCategories();
-  renderTools();
-  
-  // Search
-  $('#search').addEventListener('input', (e) => {
-    state.search = e.target.value;
-    state.showFavsOnly = false;
-    $('#favorites-btn').classList.remove('text-[var(--accent-3)]');
-    renderTools();
-  });
-  
-  // Favorites button
-  $('#favorites-btn').addEventListener('click', () => {
-    state.showFavsOnly = !state.showFavsOnly;
-    $('#favorites-btn').classList.toggle('text-[var(--accent-3)]', state.showFavsOnly);
-    if (state.showFavsOnly) state.category = 'all';
-    renderCategories();
-    renderTools();
-  });
-  
-  // Modal close (apenas backdrop e botão fechar)
-  $('#modal').addEventListener('click', (e) => {
-    if (e.target.dataset.close !== undefined) closeModal();
-  });
-  $$('[data-close]').forEach(btn => btn.addEventListener('click', closeModal));
-  $('#modal-card').addEventListener('click', (e) => e.stopPropagation());
-  
-  // Keyboard shortcuts
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && modalOpen) closeModal();
-    if (e.key === '/' && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
-      e.preventDefault();
-      $('#search').focus();
-    }
-  });
-  
-  lucide.createIcons();
-}
-
-// Wait for DOM
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', init);
-} else {
-  init();
-}
+});
+if (window.lucide) lucide.createIcons();
 </script>
-
 </body>
 </html>
